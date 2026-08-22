@@ -8,7 +8,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import bcrypt from 'bcryptjs';
-import { randomUUID } from 'crypto';
+import { createHash, randomUUID } from 'crypto';
 import { UserRole, OtpPurpose, User } from '@prisma/client';
 import { AuthRepository } from './auth.repository.js';
 import { RegisterDto } from './dto/register.dto.js';
@@ -351,7 +351,7 @@ export class AuthService {
       });
     }
 
-    // SA-2: Validasi single-use — bandingkan hash stored dengan token yang diterima.
+    // SA-2 / FIX3-B1: Validasi single-use — bandingkan SHA-256 digest token dengan hash di DB.
     if (!user.refresh_token_hash) {
       throw new UnauthorizedException({
         message: 'Session tidak ditemukan. Silakan login ulang.',
@@ -359,7 +359,8 @@ export class AuthService {
         statusCode: 401,
       });
     }
-    const isTokenValid = await bcrypt.compare(dto.refresh_token, user.refresh_token_hash);
+    const incomingDigest = createHash('sha256').update(dto.refresh_token).digest('hex');
+    const isTokenValid = await bcrypt.compare(incomingDigest, user.refresh_token_hash);
     if (!isTokenValid) {
       // Token sudah dipakai atau bukan token yang dikeluarkan untuk session ini
       throw new UnauthorizedException({
@@ -416,8 +417,10 @@ export class AuthService {
       },
     );
 
-    // SA-2: Hash refresh token dan simpan ke DB untuk validasi single-use berikutnya
-    const tokenHash = await bcrypt.hash(refreshToken, 10);
+    // SA-2 / FIX3-B1: Pre-hash token dengan SHA-256 (64 hex chars) sebelum bcrypt
+    // sehingga seluruh payload JWT (termasuk jti unik) terproses, melewati limit 72 byte bcrypt.
+    const tokenDigest = createHash('sha256').update(refreshToken).digest('hex');
+    const tokenHash = await bcrypt.hash(tokenDigest, 10);
     await this.authRepository.updateRefreshTokenHash(user.id, tokenHash);
 
     return {

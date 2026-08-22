@@ -2,7 +2,7 @@
 CREATE TYPE "OtpPurpose" AS ENUM ('register', 'login', 'reset_password');
 
 -- DropIndex
-DROP INDEX "zones_geo_boundary_gist_idx";
+DROP INDEX IF EXISTS "zones_geo_boundary_gist_idx";
 
 -- AlterTable
 ALTER TABLE "users" ADD COLUMN     "is_active" BOOLEAN NOT NULL DEFAULT false,

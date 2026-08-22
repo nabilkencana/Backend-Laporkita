@@ -41,6 +41,10 @@ Agencies ───< Reports (assigned_agency)
 | agency_id | UUID (FK → agencies.id) | nullable, hanya untuk role operator/policy_maker |
 | contribution_points | INT | default 0, denormalized dari `contribution_points` untuk performa baca cepat |
 | avatar_url | VARCHAR | nullable |
+| is_active | BOOLEAN | default false, aktif setelah verifikasi nomor telepon |
+| phone_verified_at | TIMESTAMP | nullable, waktu verifikasi OTP nomor telepon berhasil |
+| is_flagged_for_review | BOOLEAN | default false, review admin jika >3 penolakan dalam 30 hari |
+| refresh_token_hash | TEXT | nullable, hash bcrypt dari SHA-256 digest refresh token aktif (single-use rotation) |
 | created_at | TIMESTAMP | |
 | updated_at | TIMESTAMP | |
 
@@ -77,7 +81,10 @@ Agencies ───< Reports (assigned_agency)
 | address_text | VARCHAR | hasil reverse geocoding |
 | status | ENUM(`pending_verification`,`verified`,`rejected`,`assigned`,`in_progress`,`completed`,`resolved`,`disputed`) | |
 | ai_confidence_score | FLOAT | hasil klasifikasi AI (0–1) |
+| damage_severity | FLOAT | nullable, estimasi keparahan kerusakan dari AI (0.0–1.0) |
 | urgency_score | FLOAT | hasil Smart Priority Engine |
+| needs_manual_review | BOOLEAN | default false, flag review operator jika confidence < 0.6 atau anomali GPS/timestamp (Rules.md §1.2) |
+| idempotency_key | VARCHAR (unique) | nullable, idempotency key client untuk mencegah submit duplikat |
 | support_count | INT | denormalized counter |
 | view_count | INT | denormalized counter |
 | estimated_completion_at | TIMESTAMP | nullable |
@@ -120,7 +127,8 @@ Agencies ───< Reports (assigned_agency)
 | id | UUID (PK) | |
 | report_id | UUID (FK → reports.id) | |
 | user_id | UUID (FK → users.id) | |
-| content | TEXT | |
+| content | TEXT | disimpan apa adanya (tanpa masking) |
+| is_flagged | BOOLEAN | default false, true jika mengandung kata kasar untuk moderasi review |
 | created_at | TIMESTAMP | |
 
 ### 2.9 `citizen_validations`
@@ -194,6 +202,20 @@ Agencies ───< Reports (assigned_agency)
 | body | TEXT | |
 | reference_report_id | UUID (FK → reports.id) | nullable |
 | is_read | BOOLEAN | default false |
+| created_at | TIMESTAMP | |
+
+### 2.16 `otp_verifications` (Verifikasi Nomor Telepon)
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| id | UUID (PK) | |
+| user_id | UUID (FK → users.id) | |
+| phone_number | VARCHAR(20) | nomor telepon tujuan OTP |
+| otp_code_hash | VARCHAR(255) | hash bcrypt dari 4-digit OTP |
+| purpose | ENUM(`register`,`login`,`reset_password`) | tujuan OTP |
+| expires_at | TIMESTAMP | waktu kadaluarsa (default 5 menit) |
+| attempt_count | INT | default 0, max 5 percobaan |
+| is_used | BOOLEAN | default false |
+| last_sent_at | TIMESTAMP | waktu kirim terakhir (cooldown 45 detik) |
 | created_at | TIMESTAMP | |
 
 ---

@@ -136,8 +136,46 @@ describe('LaporKita Digital Accountability Loop (e2e)', () => {
       .expect(200);
 
     expect(citizenLoginRes.body.data.access_token).toBeDefined();
+    expect(citizenLoginRes.body.data.refresh_token).toBeDefined();
     expect(citizenLoginRes.body.data.user.role).toBe(UserRole.citizen);
     citizenToken = citizenLoginRes.body.data.access_token;
+    const rt1 = citizenLoginRes.body.data.refresh_token;
+
+    // SA-2 / FIX3-B1: Test Single-Use Refresh Token Rotation
+    // 1. Refresh pertama dengan RT1 -> Berhasil, dapat RT2
+    const refreshRes1 = await request(app.getHttpServer())
+      .post('/api/v1/auth/refresh')
+      .send({ refresh_token: rt1 })
+      .expect(200);
+
+    expect(refreshRes1.body.data.access_token).toBeDefined();
+    expect(refreshRes1.body.data.refresh_token).toBeDefined();
+    const rt2 = refreshRes1.body.data.refresh_token;
+
+    // 2. Replay attack: Pakai RT1 lagi -> WAJIB 401 REFRESH_TOKEN_INVALID
+    const replayRes = await request(app.getHttpServer())
+      .post('/api/v1/auth/refresh')
+      .send({ refresh_token: rt1 })
+      .expect(401);
+
+    expect(replayRes.body.error.code).toBe('REFRESH_TOKEN_INVALID');
+
+    // 3. Gunakan RT2 yang sah -> Berhasil, dapat RT3
+    const refreshRes2 = await request(app.getHttpServer())
+      .post('/api/v1/auth/refresh')
+      .send({ refresh_token: rt2 })
+      .expect(200);
+
+    expect(refreshRes2.body.data.access_token).toBeDefined();
+    citizenToken = refreshRes2.body.data.access_token;
+
+    // 4. Replay attack RT2 -> WAJIB 401
+    const replayRes2 = await request(app.getHttpServer())
+      .post('/api/v1/auth/refresh')
+      .send({ refresh_token: rt2 })
+      .expect(401);
+
+    expect(replayRes2.body.error.code).toBe('REFRESH_TOKEN_INVALID');
 
     // 2. Register Operator
     const operatorRes = await request(app.getHttpServer())

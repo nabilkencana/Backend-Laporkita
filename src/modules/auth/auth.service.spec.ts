@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { BadRequestException, ConflictException, UnauthorizedException } from '@nestjs/common';
 import { UserRole, OtpPurpose } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { createHash } from 'crypto';
 import { OTP_SMS_SERVICE, OTPSmsService } from './sms/otp-sms.interface.js';
 
 describe('AuthService (with Phone OTP Verification)', () => {
@@ -374,8 +375,9 @@ describe('AuthService (with Phone OTP Verification)', () => {
 
   describe('5. refresh', () => {
     it('should return new tokens when refresh token is valid and user is active', async () => {
-      const rawToken = 'valid_refresh_token';
-      const tokenHash = await bcrypt.hash(rawToken, 10);
+      const rawToken = 'valid_refresh_token_string_example';
+      const tokenDigest = createHash('sha256').update(rawToken).digest('hex');
+      const tokenHash = await bcrypt.hash(tokenDigest, 10);
 
       jest.spyOn(jwtService, 'verify').mockReturnValue({
         sub: mockUser.id,
@@ -383,7 +385,7 @@ describe('AuthService (with Phone OTP Verification)', () => {
         role: mockUser.role,
         agency_id: mockUser.agency_id,
       });
-      // SA-2: User harus punya refresh_token_hash yang cocok dengan rawToken
+      // SA-2: User harus punya refresh_token_hash yang cocok dengan rawToken via SHA-256
       jest
         .spyOn(repository, 'findById')
         .mockResolvedValue({ ...mockUser, refresh_token_hash: tokenHash });
@@ -402,7 +404,8 @@ describe('AuthService (with Phone OTP Verification)', () => {
     it('should throw REFRESH_TOKEN_INVALID when token has already been used (single-use)', async () => {
       // SA-2: Simulasi replay attack — token sudah di-rotate, hash di DB sudah beda
       const usedToken = 'already_used_refresh_token';
-      const differentTokenHash = await bcrypt.hash('new_token_after_rotation', 10);
+      const newDigest = createHash('sha256').update('new_token_after_rotation').digest('hex');
+      const differentTokenHash = await bcrypt.hash(newDigest, 10);
 
       jest.spyOn(jwtService, 'verify').mockReturnValue({
         sub: mockUser.id,
@@ -418,6 +421,39 @@ describe('AuthService (with Phone OTP Verification)', () => {
       try {
         await service.refresh({ refresh_token: usedToken });
         fail('Should have thrown UnauthorizedException');
+      } catch (err) {
+        expect(err).toBeInstanceOf(UnauthorizedException);
+        const response = (err as UnauthorizedException).getResponse() as Record<string, unknown>;
+        expect(response.error).toBe('REFRESH_TOKEN_INVALID');
+      }
+    });
+
+    it('should correctly distinguish tokens sharing the first 72+ bytes prefix (FIX3-B1 bcrypt 72-byte limit fix)', async () => {
+      // Dua token yang 100 byte pertamanya SAMA PERSIS tapi berbeda di karakter ke-101
+      const commonPrefix =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTExMTExMS0xMTExLTExMTEtMTExMS0xMTExMTExMTExMTEiLCJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20ifQ.';
+      const tokenA = `${commonPrefix}RANDOM_JTI_AAAA_1234567890`;
+      const tokenB = `${commonPrefix}RANDOM_JTI_BBBB_0987654321`;
+
+      // Token B yang saat ini aktif di DB
+      const digestB = createHash('sha256').update(tokenB).digest('hex');
+      const hashB = await bcrypt.hash(digestB, 10);
+
+      jest.spyOn(jwtService, 'verify').mockReturnValue({
+        sub: mockUser.id,
+        email: mockUser.email,
+        role: mockUser.role,
+        agency_id: mockUser.agency_id,
+      });
+      jest.spyOn(repository, 'findById').mockResolvedValue({
+        ...mockUser,
+        refresh_token_hash: hashB,
+      });
+
+      // Mencoba me-refresh menggunakan token A (token lama) HARUS DITOLAK
+      try {
+        await service.refresh({ refresh_token: tokenA });
+        fail('Should have rejected tokenA');
       } catch (err) {
         expect(err).toBeInstanceOf(UnauthorizedException);
         const response = (err as UnauthorizedException).getResponse() as Record<string, unknown>;

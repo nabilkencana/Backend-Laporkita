@@ -12,6 +12,7 @@ const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 async function main(): Promise<void> {
+  await prisma.$connect();
   console.log('🌱 Memulai seeding database LaporKita...');
 
   // ── 1. Seed Instansi Pemerintah (Agencies) ────────────────────────────────

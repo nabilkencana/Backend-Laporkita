@@ -1,5 +1,5 @@
 -- DropIndex
-DROP INDEX "zones_geo_boundary_gist_idx";
+DROP INDEX IF EXISTS "zones_geo_boundary_gist_idx";
 
 -- AlterTable
 ALTER TABLE "report_comments" ADD COLUMN     "is_flagged" BOOLEAN NOT NULL DEFAULT false;
