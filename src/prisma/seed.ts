@@ -159,6 +159,62 @@ async function main(): Promise<void> {
   console.log(`   - Email: ${adminUser.email}`);
   console.log(`   - Role: ${adminUser.role}`);
 
+  // ── 4. Seed Dynamic System Configs (Smart Priority Weights & AI Thresholds) ─
+  // Sesuai Rules.md §1.3 (bobot disimpan di DB bukan hardcode)
+  console.log('⚙️ Seeding dynamic system configs...');
+
+  await prisma.systemConfig.upsert({
+    where: { key: 'smart_priority_weights' },
+    update: {
+      value: {
+        w1_damage_severity: 0.35,
+        w2_support: 0.2,
+        w3_density: 0.25,
+        w4_category: 0.2,
+        density_radius_meters: 200,
+        support_cap: 100,
+      },
+      description: 'Bobot scoring Smart Priority Engine (Rules.md §1.3)',
+    },
+    create: {
+      key: 'smart_priority_weights',
+      value: {
+        w1_damage_severity: 0.35,
+        w2_support: 0.2,
+        w3_density: 0.25,
+        w4_category: 0.2,
+        density_radius_meters: 200,
+        support_cap: 100,
+      },
+      description: 'Bobot scoring Smart Priority Engine (Rules.md §1.3)',
+    },
+  });
+
+  await prisma.systemConfig.upsert({
+    where: { key: 'ai_verification_thresholds' },
+    update: {
+      value: {
+        min_confidence: 0.6,
+        require_valid_gps: true,
+        require_valid_timestamp: true,
+      },
+      description: 'Threshold verifikasi AI otomatis (Rules.md §1.2)',
+    },
+    create: {
+      key: 'ai_verification_thresholds',
+      value: {
+        min_confidence: 0.6,
+        require_valid_gps: true,
+        require_valid_timestamp: true,
+      },
+      description: 'Threshold verifikasi AI otomatis (Rules.md §1.2)',
+    },
+  });
+
+  console.log(
+    '✅ Dynamic System Configs (Smart Priority Weights & AI Thresholds) berhasil di-seed!',
+  );
+
   console.log('🎉 Seeding database selesai dengan sukses!');
 }
 

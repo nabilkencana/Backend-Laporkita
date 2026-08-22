@@ -181,6 +181,8 @@ model Report {
   status                  ReportStatus @default(pending_verification)
   /// Hasil klasifikasi AI — 0.0–1.0 (Rules.md §1.2)
   ai_confidence_score     Float?
+  /// Estimasi keparahan kerusakan dari AI (0.0–1.0) untuk Smart Priority (Rules.md §1.3)
+  damage_severity         Float?
   /// Hasil Smart Priority Engine (Rules.md §1.3)
   urgency_score           Float?
   /// Denormalized counter (ERD.md §5) — update WAJIB dilakukan di service layer
@@ -406,4 +408,15 @@ model Notification {
   // Index untuk query notifikasi belum dibaca (ERD §4)
   @@index([user_id, is_read])
   @@map("notifications")
+}
+
+/// Konfigurasi sistem dinamis (bobot Smart Priority w1..w4, threshold, dll.)
+/// Sesuai Rules.md §1.3 (bobot disimpan di DB bukan hardcode di kode)
+model SystemConfig {
+  key         String   @id @db.VarChar(100)
+  value       Json
+  description String?  @db.Text
+  updated_at  DateTime @updatedAt
+
+  @@map("system_configs")
 }

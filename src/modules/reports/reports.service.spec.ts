@@ -3,6 +3,7 @@ import { ReportsService } from './reports.service.js';
 import { ReportsRepository } from './reports.repository.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { ConfigService } from '@nestjs/config';
+import { SmartPriorityService } from '../smart-priority/smart-priority.service.js';
 import { BadRequestException, ConflictException, ForbiddenException } from '@nestjs/common';
 import { ReportStatus, UserRole, Prisma } from '@prisma/client';
 import { AuthenticatedUser } from '../../common/decorators/current-user.decorator.js';
@@ -11,6 +12,7 @@ describe('ReportsService (Critical Business Logic)', () => {
   let service: ReportsService;
   let repository: ReportsRepository;
   let prisma: PrismaService;
+  let smartPriorityService: SmartPriorityService;
 
   const reporterId = '11111111-1111-1111-1111-111111111111';
   const otherUserId = '22222222-2222-2222-2222-222222222222';
@@ -75,6 +77,9 @@ describe('ReportsService (Critical Business Logic)', () => {
       contributionPointsLog: {
         create: jest.fn(),
       },
+      notification: {
+        create: jest.fn().mockResolvedValue({}),
+      },
       $transaction: jest.fn().mockImplementation(async (cb: unknown) => {
         if (typeof cb === 'function') {
           return (cb as (tx: unknown) => Promise<unknown>)(mockPrismaService);
@@ -99,30 +104,42 @@ describe('ReportsService (Critical Business Logic)', () => {
       }),
     };
 
+    const mockSmartPriorityService = {
+      computeScore: jest.fn(),
+      recalculateUrgencyScore: jest.fn().mockResolvedValue(3.5),
+      recalculateNearbyReports: jest.fn().mockResolvedValue(1),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ReportsService,
         { provide: ReportsRepository, useValue: mockRepo },
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: ConfigService, useValue: mockConfig },
+        {
+          provide: SmartPriorityService,
+          useValue: mockSmartPriorityService,
+        },
       ],
     }).compile();
 
     service = module.get<ReportsService>(ReportsService);
     repository = module.get<ReportsRepository>(ReportsRepository);
     prisma = module.get<PrismaService>(PrismaService);
+    smartPriorityService = module.get<SmartPriorityService>(SmartPriorityService);
   });
 
   // ── 1. State Machine Transitions ───────────────────────────────────────────
 
   describe('transitionReportStatus (State Machine Rules.md §1.1)', () => {
-    it('should allow legal transition: pending_verification -> verified and award +10 points (Rules.md §1.6)', async () => {
+    it('should allow legal transition: pending_verification -> verified and award +10 points & insert notification (Rules.md §1.2, §1.6)', async () => {
       jest.spyOn(repository, 'findById').mockResolvedValue(mockReport);
       jest.spyOn(repository, 'updateStatusInTransaction').mockResolvedValue({
         ...mockReport,
         status: ReportStatus.verified,
       });
       const txSpy = jest.spyOn(prisma, '$transaction');
+      const notificationSpy = jest.spyOn(prisma.notification, 'create');
 
       const result = await service.transitionReportStatus(
         reportId,
@@ -132,6 +149,14 @@ describe('ReportsService (Critical Business Logic)', () => {
 
       expect(result.status).toBe(ReportStatus.verified);
       expect(txSpy).toHaveBeenCalled();
+      expect(notificationSpy).toHaveBeenCalledTimes(1);
+      const notifCall = notificationSpy.mock.calls[0] as unknown as [
+        { data: { user_id: string; type: string; reference_report_id: string; body: string } },
+      ];
+      expect(notifCall[0].data.user_id).toBe(mockReport.reporter_id);
+      expect(notifCall[0].data.type).toBe('status_update');
+      expect(notifCall[0].data.reference_report_id).toBe(mockReport.id);
+      expect(notifCall[0].data.body).toContain('Laporan #LP-2026-000001 telah');
     });
 
     it('should throw ConflictException on illegal transition (e.g. pending_verification -> completed)', async () => {
@@ -217,6 +242,25 @@ describe('ReportsService (Critical Business Logic)', () => {
   // ── 2. Report Supports & Grace Period ──────────────────────────────────────
 
   describe('Report Supports (Rules.md §1.4)', () => {
+    it('should add support successfully and trigger smartPriorityService.recalculateUrgencyScore', async () => {
+      jest.spyOn(repository, 'findById').mockResolvedValue(mockReport);
+      jest.spyOn(repository, 'findSupport').mockResolvedValue(null);
+      const addSupportSpy = jest.spyOn(repository, 'addSupportInTransaction').mockResolvedValue({
+        id: 's1',
+        report_id: reportId,
+        user_id: otherUserId,
+        created_at: new Date(),
+      });
+      const recalculateSpy = jest.spyOn(smartPriorityService, 'recalculateUrgencyScore');
+
+      const result = await service.supportReport(reportId, otherUserId);
+
+      expect(result.message).toBe('Dukungan berhasil ditambahkan.');
+      expect(result.support_count).toBe(mockReport.support_count + 1);
+      expect(addSupportSpy).toHaveBeenCalledWith(reportId, otherUserId);
+      expect(recalculateSpy).toHaveBeenCalledWith(reportId);
+    });
+
     it('should throw ConflictException if user already supported the report', async () => {
       jest.spyOn(repository, 'findById').mockResolvedValue(mockReport);
       jest.spyOn(repository, 'findSupport').mockResolvedValue({
@@ -238,10 +282,12 @@ describe('ReportsService (Critical Business Logic)', () => {
         created_at: new Date(Date.now() - 2 * 60 * 1000), // 2 minutes ago
       });
       const removeSpy = jest.spyOn(repository, 'removeSupportInTransaction').mockResolvedValue();
+      const recalculateSpy = jest.spyOn(smartPriorityService, 'recalculateUrgencyScore');
 
       const result = await service.cancelSupport(reportId, otherUserId);
       expect(result.message).toBe('Dukungan berhasil dibatalkan.');
       expect(removeSpy).toHaveBeenCalledWith(reportId, otherUserId);
+      expect(recalculateSpy).toHaveBeenCalledWith(reportId);
     });
 
     it('should throw ConflictException when canceling support after 5 minutes grace period', async () => {

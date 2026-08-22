@@ -5,12 +5,22 @@ import {
   ConflictException,
   ForbiddenException,
   Logger,
+  Optional,
 } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { ConfigService } from '@nestjs/config';
-import { ReportStatus, MediaType, ContributionReason, Report } from '@prisma/client';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
+import {
+  ReportStatus,
+  MediaType,
+  ContributionReason,
+  Report,
+  NotificationType,
+} from '@prisma/client';
 import { ReportsRepository, ReportDetail } from './reports.repository.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
+import { SmartPriorityService } from '../smart-priority/smart-priority.service.js';
 import { CreateReportDto } from './dto/create-report.dto.js';
 import { CreateCommentDto } from './dto/create-comment.dto.js';
 import { ValidateReportDto } from './dto/validate-report.dto.js';
@@ -30,6 +40,8 @@ export class ReportsService {
     private readonly reportsRepository: ReportsRepository,
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
+    private readonly smartPriorityService: SmartPriorityService,
+    @Optional() @InjectQueue('verify-report') private readonly verifyReportQueue?: Queue,
   ) {}
 
   // ── 1. Submit Laporan (Rules.md §2.1 & Architecture.md §3.3) ────────────────
@@ -91,6 +103,30 @@ export class ReportsService {
     });
 
     this.logger.log(`Laporan baru berhasil disubmit: ${report.report_code} (${report.id})`);
+
+    // 6. Enqueue background AI verification job ke queue 'verify-report' (Architecture.md §3.3)
+    if (this.verifyReportQueue) {
+      try {
+        await this.verifyReportQueue.add(
+          'verify-report-job',
+          { reportId: report.id },
+          {
+            attempts: 3,
+            backoff: { type: 'exponential', delay: 1000 },
+            removeOnComplete: true,
+          },
+        );
+      } catch (err) {
+        this.logger.error(`Gagal enqueue job verify-report untuk ${report.id}`, err);
+      }
+    }
+
+    // 7. Hitung ulang skor urgensi laporan di sekitar lokasi laporan baru (Rules.md §1.3)
+    void this.smartPriorityService.recalculateNearbyReports(
+      Number(report.latitude),
+      Number(report.longitude),
+    );
+
     return report;
   }
 
@@ -156,12 +192,28 @@ export class ReportsService {
       );
     }
 
-    // B. Transisi pertama kali ke `verified`: beri +10 poin ke pelapor (Rules.md §1.6)
+    // B. Transisi pertama kali ke `verified`: beri +10 poin ke pelapor (Rules.md §1.6) dan insert row notifikasi (status_update)
     if (
       currentStatus === ReportStatus.pending_verification &&
       targetStatus === ReportStatus.verified
     ) {
       await this.awardPoints(report.reporter_id, 10, ContributionReason.report_verified, report.id);
+
+      const isAiVerified = actorId === '00000000-0000-4000-8000-000000000001' || !actorId;
+      const notificationBody = isAiVerified
+        ? `Laporan ${report.report_code} telah terverifikasi secara otomatis oleh sistem kecerdasan LaporKita dan diteruskan ke instansi terkait.`
+        : `Laporan ${report.report_code} telah diverifikasi oleh petugas operator dan diteruskan ke instansi terkait.`;
+
+      await this.prisma.notification.create({
+        data: {
+          user_id: report.reporter_id,
+          type: NotificationType.status_update,
+          title: 'Laporan Anda Terverifikasi',
+          body: notificationBody,
+          reference_report_id: report.id,
+        },
+      });
+      // TODO: Integrasi eksternal FCM Push Notification ke aplikasi mobile warga
     }
 
     // C. Transisi ke `rejected`: periksa apakah pelapor memiliki >3 penolakan dalam 30 hari (Rules.md §1.6)
@@ -252,6 +304,9 @@ export class ReportsService {
 
     await this.reportsRepository.addSupportInTransaction(reportId, userId);
 
+    // Hitung ulang skor urgensi berdasarkan jumlah dukungan baru (Rules.md §1.3)
+    void this.smartPriorityService.recalculateUrgencyScore(reportId);
+
     return {
       message: 'Dukungan berhasil ditambahkan.',
       support_count: report.support_count + 1,
@@ -285,6 +340,9 @@ export class ReportsService {
     }
 
     await this.reportsRepository.removeSupportInTransaction(reportId, userId);
+
+    // Hitung ulang skor urgensi setelah pembatalan dukungan (Rules.md §1.3)
+    void this.smartPriorityService.recalculateUrgencyScore(reportId);
 
     return {
       message: 'Dukungan berhasil dibatalkan.',

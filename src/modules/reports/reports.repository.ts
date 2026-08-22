@@ -186,7 +186,13 @@ export class ReportsRepository {
   }> {
     const where: Prisma.ReportWhereInput = {};
 
-    if (query.status) where.status = query.status;
+    if (query.needs_manual_review || query.needsManualReview) {
+      where.status = ReportStatus.pending_verification;
+      where.OR = [{ ai_confidence_score: { lt: 0.6 } }, { ai_confidence_score: null }];
+    } else if (query.status) {
+      where.status = query.status;
+    }
+
     if (query.category_id) where.category_id = query.category_id;
     if (query.reporter_id) where.reporter_id = query.reporter_id;
     if (query.assigned_agency_id) where.assigned_agency_id = query.assigned_agency_id;

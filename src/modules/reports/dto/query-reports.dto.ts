@@ -65,4 +65,16 @@ export class QueryReportsDto {
   @Type(() => Number)
   @IsNumber()
   max_lng?: number;
+
+  /**
+   * Filter antrian verifikasi manual operator (Rules.md §1.2)
+   * Menampilkan laporan pending_verification yang belum lolos AI otomatis
+   */
+  @IsOptional()
+  @Type(() => Boolean)
+  needs_manual_review?: boolean;
+
+  @IsOptional()
+  @Type(() => Boolean)
+  needsManualReview?: boolean;
 }
