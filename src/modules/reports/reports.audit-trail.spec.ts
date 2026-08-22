@@ -22,12 +22,21 @@ describe('Audit Trail Verification (report_status_history for ALL status transit
     note: string | null;
   }[] = [];
 
-  let currentReportState = {
+  let currentReportState: {
+    id: string;
+    report_code: string;
+    reporter_id: string;
+    status: ReportStatus;
+    urgency_score: number;
+    needs_manual_review: boolean;
+    created_at: Date;
+  } = {
     id: reportId,
     report_code: '#LP-2026-000001',
     reporter_id: reporterId,
     status: ReportStatus.pending_verification,
     urgency_score: 1.0,
+    needs_manual_review: false,
     created_at: new Date(),
   };
 
@@ -39,6 +48,7 @@ describe('Audit Trail Verification (report_status_history for ALL status transit
       reporter_id: reporterId,
       status: ReportStatus.pending_verification,
       urgency_score: 1.0,
+      needs_manual_review: false,
       created_at: new Date(),
     };
 
@@ -202,7 +212,14 @@ describe('Audit Trail Verification (report_status_history for ALL status transit
 
     const result = await service.validateReport(
       reportId,
-      { id: reporterId, role: 'citizen', email: 'citizen@test.com' },
+      {
+        id: reporterId,
+        full_name: 'Warga Pelapor',
+        email: 'citizen@test.com',
+        phone_number: null,
+        role: ReportStatus.pending_verification as any,
+        agency_id: null,
+      },
       { is_valid: false, note: 'Aspal masih bergelombang dan belum rata' },
     );
 
@@ -218,7 +235,14 @@ describe('Audit Trail Verification (report_status_history for ALL status transit
 
     const result = await service.validateReport(
       reportId,
-      { id: reporterId, role: 'citizen', email: 'citizen@test.com' },
+      {
+        id: reporterId,
+        full_name: 'Warga Pelapor',
+        email: 'citizen@test.com',
+        phone_number: null,
+        role: ReportStatus.pending_verification as any,
+        agency_id: null,
+      },
       { is_valid: true, note: 'Jalan sudah halus dan rapi, terima kasih!' },
     );
 

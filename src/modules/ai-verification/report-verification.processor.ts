@@ -58,6 +58,15 @@ export class ReportVerificationProcessor extends WorkerHost {
     const isSpatialValid = verification.isValidGps;
     const isTemporalValid = verification.isValidTimestamp;
 
+    // F5-1: Set flag eksplisit needs_manual_review sesuai Rules.md §1.2.
+    // true jika: confidence < 0.6 ATAU isValidGps=false ATAU isValidTimestamp=false.
+    // Operator bisa filter via GET /reports?needsManualReview=true.
+    const needsManualReview = !meetsConfidence || !isSpatialValid || !isTemporalValid;
+    await this.prisma.report.update({
+      where: { id: reportId },
+      data: { needs_manual_review: needsManualReview },
+    });
+
     if (meetsConfidence && isSpatialValid && isTemporalValid) {
       // ── Lolos verifikasi otomatis (Confidence >= 0.6) ──────────────────────
       this.logger.log(
@@ -105,7 +114,7 @@ export class ReportVerificationProcessor extends WorkerHost {
       if (!isTemporalValid) reasons.push('Waktu laporan tidak valid');
 
       this.logger.warn(
-        `[BullMQ Worker] Laporan ${report.report_code} dialihkan ke antrian verifikasi manual operator. Alasan: ${reasons.join(', ')}`,
+        `[BullMQ Worker] Laporan ${report.report_code} dialihkan ke antrian verifikasi manual operator (needs_manual_review=true). Alasan: ${reasons.join(', ')}`,
       );
 
       return { status: 'MANUAL_REVIEW_REQUIRED', confidence: verification.confidence };

@@ -10,7 +10,11 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { ReportsService } from './reports.service.js';
 import { ReportDetail } from './reports.repository.js';
@@ -29,16 +33,22 @@ import {
 } from '../../common/decorators/current-user.decorator.js';
 import { Throttle } from '@nestjs/throttler';
 import { UuidValidationPipe } from '../../common/pipes/uuid-validation.pipe.js';
+import { FileValidationPipe } from '../../common/pipes/file-validation.pipe.js';
 import { PaginatedResult } from '../../common/interceptors/response.interceptor.js';
+import { StorageService } from '../storage/storage.service.js';
 import { Report, UserRole, ReportStatus, MediaType } from '@prisma/client';
 
 @Controller('reports')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ReportsController {
-  constructor(private readonly reportsService: ReportsService) {}
+  constructor(
+    private readonly reportsService: ReportsService,
+    private readonly storageService: StorageService,
+  ) {}
 
   /**
    * Submit Laporan — POST /api/v1/reports
+   * Mendukung multipart/form-data (upload file 'photo') atau application/json ('photo_url')
    * Response: 202 Accepted (Rules.md §3 & Architecture.md §3.3)
    * Rate limited: max 10 requests / menit (Architecture.md §7)
    */
@@ -46,11 +56,22 @@ export class ReportsController {
   @ApiBearerAuth()
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @HttpCode(HttpStatus.ACCEPTED)
+  @UseInterceptors(FileInterceptor('photo'))
   async submitReport(
     @Body() dto: CreateReportDto,
     @CurrentUser('id') reporterId: string,
+    @UploadedFile(new FileValidationPipe({ optional: true })) file?: Express.Multer.File,
   ): Promise<Report> {
-    return this.reportsService.submitReport(dto, reporterId);
+    let photoUrl = dto.photo_url;
+    if (file) {
+      photoUrl = await this.storageService.uploadFile(file, 'reports');
+    }
+    if (!photoUrl) {
+      throw new BadRequestException(
+        'Foto laporan wajib dilampirkan (via upload file field "photo" atau "photo_url").',
+      );
+    }
+    return this.reportsService.submitReport({ ...dto, photo_url: photoUrl }, reporterId);
   }
 
   /**
@@ -131,6 +152,30 @@ export class ReportsController {
   }
 
   /**
+   * SA-1: Daftar Komentar Terflag (Moderator) — GET /api/v1/reports/comments/flagged
+   * Hanya operator/admin. Menampilkan komentar dengan kata kasar untuk review & tindakan.
+   * WAJIB didefinisikan SEBELUM ':id/comments' agar tidak di-intercept sebagai UUID param.
+   */
+  @Get('comments/flagged')
+  @ApiBearerAuth()
+  @Roles(UserRole.operator, UserRole.admin)
+  async getFlaggedComments(
+    @Query('limit') limit?: number,
+    @Query('cursor') cursor?: string,
+  ): Promise<
+    PaginatedResult<{
+      id: string;
+      content: string;
+      is_flagged: boolean;
+      created_at: Date;
+      user: { id: string; full_name: string; avatar_url: string | null; role: string };
+      report: { id: string; report_code: string };
+    }>
+  > {
+    return this.reportsService.getFlaggedComments(limit ? Number(limit) : 20, cursor);
+  }
+
+  /**
    * List Komentar — GET /api/v1/reports/:id/comments (Cursor-based)
    */
   @Public()
@@ -165,15 +210,27 @@ export class ReportsController {
 
   /**
    * Upload Media (Progress Photo / Completion Photo) — POST /api/v1/reports/:id/media
+   * Mendukung multipart/form-data (upload file 'photo') atau application/json ('url')
    */
   @Post(':id/media')
   @ApiBearerAuth()
   @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(FileInterceptor('photo'))
   async uploadMedia(
     @Param('id', new UuidValidationPipe()) id: string,
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: UploadMediaDto,
+    @UploadedFile(new FileValidationPipe({ optional: true })) file?: Express.Multer.File,
   ): Promise<{ id: string; url: string; type: MediaType }> {
-    return this.reportsService.uploadMedia(id, user, dto);
+    let mediaUrl = dto.url;
+    if (file) {
+      mediaUrl = await this.storageService.uploadFile(file, 'reports');
+    }
+    if (!mediaUrl) {
+      throw new BadRequestException(
+        'Foto media wajib dilampirkan (via upload file field "photo" atau "url").',
+      );
+    }
+    return this.reportsService.uploadMedia(id, user, { ...dto, url: mediaUrl });
   }
 }

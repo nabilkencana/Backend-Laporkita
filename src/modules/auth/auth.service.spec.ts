@@ -29,6 +29,8 @@ describe('AuthService (with Phone OTP Verification)', () => {
     phone_verified_at: new Date(),
     created_at: new Date(),
     updated_at: new Date(),
+    // SA-2: refresh_token_hash akan di-set secara dinamis di test yang butuh
+    refresh_token_hash: null as string | null,
   };
 
   const mockInactiveUser = {
@@ -69,6 +71,9 @@ describe('AuthService (with Phone OTP Verification)', () => {
       incrementOtpAttempt: jest.fn(),
       invalidatePreviousOtps: jest.fn().mockResolvedValue(undefined),
       verifyUserAndMarkOtpInTransaction: jest.fn(),
+      // SA-2: Mock untuk refresh token rotation
+      updateRefreshTokenHash: jest.fn().mockResolvedValue(undefined),
+      clearRefreshTokenHash: jest.fn().mockResolvedValue(undefined),
     };
 
     const mockJwtService = {
@@ -369,18 +374,78 @@ describe('AuthService (with Phone OTP Verification)', () => {
 
   describe('5. refresh', () => {
     it('should return new tokens when refresh token is valid and user is active', async () => {
+      const rawToken = 'valid_refresh_token';
+      const tokenHash = await bcrypt.hash(rawToken, 10);
+
       jest.spyOn(jwtService, 'verify').mockReturnValue({
         sub: mockUser.id,
         email: mockUser.email,
         role: mockUser.role,
         agency_id: mockUser.agency_id,
       });
-      jest.spyOn(repository, 'findById').mockResolvedValue(mockUser);
+      // SA-2: User harus punya refresh_token_hash yang cocok dengan rawToken
+      jest
+        .spyOn(repository, 'findById')
+        .mockResolvedValue({ ...mockUser, refresh_token_hash: tokenHash });
 
-      const result = await service.refresh({ refresh_token: 'valid_refresh_token' });
+      const result = await service.refresh({ refresh_token: rawToken });
 
       expect(result).toHaveProperty('access_token');
       expect(result.user.id).toBe(mockUser.id);
+      // SA-2: updateRefreshTokenHash harus dipanggil (menyimpan token baru = rotate)
+      expect(repository.updateRefreshTokenHash).toHaveBeenCalledWith(
+        mockUser.id,
+        expect.any(String),
+      );
+    });
+
+    it('should throw REFRESH_TOKEN_INVALID when token has already been used (single-use)', async () => {
+      // SA-2: Simulasi replay attack — token sudah di-rotate, hash di DB sudah beda
+      const usedToken = 'already_used_refresh_token';
+      const differentTokenHash = await bcrypt.hash('new_token_after_rotation', 10);
+
+      jest.spyOn(jwtService, 'verify').mockReturnValue({
+        sub: mockUser.id,
+        email: mockUser.email,
+        role: mockUser.role,
+        agency_id: mockUser.agency_id,
+      });
+      jest.spyOn(repository, 'findById').mockResolvedValue({
+        ...mockUser,
+        refresh_token_hash: differentTokenHash, // hash di DB ≠ usedToken
+      });
+
+      try {
+        await service.refresh({ refresh_token: usedToken });
+        fail('Should have thrown UnauthorizedException');
+      } catch (err) {
+        expect(err).toBeInstanceOf(UnauthorizedException);
+        const response = (err as UnauthorizedException).getResponse() as Record<string, unknown>;
+        expect(response.error).toBe('REFRESH_TOKEN_INVALID');
+      }
+    });
+
+    it('should throw REFRESH_TOKEN_INVALID when no session exists (hash is null)', async () => {
+      // SA-2: User tidak punya session aktif (belum login atau sudah logout)
+      jest.spyOn(jwtService, 'verify').mockReturnValue({
+        sub: mockUser.id,
+        email: mockUser.email,
+        role: mockUser.role,
+        agency_id: mockUser.agency_id,
+      });
+      jest.spyOn(repository, 'findById').mockResolvedValue({
+        ...mockUser,
+        refresh_token_hash: null,
+      });
+
+      try {
+        await service.refresh({ refresh_token: 'any_token' });
+        fail('Should have thrown UnauthorizedException');
+      } catch (err) {
+        expect(err).toBeInstanceOf(UnauthorizedException);
+        const response = (err as UnauthorizedException).getResponse() as Record<string, unknown>;
+        expect(response.error).toBe('REFRESH_TOKEN_INVALID');
+      }
     });
 
     it('should throw UnauthorizedException when refresh token verification fails', async () => {

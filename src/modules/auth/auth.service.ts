@@ -8,6 +8,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import bcrypt from 'bcryptjs';
+import { randomUUID } from 'crypto';
 import { UserRole, OtpPurpose, User } from '@prisma/client';
 import { AuthRepository } from './auth.repository.js';
 import { RegisterDto } from './dto/register.dto.js';
@@ -323,36 +324,57 @@ export class AuthService {
   }
 
   async refresh(dto: RefreshTokenDto): Promise<AuthTokens> {
+    let payload: JwtPayload;
     try {
       const refreshSecret =
         this.configService.get<string>('JWT_REFRESH_SECRET') ??
         'default_refresh_secret_min_32_chars';
-      const payload = this.jwtService.verify<JwtPayload>(dto.refresh_token, {
-        secret: refreshSecret,
-      });
-
-      const user = await this.authRepository.findById(payload.sub);
-      if (!user) {
-        throw new UnauthorizedException('Refresh token tidak valid atau user telah dihapus.');
-      }
-
-      if (!user.is_active) {
-        throw new UnauthorizedException({
-          message: 'Akun belum aktif atau nomor telepon belum diverifikasi.',
-          error: 'PHONE_NOT_VERIFIED',
-          statusCode: 401,
-        });
-      }
-
-      return this.generateTokens(user);
+      payload = this.jwtService.verify<JwtPayload>(dto.refresh_token, { secret: refreshSecret });
     } catch {
-      throw new UnauthorizedException(
-        'Refresh token tidak valid atau sudah kadaluarsa. Silakan login ulang.',
-      );
+      throw new UnauthorizedException({
+        message: 'Refresh token tidak valid atau sudah kadaluarsa. Silakan login ulang.',
+        error: 'REFRESH_TOKEN_INVALID',
+        statusCode: 401,
+      });
     }
+
+    const user = await this.authRepository.findById(payload.sub);
+    if (!user) {
+      throw new UnauthorizedException('Refresh token tidak valid atau user telah dihapus.');
+    }
+
+    if (!user.is_active) {
+      throw new UnauthorizedException({
+        message: 'Akun belum aktif atau nomor telepon belum diverifikasi.',
+        error: 'PHONE_NOT_VERIFIED',
+        statusCode: 401,
+      });
+    }
+
+    // SA-2: Validasi single-use — bandingkan hash stored dengan token yang diterima.
+    if (!user.refresh_token_hash) {
+      throw new UnauthorizedException({
+        message: 'Session tidak ditemukan. Silakan login ulang.',
+        error: 'REFRESH_TOKEN_INVALID',
+        statusCode: 401,
+      });
+    }
+    const isTokenValid = await bcrypt.compare(dto.refresh_token, user.refresh_token_hash);
+    if (!isTokenValid) {
+      // Token sudah dipakai atau bukan token yang dikeluarkan untuk session ini
+      throw new UnauthorizedException({
+        message:
+          'Refresh token sudah tidak valid (sudah dipakai atau diganti). Silakan login ulang.',
+        error: 'REFRESH_TOKEN_INVALID',
+        statusCode: 401,
+      });
+    }
+
+    // SA-2: Rotate — generate token baru + invalidate lama (simpan hash baru)
+    return this.generateTokens(user);
   }
 
-  private generateTokens(user: {
+  private async generateTokens(user: {
     id: string;
     full_name: string;
     email: string | null;
@@ -361,7 +383,10 @@ export class AuthService {
     agency_id: string | null;
     contribution_points: number;
     avatar_url: string | null;
-  }): AuthTokens {
+  }): Promise<AuthTokens> {
+    // SA-2: jti (JWT ID) unik setiap generate — memastikan refresh token TIDAK deterministik
+    const jti = randomUUID();
+
     const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
@@ -382,10 +407,18 @@ export class AuthService {
       expiresIn: jwtExpiresIn as `${number}${'s' | 'm' | 'h' | 'd'}`,
     });
 
-    const refreshToken = this.jwtService.sign(payload, {
-      secret: refreshSecret,
-      expiresIn: refreshExpiresIn as `${number}${'s' | 'm' | 'h' | 'd'}`,
-    });
+    // SA-2: Sertakan jti unik di refresh token payload → setiap call generate token baru yang berbeda
+    const refreshToken = this.jwtService.sign(
+      { ...payload, jti },
+      {
+        secret: refreshSecret,
+        expiresIn: refreshExpiresIn as `${number}${'s' | 'm' | 'h' | 'd'}`,
+      },
+    );
+
+    // SA-2: Hash refresh token dan simpan ke DB untuk validasi single-use berikutnya
+    const tokenHash = await bcrypt.hash(refreshToken, 10);
+    await this.authRepository.updateRefreshTokenHash(user.id, tokenHash);
 
     return {
       access_token: accessToken,

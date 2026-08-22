@@ -28,7 +28,7 @@ import { ValidateReportDto } from './dto/validate-report.dto.js';
 import { UploadMediaDto } from './dto/upload-media.dto.js';
 import { QueryReportsDto } from './dto/query-reports.dto.js';
 import { isWithinMalangBounds, calculateHaversineDistanceMeters } from './utils/geo.util.js';
-import { maskProfanity } from './utils/profanity-filter.util.js';
+import { containsProfanity, maskProfanity } from './utils/profanity-filter.util.js';
 import { generateReportCode } from './utils/report-code.util.js';
 import { validateMediaUrlFormat } from './utils/file-upload.util.js';
 import { PaginatedResult } from '../../common/interceptors/response.interceptor.js';
@@ -60,8 +60,10 @@ export class ReportsService {
       }
     }
 
-    // 2. Validasi format & tipe file URL foto (Architecture.md §7)
-    validateMediaUrlFormat(dto.photo_url);
+    // 2. Validasi format & tipe file URL foto jika berupa string URL (Architecture.md §7)
+    if (dto.photo_url) {
+      validateMediaUrlFormat(dto.photo_url);
+    }
 
     // 3. Validasi Geografis Kota Malang (Bounding Box) — Rules.md §2.1
     const latMin = Number(this.configService.get<number>('MALANG_LAT_MIN') ?? -8.25);
@@ -106,7 +108,7 @@ export class ReportsService {
       longitude: dto.longitude,
       address_text: dto.address_text,
       idempotency_key: dto.idempotency_key,
-      photo_url: dto.photo_url,
+      photo_url: dto.photo_url ?? '',
     });
 
     this.logger.log(`Laporan baru berhasil disubmit: ${report.report_code} (${report.id})`);
@@ -363,18 +365,32 @@ export class ReportsService {
     reportId: string,
     userId: string,
     dto: CreateCommentDto,
-  ): Promise<{ id: string; content: string; created_at: Date }> {
+  ): Promise<{ id: string; content: string; is_flagged: boolean; created_at: Date }> {
     const report = await this.reportsRepository.findById(reportId);
     if (!report) {
       throw new NotFoundException(`Laporan dengan ID '${reportId}' tidak ditemukan.`);
     }
 
-    const cleanContent = maskProfanity(dto.content);
-    const comment = await this.reportsRepository.addComment(reportId, userId, cleanContent);
+    // SA-1: Simpan teks komentar APA ADANYA (tanpa masking).
+    // Jika mengandung kata kasar, set is_flagged=true untuk antrian moderator.
+    const isFlagged = containsProfanity(dto.content);
+    const comment = await this.reportsRepository.addComment(
+      reportId,
+      userId,
+      dto.content,
+      isFlagged,
+    );
+
+    if (isFlagged) {
+      this.logger.warn(
+        `Komentar pada laporan ${reportId} di-flag (mengandung kata kasar). Teks asli disimpan untuk moderator review.`,
+      );
+    }
 
     return {
       id: comment.id,
       content: comment.content,
+      is_flagged: Boolean(comment.is_flagged),
       created_at: comment.created_at,
     };
   }
@@ -393,6 +409,39 @@ export class ReportsService {
   > {
     const { comments, total, nextCursor } = await this.reportsRepository.getComments(
       reportId,
+      limit,
+      cursor,
+    );
+
+    return {
+      data: comments,
+      meta: {
+        total,
+        limit,
+        nextCursor,
+        hasPrevious: !!cursor,
+      },
+    };
+  }
+
+  /**
+   * SA-1: Ambil semua komentar yang di-flag untuk moderator/admin review.
+   * Hanya bisa diakses role operator/admin (di-guard di controller).
+   */
+  async getFlaggedComments(
+    limit = 20,
+    cursor?: string,
+  ): Promise<
+    PaginatedResult<{
+      id: string;
+      content: string;
+      is_flagged: boolean;
+      created_at: Date;
+      user: { id: string; full_name: string; avatar_url: string | null; role: string };
+      report: { id: string; report_code: string };
+    }>
+  > {
+    const { comments, total, nextCursor } = await this.reportsRepository.getFlaggedComments(
       limit,
       cursor,
     );
@@ -479,7 +528,9 @@ export class ReportsService {
     uploader: AuthenticatedUser,
     dto: UploadMediaDto,
   ): Promise<{ id: string; url: string; type: MediaType }> {
-    validateMediaUrlFormat(dto.url);
+    if (dto.url) {
+      validateMediaUrlFormat(dto.url);
+    }
     const report = await this.reportsRepository.findById(reportId);
     if (!report) {
       throw new NotFoundException(`Laporan dengan ID '${reportId}' tidak ditemukan.`);
@@ -514,7 +565,12 @@ export class ReportsService {
       }
     }
 
-    const media = await this.reportsRepository.addMedia(reportId, uploader.id, dto.type, dto.url);
+    const media = await this.reportsRepository.addMedia(
+      reportId,
+      uploader.id,
+      dto.type,
+      dto.url ?? '',
+    );
     return {
       id: media.id,
       url: media.url,

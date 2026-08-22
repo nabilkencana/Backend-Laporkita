@@ -118,6 +118,9 @@ model User {
   is_active             Boolean  @default(false)
   /// Waktu verifikasi nomor telepon berhasil
   phone_verified_at     DateTime?
+  /// SA-2: Hash bcrypt dari refresh token aktif saat ini (single-use rotation).
+  /// null = tidak ada session aktif / sudah logout
+  refresh_token_hash    String?  @db.Text
   created_at            DateTime @default(now())
   updated_at            DateTime @updatedAt
 
@@ -207,6 +210,11 @@ model Report {
   created_at              DateTime     @default(now())
   updated_at              DateTime     @updatedAt
 
+  /// F5-1: Flag eksplisit dari AI worker per Rules.md §1.2 —
+  /// true jika: confidence < 0.6 ATAU isValidGps=false ATAU isValidTimestamp=false.
+  /// Operator filter via GET /reports?needsManualReview=true
+  needs_manual_review     Boolean      @default(false)
+
   // Relations
   reporter         User                    @relation("ReporterReports", fields: [reporter_id], references: [id])
   category         Category                @relation(fields: [category_id], references: [id])
@@ -225,6 +233,7 @@ model Report {
   // (src/prisma/migrations/*) karena Prisma tidak mendukung native GIST spatial index syntax.
   @@index([status])
   @@index([category_id])
+  @@index([needs_manual_review])
   @@map("reports")
 }
 
@@ -285,14 +294,18 @@ model ReportComment {
   id         String   @id @default(uuid()) @db.Uuid
   report_id  String   @db.Uuid
   user_id    String   @db.Uuid
-  /// Max 300 karakter, wajib filter profanity di service layer (Rules.md §2.3)
+  /// SA-1: Teks komentar disimpan APA ADANYA (tanpa masking) per keputusan project owner.
+  /// Max 300 karakter (Rules.md §2.3)
   content    String   @db.Text
+  /// SA-1: true jika komentar mengandung kata kasar → ditampilkan ke moderator
+  is_flagged Boolean  @default(false)
   created_at DateTime @default(now())
 
   // Relations
   report Report @relation(fields: [report_id], references: [id], onDelete: Cascade)
   user   User   @relation(fields: [user_id], references: [id])
 
+  @@index([is_flagged])
   @@map("report_comments")
 }
 

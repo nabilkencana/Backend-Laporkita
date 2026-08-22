@@ -5,6 +5,7 @@ import { ReportsController } from './reports.controller.js';
 import { ReportsService } from './reports.service.js';
 import { ReportsRepository } from './reports.repository.js';
 import { SmartPriorityModule } from '../smart-priority/smart-priority.module.js';
+import { StorageModule } from '../storage/storage.module.js';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { SmartPriorityModule } from '../smart-priority/smart-priority.module.js'
       name: 'verify-report',
     }),
     SmartPriorityModule,
+    StorageModule,
   ],
   controllers: [ReportsController],
   providers: [ReportsService, ReportsRepository],

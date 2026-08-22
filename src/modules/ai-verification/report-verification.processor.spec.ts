@@ -167,11 +167,17 @@ describe('ReportVerificationProcessor (Rules.md §1.2 Threshold & Worker Logic)'
         isMock: true,
       });
       const transitionSpy = jest.spyOn(reportsService, 'transitionReportStatus');
+      const updateSpy = jest.spyOn(prisma.report, 'update');
 
       const result = await processor.process(mockJob);
 
       expect(result.status).toBe('MANUAL_REVIEW_REQUIRED');
       expect(transitionSpy).not.toHaveBeenCalled();
+      // F5-1: Flag needs_manual_review HARUS true meskipun confidence = 0.95
+      expect(updateSpy).toHaveBeenCalledWith({
+        where: { id: mockReport.id },
+        data: { needs_manual_review: true },
+      });
     });
 
     it('should enter manual review when isValidTimestamp is false even if confidence >= 0.6', async () => {
@@ -184,11 +190,17 @@ describe('ReportVerificationProcessor (Rules.md §1.2 Threshold & Worker Logic)'
         isMock: true,
       });
       const transitionSpy = jest.spyOn(reportsService, 'transitionReportStatus');
+      const updateSpy = jest.spyOn(prisma.report, 'update');
 
       const result = await processor.process(mockJob);
 
       expect(result.status).toBe('MANUAL_REVIEW_REQUIRED');
       expect(transitionSpy).not.toHaveBeenCalled();
+      // F5-1: Flag needs_manual_review HARUS true meskipun confidence = 0.90
+      expect(updateSpy).toHaveBeenCalledWith({
+        where: { id: mockReport.id },
+        data: { needs_manual_review: true },
+      });
     });
 
     it('should enter manual review when both GPS and timestamp are false', async () => {

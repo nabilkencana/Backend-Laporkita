@@ -18,7 +18,9 @@ describe('LaporKita Digital Accountability Loop (e2e)', () => {
 
   const timestamp = Date.now();
   const citizenEmail = `citizen_${timestamp}@test.com`;
+  const citizenPhone = `+62812${String(timestamp).slice(-8)}`;
   const operatorEmail = `operator_${timestamp}@test.com`;
+  const operatorPhone = `+62813${String(timestamp).slice(-8)}`;
   const password = 'Password123!';
 
   beforeAll(async () => {
@@ -112,7 +114,7 @@ describe('LaporKita Digital Accountability Loop (e2e)', () => {
         email: citizenEmail,
         password: password,
         full_name: 'Warga Kota Malang',
-        phone_number: '+6281234567890',
+        phone_number: citizenPhone,
       })
       .expect(202);
 
@@ -144,7 +146,7 @@ describe('LaporKita Digital Accountability Loop (e2e)', () => {
         email: operatorEmail,
         password: password,
         full_name: 'Petugas DPUPR',
-        phone_number: '+6281234567899',
+        phone_number: operatorPhone,
       })
       .expect(202);
 

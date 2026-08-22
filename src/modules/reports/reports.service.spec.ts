@@ -38,6 +38,7 @@ describe('ReportsService (Critical Business Logic)', () => {
     ai_confidence_score: 0.85,
     damage_severity: 0.7,
     urgency_score: 2.5,
+    needs_manual_review: false,
     support_count: 5,
     view_count: 20,
     estimated_completion_at: null,
@@ -66,6 +67,7 @@ describe('ReportsService (Critical Business Logic)', () => {
       removeSupportInTransaction: jest.fn(),
       addComment: jest.fn(),
       getComments: jest.fn(),
+      getFlaggedComments: jest.fn(),
       addMedia: jest.fn(),
       countMediaByType: jest.fn(),
       addCitizenValidationInTransaction: jest.fn(),
@@ -586,6 +588,86 @@ describe('ReportsService (Critical Business Logic)', () => {
 
       expect(res.id).toBe('media-3');
       expect(res.type).toBe(MediaType.completion_photo);
+    });
+  });
+
+  // ── 7. Comments & Profanity Flagging (SA-1) ──────────────────────────────────
+
+  describe('addComment & getFlaggedComments (SA-1 Policy)', () => {
+    it('should save profanity comment AS-IS (unmasked) and set is_flagged=true', async () => {
+      jest.spyOn(repository, 'findById').mockResolvedValue(mockReport);
+      const addCommentSpy = jest.spyOn(repository, 'addComment').mockResolvedValue({
+        id: 'comment-1',
+        report_id: reportId,
+        user_id: reporterId,
+        content: 'Laporan anjing bajingan ini lama banget',
+        is_flagged: true,
+        created_at: new Date(),
+      });
+
+      const rawProfaneText = 'Laporan anjing bajingan ini lama banget';
+      const result = await service.addComment(reportId, reporterId, {
+        content: rawProfaneText,
+      });
+
+      expect(result.content).toBe(rawProfaneText); // TERSIMPAN UTUH (bukan tersensor ****)
+      expect(result.is_flagged).toBe(true);
+      expect(addCommentSpy).toHaveBeenCalledWith(
+        reportId,
+        reporterId,
+        rawProfaneText,
+        true, // isFlagged
+      );
+    });
+
+    it('should save clean comment with is_flagged=false', async () => {
+      jest.spyOn(repository, 'findById').mockResolvedValue(mockReport);
+      const addCommentSpy = jest.spyOn(repository, 'addComment').mockResolvedValue({
+        id: 'comment-2',
+        report_id: reportId,
+        user_id: reporterId,
+        content: 'Semoga segera diperbaiki ya pak',
+        is_flagged: false,
+        created_at: new Date(),
+      });
+
+      const cleanText = 'Semoga segera diperbaiki ya pak';
+      const result = await service.addComment(reportId, reporterId, {
+        content: cleanText,
+      });
+
+      expect(result.content).toBe(cleanText);
+      expect(result.is_flagged).toBe(false);
+      expect(addCommentSpy).toHaveBeenCalledWith(
+        reportId,
+        reporterId,
+        cleanText,
+        false, // isFlagged
+      );
+    });
+
+    it('should return flagged comments list for moderator review', async () => {
+      jest.spyOn(repository, 'getFlaggedComments').mockResolvedValue({
+        comments: [
+          {
+            id: 'comment-1',
+            report_id: reportId,
+            user_id: reporterId,
+            content: 'Komentar kasar',
+            is_flagged: true,
+            created_at: new Date(),
+            user: { id: reporterId, full_name: 'Warga Satu', avatar_url: null, role: 'citizen' },
+            report: { id: reportId, report_code: '#LP-2026-000001' },
+          },
+        ],
+        total: 1,
+        nextCursor: null,
+      });
+
+      const res = await service.getFlaggedComments(20);
+      expect(res.data).toHaveLength(1);
+      expect(res.data[0].is_flagged).toBe(true);
+      expect(res.meta.total).toBe(1);
     });
   });
 });

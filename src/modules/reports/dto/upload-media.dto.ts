@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsEnum, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsEnum, IsOptional, IsString } from 'class-validator';
 import { MediaType } from '@prisma/client';
 
 export class UploadMediaDto {
@@ -8,7 +8,7 @@ export class UploadMediaDto {
   })
   type!: MediaType;
 
-  @IsNotEmpty({ message: 'URL foto wajib diisi.' })
-  @IsUrl({}, { message: 'URL foto harus berupa URL valid.' })
-  url!: string;
+  @IsOptional()
+  @IsString({ message: 'URL foto harus berupa string valid.' })
+  url?: string;
 }

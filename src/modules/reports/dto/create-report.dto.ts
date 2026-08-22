@@ -7,7 +7,6 @@ import {
   MaxLength,
   Min,
   Max,
-  IsUrl,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -18,11 +17,11 @@ export class CreateReportDto {
 
   /**
    * Foto wajib JPEG/PNG max 8MB min 480p (Rules.md §2.1).
-   * URL hasil upload dari device/storage client.
+   * URL hasil upload dari storage (atau diisi otomatis oleh controller via multipart upload file 'photo').
    */
-  @IsNotEmpty({ message: 'Foto laporan wajib dilampirkan.' })
-  @IsUrl({}, { message: 'URL foto harus berupa URL valid.' })
-  photo_url!: string;
+  @IsOptional()
+  @IsString({ message: 'URL foto harus berupa string valid.' })
+  photo_url?: string;
 
   @IsNotEmpty({ message: 'Koordinat latitude wajib dikirim.' })
   @Type(() => Number)

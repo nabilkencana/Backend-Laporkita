@@ -139,4 +139,26 @@ export class AuthRepository {
       });
     });
   }
+
+  /**
+   * SA-2: Simpan hash refresh token aktif untuk validasi single-use rotation.
+   * Dipanggil setiap kali generateTokens() dieksekusi (login/verifyOtp/refresh).
+   * Hash lama otomatis tertimpa (= token lama invalid).
+   */
+  async updateRefreshTokenHash(userId: string, tokenHash: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { refresh_token_hash: tokenHash },
+    });
+  }
+
+  /**
+   * SA-2: Hapus hash refresh token (saat logout atau security event).
+   */
+  async clearRefreshTokenHash(userId: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { refresh_token_hash: null },
+    });
+  }
 }

@@ -36,6 +36,7 @@ describe('NotificationsService & RouteAlert', () => {
     type: NotificationType.route_alert,
     title: 'Peringatan Rute',
     body: 'Kerusakan jalan di depan Anda',
+    reference_report_id: null,
     is_read: false,
     created_at: new Date(),
   };

@@ -187,8 +187,9 @@ export class ReportsRepository {
     const where: Prisma.ReportWhereInput = {};
 
     if (query.needs_manual_review || query.needsManualReview) {
-      where.status = ReportStatus.pending_verification;
-      where.OR = [{ ai_confidence_score: { lt: 0.6 } }, { ai_confidence_score: null }];
+      // F5-1: Filter berdasarkan flag eksplisit di DB (bukan derivasi confidence).
+      // Mencakup: confidence rendah, GPS invalid, timestamp invalid — sesuai Rules.md §1.2.
+      where.needs_manual_review = true;
     } else if (query.status) {
       where.status = query.status;
     }
@@ -355,12 +356,18 @@ export class ReportsRepository {
 
   // ── Comments ───────────────────────────────────────────────────────────────
 
-  async addComment(reportId: string, userId: string, content: string): Promise<ReportComment> {
+  async addComment(
+    reportId: string,
+    userId: string,
+    content: string,
+    isFlagged: boolean = false,
+  ): Promise<ReportComment> {
     return this.prisma.reportComment.create({
       data: {
         report_id: reportId,
         user_id: userId,
-        content,
+        content, // SA-1: Disimpan apa adanya, TANPA masking
+        is_flagged: isFlagged,
       },
       include: {
         user: {
@@ -398,6 +405,46 @@ export class ReportsRepository {
         user: {
           select: { id: true, full_name: true, avatar_url: true, role: true },
         },
+      },
+    });
+
+    let nextCursor: string | null = null;
+    if (comments.length > limit) {
+      const nextItem = comments.pop();
+      nextCursor = nextItem ? nextItem.id : null;
+    }
+
+    return { comments, total, nextCursor };
+  }
+
+  // ── Flagged Comments (Moderator) ──────────────────────────────────────────
+
+  /**
+   * SA-1: Ambil semua komentar yang di-flag untuk moderator review.
+   * Operator/admin gunakan GET /reports/comments/flagged?limit=20&cursor=xxx
+   */
+  async getFlaggedComments(
+    limit: number = 20,
+    cursor?: string,
+  ): Promise<{
+    comments: (ReportComment & {
+      user: { id: string; full_name: string; avatar_url: string | null; role: string };
+      report: { id: string; report_code: string };
+    })[];
+    total: number;
+    nextCursor: string | null;
+  }> {
+    const where = { is_flagged: true };
+    const total = await this.prisma.reportComment.count({ where });
+
+    const comments = await this.prisma.reportComment.findMany({
+      where,
+      take: limit + 1,
+      ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
+      orderBy: { created_at: 'desc' },
+      include: {
+        user: { select: { id: true, full_name: true, avatar_url: true, role: true } },
+        report: { select: { id: true, report_code: true } },
       },
     });
 
