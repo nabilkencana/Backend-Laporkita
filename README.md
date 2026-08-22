@@ -158,9 +158,18 @@ Semua response API dibungkus dalam **Response Envelope Standar**:
 ### 1. Autentikasi (`/api/v1/auth`)
 | Method | Endpoint | Role Access | Keterangan |
 |---|---|---|---|
-| `POST` | `/api/v1/auth/register` | Publik | Registrasi akun warga umum (`citizen`) |
-| `POST` | `/api/v1/auth/login` | Publik | Login email / nomor telepon + password |
+| `POST` | `/api/v1/auth/register` | Publik | Registrasi akun warga (202 Accepted, kirim OTP 4-digit via SMS) |
+| `POST` | `/api/v1/auth/verify-otp` | Publik | Verifikasi OTP 4-digit & aktivasi akun (`is_active=true`) |
+| `POST` | `/api/v1/auth/resend-otp` | Publik | Kirim ulang OTP (Cooldown 45 detik sesuai mockup Figma) |
+| `POST` | `/api/v1/auth/login` | Publik | Login email / no. HP + password (Wajib terverifikasi OTP) |
 | `POST` | `/api/v1/auth/refresh` | Publik | Rotasi access token via refresh token |
+
+> 📱 **Catatan Provider SMS Gateway & Verifikasi OTP**:
+> - Pengiriman SMS di dunia nyata **selalu berbayar** (biaya pulsa/jaringan telco).
+> - Backend LaporKita menyediakan provider modular via `SMS_PROVIDER`:
+>   - `mock` (Default Dev & Testing): Mencetak OTP ke console/log server `[MOCK SMS] to +62xxx: your OTP is 1234` tanpa biaya.
+>   - `zenziva`, `fonnte`, `twilio`: Integrasi gateway SMS/WhatsApp production (memerlukan `SMS_PROVIDER_API_KEY` & `SMS_PROVIDER_BASE_URL`).
+> - *Nomor tim untuk uji manual di device / Postman*: `+62 856-4889-8807`.
 
 ### 2. Pengguna & Gamifikasi (`/api/v1/users`)
 | Method | Endpoint | Role Access | Keterangan |

@@ -122,22 +122,52 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }
 
       // HttpException generik — map ke error code yang readable
-      const code = this.httpStatusToCode(status);
-      const message =
+      const responseObj =
+        typeof exceptionResponse === 'object' && exceptionResponse !== null
+          ? (exceptionResponse as Record<string, unknown>)
+          : null;
+
+      const code =
+        typeof responseObj?.code === 'string'
+          ? responseObj.code
+          : typeof responseObj?.error === 'string' &&
+              ![
+                'Bad Request',
+                'Unauthorized',
+                'Forbidden',
+                'Not Found',
+                'Conflict',
+                'Unprocessable Entity',
+                'Too Many Requests',
+              ].includes(responseObj.error)
+            ? responseObj.error
+            : this.httpStatusToCode(status);
+
+      const message: string =
         typeof exceptionResponse === 'string'
           ? exceptionResponse
-          : typeof exceptionResponse === 'object' &&
-              exceptionResponse !== null &&
-              'message' in exceptionResponse
-            ? String(exceptionResponse.message)
+          : responseObj && 'message' in responseObj
+            ? Array.isArray(responseObj.message)
+              ? String(responseObj.message[0])
+              : String(responseObj.message)
             : exception.message;
+
+      const details: unknown =
+        responseObj?.details ??
+        (responseObj?.remainingSeconds !== undefined
+          ? { remainingSeconds: responseObj.remainingSeconds }
+          : undefined);
 
       return {
         status,
         errorResponse: {
           success: false,
           data: null,
-          error: { code, message },
+          error: {
+            code,
+            message,
+            ...(details !== undefined ? { details } : {}),
+          },
         },
       };
     }

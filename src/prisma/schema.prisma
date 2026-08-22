@@ -86,6 +86,13 @@ enum ContributionReason {
   support_given
 }
 
+/// Tujuan pengiriman kode OTP (Figma Phone Verification)
+enum OtpPurpose {
+  register
+  login
+  reset_password
+}
+
 // ═══════════════════════════════════════════════════════════
 // MODELS
 // ═══════════════════════════════════════════════════════════
@@ -107,6 +114,10 @@ model User {
   /// Flag review admin jika user terindikasi spam (>3x reject dlm 30 hari - Rules.md §1.6)
   is_flagged_for_review Boolean  @default(false)
   avatar_url            String?  @db.VarChar(500)
+  /// Status aktif akun setelah verifikasi OTP nomor telepon
+  is_active             Boolean  @default(false)
+  /// Waktu verifikasi nomor telepon berhasil
+  phone_verified_at     DateTime?
   created_at            DateTime @default(now())
   updated_at            DateTime @updatedAt
 
@@ -123,6 +134,7 @@ model User {
   notifications      Notification[]
   policy_simulations PolicySimulation[]
   route_alert_sub    RouteAlertSubscription?
+  otp_verifications  OtpVerification[]
 
   @@map("users")
 }
@@ -420,3 +432,25 @@ model SystemConfig {
 
   @@map("system_configs")
 }
+
+/// Log dan verifikasi kode OTP nomor telepon (Figma Auth Flow)
+model OtpVerification {
+  id             String     @id @default(uuid()) @db.Uuid
+  user_id        String     @db.Uuid
+  phone_number   String     @db.VarChar(20)
+  otp_code_hash  String     @db.VarChar(255)
+  purpose        OtpPurpose @default(register)
+  expires_at     DateTime
+  attempt_count  Int        @default(0)
+  is_used        Boolean    @default(false)
+  last_sent_at   DateTime   @default(now())
+  created_at     DateTime   @default(now())
+
+  // Relations
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([phone_number, purpose, is_used])
+  @@index([user_id])
+  @@map("otp_verifications")
+}
+

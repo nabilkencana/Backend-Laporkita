@@ -83,6 +83,7 @@ describe('LaporKita Digital Accountability Loop (e2e)', () => {
         where: { email: { in: [citizenEmail, operatorEmail] } },
       });
       for (const u of testUsers) {
+        await prisma.otpVerification.deleteMany({ where: { user_id: u.id } });
         await prisma.contributionPointsLog.deleteMany({ where: { user_id: u.id } });
         await prisma.user.delete({ where: { id: u.id } });
       }
@@ -104,40 +105,60 @@ describe('LaporKita Digital Accountability Loop (e2e)', () => {
 
   // ── Step 1: Register Citizen & Operator ────────────────────────────────────
   it('1. Register Citizen & Operator — POST /api/v1/auth/register', async () => {
-    // Register Citizen (default role: citizen)
+    // 1. Register Citizen (Returns 202 Accepted with OTP sent)
     const citizenRes = await request(app.getHttpServer())
       .post('/api/v1/auth/register')
       .send({
         email: citizenEmail,
         password: password,
         full_name: 'Warga Kota Malang',
+        phone_number: '+6281234567890',
       })
-      .expect(201);
+      .expect(202);
 
     expect(citizenRes.body.success).toBe(true);
-    expect(citizenRes.body.data.access_token).toBeDefined();
-    expect(citizenRes.body.data.user.role).toBe(UserRole.citizen);
-    citizenToken = citizenRes.body.data.access_token;
+    expect(citizenRes.body.data.user_id).toBeDefined();
 
-    // Register Operator
+    // Verifikasi aktivasi user via database & login citizen
+    await prisma.user.update({
+      where: { email: citizenEmail },
+      data: { is_active: true, phone_verified_at: new Date() },
+    });
+
+    const citizenLoginRes = await request(app.getHttpServer())
+      .post('/api/v1/auth/login')
+      .send({
+        identifier: citizenEmail,
+        password: password,
+      })
+      .expect(200);
+
+    expect(citizenLoginRes.body.data.access_token).toBeDefined();
+    expect(citizenLoginRes.body.data.user.role).toBe(UserRole.citizen);
+    citizenToken = citizenLoginRes.body.data.access_token;
+
+    // 2. Register Operator
     const operatorRes = await request(app.getHttpServer())
       .post('/api/v1/auth/register')
       .send({
         email: operatorEmail,
         password: password,
         full_name: 'Petugas DPUPR',
+        phone_number: '+6281234567899',
       })
-      .expect(201);
+      .expect(202);
 
     expect(operatorRes.body.success).toBe(true);
-    expect(operatorRes.body.data.access_token).toBeDefined();
+    expect(operatorRes.body.data.user_id).toBeDefined();
 
-    // Set role operator di database & re-login untuk mendapatkan JWT dengan claim operator
+    // Set role operator di database, aktivasi akun, & login operator
     const categoryRecord = await prisma.category.findUnique({ where: { id: categoryId } });
     await prisma.user.update({
       where: { email: operatorEmail },
       data: {
         role: UserRole.operator,
+        is_active: true,
+        phone_verified_at: new Date(),
         agency_id: categoryRecord?.default_agency_id ?? null,
       },
     });

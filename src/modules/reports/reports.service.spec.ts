@@ -36,6 +36,7 @@ describe('ReportsService (Critical Business Logic)', () => {
     address_text: 'Jl. Ijen No. 1 Kota Malang',
     status: ReportStatus.pending_verification,
     ai_confidence_score: 0.85,
+    damage_severity: 0.7,
     urgency_score: 2.5,
     support_count: 5,
     view_count: 20,
@@ -521,7 +522,7 @@ describe('ReportsService (Critical Business Logic)', () => {
       jest.spyOn(repository, 'addMedia').mockResolvedValue({
         id: 'media-1',
         report_id: reportId,
-        uploader_id: reporterId,
+        uploaded_by: reporterId,
         type: MediaType.progress_photo,
         url: 'https://storage.laporkita.id/reports/progress.jpg',
         created_at: new Date(),
@@ -541,7 +542,7 @@ describe('ReportsService (Critical Business Logic)', () => {
       jest.spyOn(repository, 'addMedia').mockResolvedValue({
         id: 'media-2',
         report_id: reportId,
-        uploader_id: mockOperatorMatchingAgency.id,
+        uploaded_by: mockOperatorMatchingAgency.id,
         type: MediaType.completion_photo,
         url: 'https://storage.laporkita.id/reports/completion.jpg',
         created_at: new Date(),
@@ -572,7 +573,7 @@ describe('ReportsService (Critical Business Logic)', () => {
       jest.spyOn(repository, 'addMedia').mockResolvedValue({
         id: 'media-3',
         report_id: reportId,
-        uploader_id: mockAdmin.id,
+        uploaded_by: mockAdmin.id,
         type: MediaType.completion_photo,
         url: 'https://storage.laporkita.id/reports/completion-admin.jpg',
         created_at: new Date(),

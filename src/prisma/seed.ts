@@ -142,6 +142,8 @@ async function main(): Promise<void> {
       full_name: adminName,
       password_hash: passwordHash,
       role: UserRole.admin,
+      is_active: true,
+      phone_verified_at: new Date(),
     },
     create: {
       id: '00000000-0000-4000-8000-000000000001',
@@ -151,6 +153,8 @@ async function main(): Promise<void> {
       password_hash: passwordHash,
       role: UserRole.admin,
       contribution_points: 0,
+      is_active: true,
+      phone_verified_at: new Date(),
     },
   });
 

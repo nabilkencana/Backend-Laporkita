@@ -4,13 +4,15 @@ import { AuthRepository } from './auth.repository.js';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { BadRequestException, ConflictException, UnauthorizedException } from '@nestjs/common';
-import { UserRole } from '@prisma/client';
+import { UserRole, OtpPurpose } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { OTP_SMS_SERVICE, OTPSmsService } from './sms/otp-sms.interface.js';
 
-describe('AuthService', () => {
+describe('AuthService (with Phone OTP Verification)', () => {
   let service: AuthService;
   let repository: AuthRepository;
   let jwtService: JwtService;
+  let otpSmsService: OTPSmsService;
 
   const mockUser = {
     id: '11111111-1111-1111-1111-111111111111',
@@ -22,12 +24,37 @@ describe('AuthService', () => {
     agency_id: null,
     contribution_points: 0,
     avatar_url: null,
+    is_flagged_for_review: false,
+    is_active: true,
+    phone_verified_at: new Date(),
     created_at: new Date(),
     updated_at: new Date(),
   };
 
+  const mockInactiveUser = {
+    ...mockUser,
+    id: '22222222-2222-2222-2222-222222222222',
+    is_active: false,
+    phone_verified_at: null,
+  };
+
+  const mockOtpRecord = {
+    id: 'otp-uuid-1111',
+    user_id: mockInactiveUser.id,
+    phone_number: '+6281234567890',
+    otp_code_hash: '',
+    purpose: OtpPurpose.register,
+    expires_at: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes in future
+    attempt_count: 0,
+    is_used: false,
+    last_sent_at: new Date(Date.now() - 50 * 1000), // 50 seconds ago (cooldown passed)
+    created_at: new Date(),
+  };
+
   beforeAll(async () => {
     mockUser.password_hash = await bcrypt.hash('Secret123', 10);
+    mockInactiveUser.password_hash = await bcrypt.hash('Secret123', 10);
+    mockOtpRecord.otp_code_hash = await bcrypt.hash('1234', 10);
   });
 
   beforeEach(async () => {
@@ -36,6 +63,12 @@ describe('AuthService', () => {
       findByPhone: jest.fn(),
       findById: jest.fn(),
       createUser: jest.fn(),
+      createOtpVerification: jest.fn().mockResolvedValue(mockOtpRecord),
+      findLatestActiveOtp: jest.fn(),
+      findLatestOtpAnyState: jest.fn(),
+      incrementOtpAttempt: jest.fn(),
+      invalidatePreviousOtps: jest.fn().mockResolvedValue(undefined),
+      verifyUserAndMarkOtpInTransaction: jest.fn(),
     };
 
     const mockJwtService = {
@@ -49,8 +82,15 @@ describe('AuthService', () => {
         if (key === 'JWT_REFRESH_SECRET') return 'test_refresh_secret_32_characters_long_!';
         if (key === 'JWT_EXPIRES_IN') return '15m';
         if (key === 'JWT_REFRESH_EXPIRES_IN') return '7d';
+        if (key === 'OTP_EXPIRY_MINUTES') return 5;
+        if (key === 'OTP_RESEND_COOLDOWN_SECONDS') return 45;
+        if (key === 'OTP_MAX_ATTEMPTS') return 5;
         return null;
       }),
+    };
+
+    const mockSmsProvider: OTPSmsService = {
+      send: jest.fn().mockResolvedValue(undefined),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -59,15 +99,17 @@ describe('AuthService', () => {
         { provide: AuthRepository, useValue: mockAuthRepository },
         { provide: JwtService, useValue: mockJwtService },
         { provide: ConfigService, useValue: mockConfigService },
+        { provide: OTP_SMS_SERVICE, useValue: mockSmsProvider },
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
     repository = module.get<AuthRepository>(AuthRepository);
     jwtService = module.get<JwtService>(JwtService);
+    otpSmsService = module.get<OTPSmsService>(OTP_SMS_SERVICE);
   });
 
-  describe('register', () => {
+  describe('1. register', () => {
     it('should throw BadRequestException if both email and phone are missing (Rules.md §2.2)', async () => {
       await expect(
         service.register({
@@ -89,13 +131,17 @@ describe('AuthService', () => {
       ).rejects.toThrow(ConflictException);
     });
 
-    it('should force role to citizen upon self-registration (Rules.md §2.2)', async () => {
+    it('should create inactive user and send 4-digit OTP via OTPSmsService without exposing plaintext OTP', async () => {
       jest.spyOn(repository, 'findByEmail').mockResolvedValue(null);
-      const createSpy = jest.spyOn(repository, 'createUser').mockResolvedValue(mockUser);
+      jest.spyOn(repository, 'findByPhone').mockResolvedValue(null);
+      const createSpy = jest.spyOn(repository, 'createUser').mockResolvedValue(mockInactiveUser);
+      const otpSpy = jest.spyOn(repository, 'createOtpVerification');
+      const smsSpy = jest.spyOn(otpSmsService, 'send');
 
       const result = await service.register({
         full_name: 'Budi Santoso',
         email: 'budi.new@example.com',
+        phone_number: '+6281234567890',
         password: 'Password123',
       });
 
@@ -103,25 +149,158 @@ describe('AuthService', () => {
         expect.objectContaining({
           role: UserRole.citizen,
           full_name: 'Budi Santoso',
+          is_active: false,
         }),
       );
 
-      expect(result).toHaveProperty('access_token');
-      expect(result).toHaveProperty('refresh_token');
-      expect(result.user.role).toBe(UserRole.citizen);
+      expect(otpSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          user_id: mockInactiveUser.id,
+          phone_number: '+6281234567890',
+          purpose: OtpPurpose.register,
+        }),
+      );
+
+      expect(smsSpy).toHaveBeenCalledTimes(1);
+      expect(result).toHaveProperty('user_id', mockInactiveUser.id);
+      expect(result).toHaveProperty('message');
+      // Plaintext OTP tidak boleh ada di response object
+      expect(result).not.toHaveProperty('otp');
+      expect(result).not.toHaveProperty('otp_code');
     });
   });
 
-  describe('login', () => {
-    it('should throw UnauthorizedException if user not found', async () => {
-      jest.spyOn(repository, 'findByEmail').mockResolvedValue(null);
+  describe('2. verifyOtp', () => {
+    it('should throw BadRequestException (OTP_ALREADY_USED) if OTP already used', async () => {
+      jest.spyOn(repository, 'findLatestActiveOtp').mockResolvedValue(null);
+      jest.spyOn(repository, 'findLatestOtpAnyState').mockResolvedValue({
+        ...mockOtpRecord,
+        is_used: true,
+      });
 
       await expect(
-        service.login({
-          identifier: 'notfound@example.com',
-          password: 'Password123',
+        service.verifyOtp({
+          phone_number: '+6281234567890',
+          otp_code: '1234',
         }),
-      ).rejects.toThrow(UnauthorizedException);
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException (OTP_EXPIRED) if OTP has expired (5 mins)', async () => {
+      jest.spyOn(repository, 'findLatestActiveOtp').mockResolvedValue({
+        ...mockOtpRecord,
+        expires_at: new Date(Date.now() - 1000), // expired 1s ago
+      });
+
+      await expect(
+        service.verifyOtp({
+          phone_number: '+6281234567890',
+          otp_code: '1234',
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException (OTP_MAX_ATTEMPTS) if attempt count >= 5', async () => {
+      jest.spyOn(repository, 'findLatestActiveOtp').mockResolvedValue({
+        ...mockOtpRecord,
+        attempt_count: 5,
+      });
+
+      await expect(
+        service.verifyOtp({
+          phone_number: '+6281234567890',
+          otp_code: '1234',
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should increment attempt count and throw OTP_INVALID if OTP does not match', async () => {
+      jest.spyOn(repository, 'findLatestActiveOtp').mockResolvedValue(mockOtpRecord);
+      const incSpy = jest.spyOn(repository, 'incrementOtpAttempt');
+
+      await expect(
+        service.verifyOtp({
+          phone_number: '+6281234567890',
+          otp_code: '9999', // wrong OTP
+        }),
+      ).rejects.toThrow(BadRequestException);
+
+      expect(incSpy).toHaveBeenCalledWith(mockOtpRecord.id);
+    });
+
+    it('should activate user (is_active=true) in transaction and return tokens when OTP is valid', async () => {
+      jest.spyOn(repository, 'findLatestActiveOtp').mockResolvedValue(mockOtpRecord);
+      jest.spyOn(repository, 'verifyUserAndMarkOtpInTransaction').mockResolvedValue({
+        ...mockInactiveUser,
+        is_active: true,
+        phone_verified_at: new Date(),
+      });
+
+      const result = await service.verifyOtp({
+        phone_number: '+6281234567890',
+        otp_code: '1234',
+      });
+
+      expect(result).toHaveProperty('access_token');
+      expect(result).toHaveProperty('refresh_token');
+      expect(result.user.id).toBe(mockInactiveUser.id);
+    });
+  });
+
+  describe('3. resendOtp', () => {
+    it('should throw BadRequestException (OTP_RESEND_COOLDOWN) with remainingSeconds if within 45s cooldown', async () => {
+      const recentOtp = {
+        ...mockOtpRecord,
+        last_sent_at: new Date(Date.now() - 15 * 1000), // 15 seconds ago (30s remaining)
+      };
+      jest.spyOn(repository, 'findLatestOtpAnyState').mockResolvedValue(recentOtp);
+
+      try {
+        await service.resendOtp({ phone_number: '+6281234567890' });
+        fail('Should have thrown OTP_RESEND_COOLDOWN');
+      } catch (err) {
+        expect(err).toBeInstanceOf(BadRequestException);
+        const response = (err as BadRequestException).getResponse() as Record<string, unknown>;
+        expect(response.error).toBe('OTP_RESEND_COOLDOWN');
+        expect(response.remainingSeconds).toBeGreaterThanOrEqual(28);
+        expect(response.remainingSeconds).toBeLessThanOrEqual(30);
+      }
+    });
+
+    it('should invalidate old OTP, generate new OTP, and send via SMS when cooldown has passed', async () => {
+      jest.spyOn(repository, 'findLatestOtpAnyState').mockResolvedValue({
+        ...mockOtpRecord,
+        last_sent_at: new Date(Date.now() - 50 * 1000), // 50 seconds ago (> 45s)
+      });
+      jest.spyOn(repository, 'findByPhone').mockResolvedValue(mockInactiveUser);
+      const invalidateSpy = jest.spyOn(repository, 'invalidatePreviousOtps');
+      const createSpy = jest.spyOn(repository, 'createOtpVerification');
+      const smsSpy = jest.spyOn(otpSmsService, 'send');
+
+      const result = await service.resendOtp({ phone_number: '+6281234567890' });
+
+      expect(invalidateSpy).toHaveBeenCalledWith(mockInactiveUser.id, OtpPurpose.register);
+      expect(createSpy).toHaveBeenCalled();
+      expect(smsSpy).toHaveBeenCalledTimes(1);
+      expect(result.cooldown_seconds).toBe(45);
+    });
+  });
+
+  describe('4. login', () => {
+    it('should throw UnauthorizedException (PHONE_NOT_VERIFIED) if user is not active (is_active=false)', async () => {
+      jest.spyOn(repository, 'findByEmail').mockResolvedValue(mockInactiveUser);
+
+      try {
+        await service.login({
+          identifier: 'budi@example.com',
+          password: 'Secret123',
+        });
+        fail('Should have thrown PHONE_NOT_VERIFIED');
+      } catch (err) {
+        expect(err).toBeInstanceOf(UnauthorizedException);
+        const response = (err as UnauthorizedException).getResponse() as Record<string, unknown>;
+        expect(response.error).toBe('PHONE_NOT_VERIFIED');
+      }
     });
 
     it('should throw UnauthorizedException if password does not match', async () => {
@@ -135,7 +314,7 @@ describe('AuthService', () => {
       ).rejects.toThrow(UnauthorizedException);
     });
 
-    it('should return tokens when login credentials are valid', async () => {
+    it('should return tokens when user is active and password matches', async () => {
       jest.spyOn(repository, 'findByEmail').mockResolvedValue(mockUser);
 
       const result = await service.login({
@@ -149,8 +328,8 @@ describe('AuthService', () => {
     });
   });
 
-  describe('refresh', () => {
-    it('should return new tokens when refresh token is valid', async () => {
+  describe('5. refresh', () => {
+    it('should return new tokens when refresh token is valid and user is active', async () => {
       jest.spyOn(jwtService, 'verify').mockReturnValue({
         sub: mockUser.id,
         email: mockUser.email,
