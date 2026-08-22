@@ -13,9 +13,10 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  Headers,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiConsumes } from '@nestjs/swagger';
 import { ReportsService } from './reports.service.js';
 import { ReportDetail } from './reports.repository.js';
 import { CreateReportDto } from './dto/create-report.dto.js';
@@ -48,10 +49,17 @@ export class ReportsController {
 
   /**
    * Submit Laporan — POST /api/v1/reports
-   * Mendukung multipart/form-data (upload file 'photo') atau application/json ('photo_url')
+   * WAJIB multipart/form-data dengan upload file 'photo' (Rules.md §2.1 & Architecture.md §7)
    * Response: 202 Accepted (Rules.md §3 & Architecture.md §3.3)
    * Rate limited: max 10 requests / menit (Architecture.md §7)
    */
+  @ApiConsumes('multipart/form-data')
+  @ApiHeader({
+    name: 'X-Idempotency-Key',
+    description:
+      'Kunci idempotensi untuk mencegah duplikasi submit laporan (diprioritaskan dibanding body idempotency_key)',
+    required: false,
+  })
   @Post()
   @ApiBearerAuth()
   @Throttle({ default: { limit: 10, ttl: 60000 } })
@@ -60,18 +68,15 @@ export class ReportsController {
   async submitReport(
     @Body() dto: CreateReportDto,
     @CurrentUser('id') reporterId: string,
-    @UploadedFile(new FileValidationPipe({ optional: true })) file?: Express.Multer.File,
+    @UploadedFile(new FileValidationPipe({ optional: false })) file: Express.Multer.File,
+    @Headers('x-idempotency-key') headerIdempotencyKey?: string,
   ): Promise<Report> {
-    let photoUrl = dto.photo_url;
-    if (file) {
-      photoUrl = await this.storageService.uploadFile(file, 'reports');
-    }
-    if (!photoUrl) {
-      throw new BadRequestException(
-        'Foto laporan wajib dilampirkan (via upload file field "photo" atau "photo_url").',
-      );
-    }
-    return this.reportsService.submitReport({ ...dto, photo_url: photoUrl }, reporterId);
+    const finalIdempotencyKey = headerIdempotencyKey || dto.idempotency_key;
+    const photoUrl = await this.storageService.uploadFile(file, 'reports');
+    return this.reportsService.submitReport(
+      { ...dto, idempotency_key: finalIdempotencyKey, photo_url: photoUrl },
+      reporterId,
+    );
   }
 
   /**
@@ -210,8 +215,9 @@ export class ReportsController {
 
   /**
    * Upload Media (Progress Photo / Completion Photo) — POST /api/v1/reports/:id/media
-   * Mendukung multipart/form-data (upload file 'photo') atau application/json ('url')
+   * WAJIB multipart/form-data dengan upload file 'photo' (Rules.md §2.1 & Architecture.md §7)
    */
+  @ApiConsumes('multipart/form-data')
   @Post(':id/media')
   @ApiBearerAuth()
   @HttpCode(HttpStatus.CREATED)
@@ -220,17 +226,9 @@ export class ReportsController {
     @Param('id', new UuidValidationPipe()) id: string,
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: UploadMediaDto,
-    @UploadedFile(new FileValidationPipe({ optional: true })) file?: Express.Multer.File,
+    @UploadedFile(new FileValidationPipe({ optional: false })) file: Express.Multer.File,
   ): Promise<{ id: string; url: string; type: MediaType }> {
-    let mediaUrl = dto.url;
-    if (file) {
-      mediaUrl = await this.storageService.uploadFile(file, 'reports');
-    }
-    if (!mediaUrl) {
-      throw new BadRequestException(
-        'Foto media wajib dilampirkan (via upload file field "photo" atau "url").',
-      );
-    }
+    const mediaUrl = await this.storageService.uploadFile(file, 'reports');
     return this.reportsService.uploadMedia(id, user, { ...dto, url: mediaUrl });
   }
 }

@@ -15,14 +15,6 @@ export class CreateReportDto {
   @IsUUID(undefined, { message: 'category_id harus berupa UUID yang valid.' })
   category_id!: string;
 
-  /**
-   * Foto wajib JPEG/PNG max 8MB min 480p (Rules.md §2.1).
-   * URL hasil upload dari storage (atau diisi otomatis oleh controller via multipart upload file 'photo').
-   */
-  @IsOptional()
-  @IsString({ message: 'URL foto harus berupa string valid.' })
-  photo_url?: string;
-
   @IsNotEmpty({ message: 'Koordinat latitude wajib dikirim.' })
   @Type(() => Number)
   @IsNumber({}, { message: 'Latitude harus berupa angka desimal.' })

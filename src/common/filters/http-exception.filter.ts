@@ -143,7 +143,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
             ? responseObj.error
             : this.httpStatusToCode(status);
 
-      const message: string =
+      let message: string =
         typeof exceptionResponse === 'string'
           ? exceptionResponse
           : responseObj && 'message' in responseObj
@@ -151,6 +151,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
               ? String(responseObj.message[0])
               : String(responseObj.message)
             : exception.message;
+
+      // F1-NEW-1: Ganti pesan 429 default/ThrottlerException agar konsisten & ramah pengguna
+      if (
+        status === Number(HttpStatus.TOO_MANY_REQUESTS) ||
+        code === 'TOO_MANY_REQUESTS' ||
+        message.includes('ThrottlerException')
+      ) {
+        message = 'Terlalu banyak permintaan. Coba lagi nanti.';
+      }
 
       const details: unknown =
         responseObj?.details ??

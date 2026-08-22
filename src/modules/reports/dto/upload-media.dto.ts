@@ -7,8 +7,4 @@ export class UploadMediaDto {
     message: 'Tipe media harus salah satu dari: progress_photo, completion_photo.',
   })
   type!: MediaType;
-
-  @IsOptional()
-  @IsString({ message: 'URL foto harus berupa string valid.' })
-  url?: string;
 }

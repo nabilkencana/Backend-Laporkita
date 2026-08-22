@@ -34,6 +34,14 @@ import { validateMediaUrlFormat } from './utils/file-upload.util.js';
 import { PaginatedResult } from '../../common/interceptors/response.interceptor.js';
 import { AuthenticatedUser } from '../../common/decorators/current-user.decorator.js';
 
+export interface SubmitReportParams extends CreateReportDto {
+  photo_url: string;
+}
+
+export interface UploadMediaParams extends UploadMediaDto {
+  url: string;
+}
+
 @Injectable()
 export class ReportsService {
   private readonly logger = new Logger(ReportsService.name);
@@ -46,9 +54,9 @@ export class ReportsService {
     @Optional() @InjectQueue('verify-report') private readonly verifyReportQueue?: Queue,
   ) {}
 
-  // ── 1. Submit Laporan (Rules.md §2.1 & Architecture.md §3.3) ────────────────
+  // ── 1. Create / Submit Laporan (Rules.md §2.1 & §3) ─────────────────────────
 
-  async submitReport(dto: CreateReportDto, reporterId: string): Promise<Report> {
+  async submitReport(dto: SubmitReportParams, reporterId: string): Promise<Report> {
     // 1. Validasi idempotency key
     if (dto.idempotency_key) {
       const existing = await this.reportsRepository.findByIdempotencyKey(dto.idempotency_key);
@@ -526,7 +534,7 @@ export class ReportsService {
   async uploadMedia(
     reportId: string,
     uploader: AuthenticatedUser,
-    dto: UploadMediaDto,
+    dto: UploadMediaParams,
   ): Promise<{ id: string; url: string; type: MediaType }> {
     if (dto.url) {
       validateMediaUrlFormat(dto.url);

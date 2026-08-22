@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
 import request from 'supertest';
+import sharp from 'sharp';
 import { AppModule } from '../src/app.module.js';
 import { HttpExceptionFilter } from '../src/common/filters/http-exception.filter.js';
 import { ResponseInterceptor } from '../src/common/interceptors/response.interceptor.js';
@@ -15,6 +16,7 @@ describe('LaporKita Digital Accountability Loop (e2e)', () => {
   let operatorToken: string;
   let categoryId: string;
   let reportId: string;
+  let validJpegBuffer: Buffer;
 
   const timestamp = Date.now();
   const citizenEmail = `citizen_${timestamp}@test.com`;
@@ -48,6 +50,18 @@ describe('LaporKita Digital Accountability Loop (e2e)', () => {
     app.useGlobalInterceptors(new ResponseInterceptor());
 
     await app.init();
+
+    // Buat dummy JPEG buffer valid (>=480p) untuk pengujian multipart upload
+    validJpegBuffer = await sharp({
+      create: {
+        width: 600,
+        height: 600,
+        channels: 3,
+        background: { r: 100, g: 150, b: 200 },
+      },
+    })
+      .jpeg()
+      .toBuffer();
 
     prisma = app.get<PrismaService>(PrismaService);
 
@@ -217,17 +231,29 @@ describe('LaporKita Digital Accountability Loop (e2e)', () => {
 
   // ── Step 2: Submit Laporan (Citizen) ───────────────────────────────────────
   it('2. Submit Laporan — POST /api/v1/reports', async () => {
-    const res = await request(app.getHttpServer())
+    // 1. Security Check: Percobaan bypass kirim raw JSON photo_url HARUS ditolak 400
+    await request(app.getHttpServer())
       .post('/api/v1/reports')
       .set('Authorization', `Bearer ${citizenToken}`)
       .send({
         category_id: categoryId,
-        description: 'Lubang jalan cukup dalam di sekitar Jl. Ijen',
+        description: 'Bypass test',
         latitude: -7.983908,
         longitude: 112.621391,
-        address_text: 'Jl. Ijen No. 1, Kota Malang',
-        photo_url: 'https://storage.laporkita.id/reports/e2e-initial.jpg',
+        photo_url: 'https://evil.com/fake.jpg',
       })
+      .expect(400);
+
+    // 2. Submit laporan sah via multipart/form-data dengan file photo biner
+    const res = await request(app.getHttpServer())
+      .post('/api/v1/reports')
+      .set('Authorization', `Bearer ${citizenToken}`)
+      .field('category_id', categoryId)
+      .field('description', 'Lubang jalan cukup dalam di sekitar Jl. Ijen')
+      .field('latitude', '-7.983908')
+      .field('longitude', '112.621391')
+      .field('address_text', 'Jl. Ijen No. 1, Kota Malang')
+      .attach('photo', validJpegBuffer, 'laporan.jpg')
       .expect(202);
 
     expect(res.body.success).toBe(true);
@@ -299,14 +325,12 @@ describe('LaporKita Digital Accountability Loop (e2e)', () => {
       })
       .expect(200);
 
-    // 3. Upload Completion Photo
+    // 3. Upload Completion Photo (WAJIB multipart/form-data)
     const uploadRes = await request(app.getHttpServer())
       .post(`/api/v1/reports/${reportId}/media`)
       .set('Authorization', `Bearer ${operatorToken}`)
-      .send({
-        type: MediaType.completion_photo,
-        url: 'https://storage.laporkita.id/reports/e2e-completion.jpg',
-      })
+      .field('type', MediaType.completion_photo)
+      .attach('photo', validJpegBuffer, 'completion.jpg')
       .expect(201);
 
     expect(uploadRes.body.success).toBe(true);

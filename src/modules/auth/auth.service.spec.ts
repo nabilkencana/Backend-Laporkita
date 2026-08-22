@@ -7,6 +7,9 @@ import { BadRequestException, ConflictException, UnauthorizedException } from '@
 import { UserRole, OtpPurpose } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { createHash } from 'crypto';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
+import { RegisterDto } from './dto/register.dto.js';
 import { OTP_SMS_SERVICE, OTPSmsService } from './sms/otp-sms.interface.js';
 
 describe('AuthService (with Phone OTP Verification)', () => {
@@ -117,32 +120,41 @@ describe('AuthService (with Phone OTP Verification)', () => {
 
   describe('1. register', () => {
     // ── F3-1 / QA F3-5 / F3-6 — validasi kedua field wajib ─────────────────
-    it('F3-5: should throw BadRequestException if email is missing (only phone provided)', async () => {
-      // Service-layer tidak akan disentuh karena ValidationPipe di DTO memblokir duluan,
-      // tapi unit test ini memastikan service JUGA menangkap kasus ini jika DTO dibypass.
-      // Dengan RegisterDto yang sudah difix, email tidak boleh undefined.
-      await expect(
-        service.register({
-          full_name: 'No Email User',
-          phone_number: '+6281234567890',
-          password: 'Password123',
-          // email sengaja dihilangkan
-        } as Parameters<typeof service.register>[0]),
-      ).rejects.toThrow(); // ConflictException atau BadRequestException tergantung mock state
+    it('F3-5 (DTO validation): should fail validation if email is missing (only phone provided)', async () => {
+      const dto = plainToInstance(RegisterDto, {
+        full_name: 'No Email User',
+        phone_number: '+6281234567890',
+        password: 'Password123',
+      });
+      const errors = await validate(dto);
+      expect(errors.length).toBeGreaterThan(0);
+      const emailError = errors.find((e) => e.property === 'email');
+      expect(emailError).toBeDefined();
+      expect(emailError?.constraints).toHaveProperty('isNotEmpty');
     });
 
-    it('F3-6: should throw BadRequestException if phone_number is missing (only email provided)', async () => {
-      jest.spyOn(repository, 'findByEmail').mockResolvedValue(null);
-      // phone_number tidak ada → findByPhone tidak dipanggil,
-      // tapi createOtpVerification akan gagal karena phone_number undefined
-      await expect(
-        service.register({
-          full_name: 'No Phone User',
-          email: 'nophone@example.com',
-          password: 'Password123',
-          // phone_number sengaja dihilangkan
-        } as Parameters<typeof service.register>[0]),
-      ).rejects.toThrow();
+    it('F3-6 (DTO validation): should fail validation if phone_number is missing (only email provided)', async () => {
+      const dto = plainToInstance(RegisterDto, {
+        full_name: 'No Phone User',
+        email: 'nophone@example.com',
+        password: 'Password123',
+      });
+      const errors = await validate(dto);
+      expect(errors.length).toBeGreaterThan(0);
+      const phoneError = errors.find((e) => e.property === 'phone_number');
+      expect(phoneError).toBeDefined();
+      expect(phoneError?.constraints).toHaveProperty('isNotEmpty');
+    });
+
+    it('F3-1 (DTO validation): should pass validation when BOTH email and phone_number are valid', async () => {
+      const dto = plainToInstance(RegisterDto, {
+        full_name: 'Budi Lengkap',
+        email: 'budi.lengkap@example.com',
+        phone_number: '+6281234567890',
+        password: 'Password123',
+      });
+      const errors = await validate(dto);
+      expect(errors.length).toBe(0);
     });
 
     it('F3-1: should accept registration when BOTH email AND phone_number are provided', async () => {

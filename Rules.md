@@ -30,6 +30,7 @@ completed
 - Setiap perubahan status **wajib** tercatat di `report_status_history` (siapa, kapan, catatan).
 - Status `rejected` bersifat final — laporan tidak dapat diproses ulang, namun boleh dilaporkan ulang oleh warga sebagai laporan baru.
 - Status `disputed` mengembalikan laporan ke `in_progress` dan menaikkan urgency_score (prioritas ulang).
+- **Catatan implementasi (F4-4):** Transisi `disputed` dicatat di `report_status_history` sebagai status efektif `in_progress` (karena `disputed` → `in_progress` terjadi otomatis dalam satu langkah), disertai note yang menjelaskan alasan dispute. Jejak bahwa laporan sempat di-dispute tetap tersedia lewat tabel `citizen_validations` (`is_valid=false`).
 
 ### 1.2 Aturan Verifikasi AI
 - Laporan baru **selalu** melalui AI Verification server-side, meskipun sudah ada hasil deteksi on-device (on-device hanya hint UX).
@@ -61,6 +62,7 @@ urgency_score = (w1 * damage_severity) + (w2 * support_count_normalized)
 | Laporan ditolak (rejected) | 0 (tidak ada penalti pertama kali) |
 | Laporan ditolak berulang (indikasi spam, >3x dalam 30 hari) | -20 + flag akun untuk review admin |
 | Memberi dukungan | +1 |
+| Membatalkan dukungan (dalam grace period 5 menit) | -1 (menarik kembali poin yang diberikan) |
 | Memberi citizen validation | +5 |
 
 ### 1.7 Routing Laporan ke Instansi
@@ -82,13 +84,14 @@ urgency_score = (w1 * damage_severity) + (w2 * support_count_normalized)
 ### 2.2 User Registration
 | Field | Rule |
 |---|---|
-| email/phone | wajib salah satu, format valid, unique |
+| email | wajib, format valid, unique |
+| phone_number | wajib untuk OTP verification, format internasional valid, unique |
 | password | min 8 karakter, kombinasi huruf & angka (jika pakai password-based auth) |
 | role | default `citizen`; role lain hanya dapat diset oleh admin (tidak self-registration) |
 
 ### 2.3 Comment
 - Max 300 karakter.
-- Filter kata kasar/spam dasar (basic profanity filter) sebelum disimpan.
+- Filter kata kasar/spam dasar (basic profanity filter): komentar disimpan apa adanya (tanpa masking) dan otomatis di-flag (`is_flagged=true`) untuk review moderator (SA-1).
 
 ---
 

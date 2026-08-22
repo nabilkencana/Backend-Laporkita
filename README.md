@@ -15,7 +15,7 @@
   <img src="https://img.shields.io/badge/Redis-v7.0-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis" />
   <img src="https://img.shields.io/badge/BullMQ-v6.2-FF6600?style=for-the-badge&logo=redis&logoColor=white" alt="BullMQ" />
   <img src="https://img.shields.io/badge/Swagger-OpenAPI_3.0-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" alt="Swagger" />
-  <img src="https://img.shields.io/badge/Tests-78%2F78_Passed-success?style=for-the-badge&logo=jest&logoColor=white" alt="Tests" />
+  <img src="https://img.shields.io/badge/Tests-110%2F110_Passed-success?style=for-the-badge&logo=jest&logoColor=white" alt="Tests" />
   <img src="https://img.shields.io/badge/E2E_Tests-8%2F8_Passed-success?style=for-the-badge&logo=jest&logoColor=white" alt="E2E Tests" />
 </p>
 
@@ -300,7 +300,7 @@ Fitur Swagger UI:
 Backend LaporKita dilengkapi dengan test suite lengkap (Unit Tests, Audit Trail Integration Tests, dan End-to-End Supertest Tests):
 
 ```bash
-# 1. Menjalankan seluruh Unit Tests & Integration Tests (13 test suites, 78 tests)
+# 1. Menjalankan seluruh Unit Tests & Integration Tests (14 test suites, 110 tests)
 npm test
 
 # 2. Menjalankan End-to-End Tests (Supertest)
@@ -349,6 +349,15 @@ Modul backend dibangun dengan arsitektur interface adapter yang dapat beralih an
 | `NOMINATIM_USER_AGENT` | Header User-Agent wajib OSM | `LaporKita-CityIntelligence/1.0 (contact@laporkita.id)` |
 | `AI_SERVICE_URL` | URL AI Microservice Python | `http://localhost:8000` |
 | `GEMINI_API_KEY` | API Key Google Gemini Flash | `AIzaSy...` |
+| `SMS_PROVIDER` | Provider SMS Gateway OTP (`mock`, `fonnte`, dll.) | `mock` |
+| `SMS_PROVIDER_API_KEY` | API Key / Token SMS Gateway | `your_sms_api_key` |
+| `SMS_PROVIDER_BASE_URL` | Base URL API SMS Gateway | `https://api.fonnte.com` |
+| `OTP_EXPIRY_MINUTES` | Masa berlaku kode OTP (menit) | `5` |
+| `OTP_RESEND_COOLDOWN_SECONDS` | Cooldown kirim ulang OTP (detik) | `45` |
+| `OTP_MAX_ATTEMPTS` | Maksimal percobaan OTP salah | `5` |
+| `SUPABASE_URL` | Base URL Supabase Project Storage | `https://your-project.supabase.co` |
+| `SUPABASE_KEY` | Supabase Service / Anon API Key | `your_supabase_key` |
+| `SUPABASE_STORAGE_BUCKET` | Nama bucket upload foto | `reports` |
 | `MALANG_LAT_MIN` | Batas Selatan Kota Malang | `-8.2500` |
 | `MALANG_LAT_MAX` | Batas Utara Kota Malang | `-7.8500` |
 | `MALANG_LNG_MIN` | Batas Barat Kota Malang | `112.5000` |

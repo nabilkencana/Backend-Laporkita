@@ -220,6 +220,71 @@ async function main(): Promise<void> {
     '✅ Dynamic System Configs (Smart Priority Weights & AI Thresholds) berhasil di-seed!',
   );
 
+  // ── 5. Seed 5 Zona Wilayah Kota Malang (Urban Emotion Map) ───────────────
+  // Sesuai F7-1 / PRD.md §3 / ERD.md §2.11: 5 Kecamatan di Kota Malang.
+  // Exception 'no raw query' yang sah: tipe PostGIS geometry tidak didukung native oleh Prisma Client.
+  console.log(
+    '🗺️ Seeding 5 zones di Kota Malang (Klojen, Blimbing, Kedungkandang, Sukun, Lowokwaru)...',
+  );
+
+  const zonesData = [
+    {
+      id: 'b1000000-0000-4000-8000-000000000001',
+      name: 'Klojen (Pusat Kota)',
+      polygonWkt:
+        'POLYGON((112.615 -7.990, 112.645 -7.990, 112.645 -7.965, 112.615 -7.965, 112.615 -7.990))',
+      stressLevel: 'low',
+    },
+    {
+      id: 'b2000000-0000-4000-8000-000000000002',
+      name: 'Blimbing (Malang Utara)',
+      polygonWkt:
+        'POLYGON((112.630 -7.965, 112.670 -7.965, 112.670 -7.925, 112.630 -7.925, 112.630 -7.965))',
+      stressLevel: 'low',
+    },
+    {
+      id: 'b3000000-0000-4000-8000-000000000003',
+      name: 'Kedungkandang (Malang Timur)',
+      polygonWkt:
+        'POLYGON((112.635 -8.030, 112.680 -8.030, 112.680 -7.975, 112.635 -7.975, 112.635 -8.030))',
+      stressLevel: 'low',
+    },
+    {
+      id: 'b4000000-0000-4000-8000-000000000004',
+      name: 'Sukun (Malang Selatan)',
+      polygonWkt:
+        'POLYGON((112.590 -8.030, 112.635 -8.030, 112.635 -7.975, 112.590 -7.975, 112.590 -8.030))',
+      stressLevel: 'low',
+    },
+    {
+      id: 'b5000000-0000-4000-8000-000000000005',
+      name: 'Lowokwaru (Malang Barat Laut)',
+      polygonWkt:
+        'POLYGON((112.590 -7.975, 112.635 -7.975, 112.635 -7.925, 112.590 -7.925, 112.590 -7.975))',
+      stressLevel: 'low',
+    },
+  ];
+
+  for (const zone of zonesData) {
+    await prisma.$executeRaw`
+      INSERT INTO "zones" ("id", "name", "geo_boundary", "stress_level", "updated_at")
+      VALUES (
+        ${zone.id}::uuid,
+        ${zone.name},
+        ST_GeomFromText(${zone.polygonWkt}, 4326),
+        ${zone.stressLevel}::"StressLevel",
+        CURRENT_TIMESTAMP
+      )
+      ON CONFLICT ("id") DO UPDATE
+      SET
+        "name" = EXCLUDED."name",
+        "geo_boundary" = EXCLUDED."geo_boundary",
+        "stress_level" = EXCLUDED."stress_level",
+        "updated_at" = CURRENT_TIMESTAMP;
+    `;
+  }
+  console.log('✅ 5 Zona Kota Malang berhasil di-seed!');
+
   console.log('🎉 Seeding database selesai dengan sukses!');
 }
 

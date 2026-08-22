@@ -45,6 +45,11 @@
       "key": "phoneNumber",
       "value": "+6281234567890",
       "type": "string"
+    },
+    {
+      "key": "idempotencyKey",
+      "value": "postman-demo-20260823011628",
+      "type": "string"
     }
   ],
   "item": [
@@ -164,7 +169,6 @@
             "method": "POST",
             "hPrekiaeader": [
               {
-                
                 "key": "Content-Type",
                 "value": "application/json"
               }
@@ -361,20 +365,39 @@
               "mode": "raw",
               "raw": "{\n  \"refresh_token\": \"{{refreshToken}}\"\n}"
             },
-            "description": "AuthController_refresh_v1",
+            "description": "Refresh token (FIX3-B1): SINGLE-USE dengan rotasi. Sukses → access_token & refresh_token BARU (token lama otomatis invalid). Replay token lama → 401 REFRESH_TOKEN_INVALID.",
             "event": [
               {
                 "listen": "test",
                 "script": {
                   "exec": [
-                    "// Auto-generated QA assertion (LaporKita)",
-                    "pm.test('Status code 200', function () {",
-                    "    pm.response.to.have.status(200);",
+                    "pm.test('Envelope {success,data,meta,error}', function () {",
+                    "    const b = pm.response.json();",
+                    "    pm.expect(b).to.have.property('success');",
+                    "    pm.expect(b).to.have.property('data');",
+                    "    pm.expect(b).to.have.property('meta');",
+                    "    pm.expect(b).to.have.property('error');",
                     "});",
-                    "pm.test('Response envelope exists', function () {",
-                    "    const body = pm.response.json();",
-                    "    pm.expect(body).to.have.property('success');",
-                    "});",
+                    "",
+                    "// FIX3-B1: refresh token SINGLE-USE dengan rotasi (SHA-256 pre-hash).",
+                    "// Setelah sukses: token lama otomatis invalid; simpan token BARU.",
+                    "if (pm.response.code === 200) {",
+                    "    const b = pm.response.json();",
+                    "    pm.test('Refresh sukses + token baru (rotasi)', function () {",
+                    "        pm.expect(b.data.access_token).to.be.a('string');",
+                    "        pm.expect(b.data.refresh_token).to.be.a('string');",
+                    "    });",
+                    "    pm.collectionVariables.set('accessToken', b.data.access_token);",
+                    "    pm.collectionVariables.set('refreshToken', b.data.refresh_token);",
+                    "    pm.environment.set('accessToken', b.data.access_token);",
+                    "    pm.environment.set('refreshToken', b.data.refresh_token);",
+                    "}",
+                    "if (pm.response.code === 401) {",
+                    "    const b = pm.response.json();",
+                    "    pm.test('Refresh token lama ditolak (single-use)', function () {",
+                    "        pm.expect(b.error.code).to.eql('REFRESH_TOKEN_INVALID');",
+                    "    });",
+                    "}",
                     ""
                   ],
                   "type": "text/javascript"
@@ -1203,6 +1226,16 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "X-Idempotency-Key",
+                "value": "{{idempotencyKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
               }
             ],
             "url": {
@@ -1220,7 +1253,7 @@
               "mode": "raw",
               "raw": "{\n  \"category_id\": \"c5000000-0000-4000-8000-000000000005\",\n  \"photo_url\": \"https://storage.example.com/pothole.jpg\",\n  \"latitude\": -7.982,\n  \"longitude\": 112.63,\n  \"address_text\": \"Jl. Soekarno Hatta, Kota Malang\",\n  \"description\": \"Lubang besar di tengah jalan membahayakan pengendara motor.\",\n  \"idempotency_key\": \"idem-001\"\n}"
             },
-            "description": "ReportsController_submitReport_v1",
+            "description": "[NONAKTIF — SEC-1] Body memakai field yang dihapus (photo_url/url). Pindah ke multipart. [NONAKTIF — SEC-1] Contoh lama yang memakai photo_url raw JSON TIDAK LAGI VALID (bypass validasi ditutup: 400 \"property photo_url should not exist\"). GUNAKAN request \"multipart upload (FIX-3)\" di folder ini.",
             "event": [
               {
                 "listen": "test",
@@ -1235,6 +1268,91 @@
                     "    pm.expect(body).to.have.property('success');",
                     "});",
                     ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": [],
+          "_postman_id": "",
+          "_disabled": true
+        },
+        {
+          "name": "POST /api/v1/reports — multipart upload (FIX-3)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports"
+              ]
+            },
+            "description": "Submit laporan dengan upload file (multipart/form-data, field \"photo\"). Validasi FIX-3: magic bytes (JPEG/PNG only), resolusi >=480px, max 8MB. Response 202 Accepted (async AI verify).",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "category_id",
+                  "value": "{{categoryId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "latitude",
+                  "value": "-7.982",
+                  "type": "text"
+                },
+                {
+                  "key": "longitude",
+                  "value": "112.63",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Laporan via upload multipart",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "value": "",
+                  "type": "file",
+                  "src": "/path/to/photo.jpg"
+                }
+              ]
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "pm.test('Envelope {success,data,meta,error}', function () {",
+                    "    const b = pm.response.json();",
+                    "    pm.expect(b).to.have.property('success');",
+                    "    pm.expect(b).to.have.property('data');",
+                    "    pm.expect(b).to.have.property('meta');",
+                    "    pm.expect(b).to.have.property('error');",
+                    "    if (b.success === true) { pm.expect(b.error).to.eql(null); }",
+                    "    if (b.success === false) { pm.expect(b.error).to.have.property('code'); }",
+                    "});",
+                    "",
+                    "pm.test('202 Accepted + status pending_verification', function () {",
+                    "    pm.response.to.have.status(202);",
+                    "    const b = pm.response.json();",
+                    "    pm.expect(b.data.status).to.eql('pending_verification');",
+                    "    pm.expect(b.data.report_code).to.match(/^#LP-\\d{4}-\\d{6}$/);",
+                    "    pm.collectionVariables.set('reportId', b.data.id);",
+                    "});"
                   ],
                   "type": "text/javascript"
                 }
@@ -1716,7 +1834,7 @@
               "mode": "raw",
               "raw": "{\n  \"type\": \"progress_photo\",\n  \"url\": \"https://storage.example.com/progress.jpg\"\n}"
             },
-            "description": "ReportsController_uploadMedia_v1",
+            "description": "[NONAKTIF — SEC-1] Body memakai field yang dihapus (photo_url/url). Pindah ke multipart. ReportsController_uploadMedia_v1",
             "event": [
               {
                 "listen": "test",
@@ -1731,6 +1849,129 @@
                     "    pm.expect(body).to.have.property('success');",
                     "});",
                     ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/v1/reports/:id/media — multipart upload (FIX-3)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports/{{reportId}}/media",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "{{reportId}}",
+                "media"
+              ]
+            },
+            "description": "Upload progress/completion photo via multipart (field \"photo\"). Otorisasi FIX-1: pelapor utk progress; operator/admin utk completion.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "type",
+                  "value": "completion_photo",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "value": "",
+                  "type": "file",
+                  "src": "/path/to/completion.jpg"
+                }
+              ]
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "pm.test('Envelope {success,data,meta,error}', function () {",
+                    "    const b = pm.response.json();",
+                    "    pm.expect(b).to.have.property('success');",
+                    "    pm.expect(b).to.have.property('data');",
+                    "    pm.expect(b).to.have.property('meta');",
+                    "    pm.expect(b).to.have.property('error');",
+                    "    if (b.success === true) { pm.expect(b.error).to.eql(null); }",
+                    "    if (b.success === false) { pm.expect(b.error).to.have.property('code'); }",
+                    "});",
+                    "",
+                    "pm.test('201 Created + media tersimpan', function () {",
+                    "    pm.response.to.have.status(201);",
+                    "    const b = pm.response.json();",
+                    "    pm.expect(b.data.type).to.eql('completion_photo');",
+                    "    pm.expect(b.data.url).to.match(/^https?:\\/\\//);",
+                    "});"
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/v1/reports/comments/flagged — Moderasi (SA-1)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports/comments/flagged",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "comments",
+                "flagged"
+              ]
+            },
+            "description": "Daftar komentar ter-flag (mengandung kata kasar). Role: operator/admin. Teks disimpan UTUH (bukan masking) + is_flagged=true (keputusan SA-1).",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "pm.test('Envelope {success,data,meta,error}', function () {",
+                    "    const b = pm.response.json();",
+                    "    pm.expect(b).to.have.property('success');",
+                    "    pm.expect(b).to.have.property('data');",
+                    "    pm.expect(b).to.have.property('meta');",
+                    "    pm.expect(b).to.have.property('error');",
+                    "    if (b.success === true) { pm.expect(b.error).to.eql(null); }",
+                    "    if (b.success === false) { pm.expect(b.error).to.have.property('code'); }",
+                    "});",
+                    "",
+                    "pm.test('Hanya operator/admin (403 utk citizen)', function () {",
+                    "    pm.expect([200, 403]).to.include(pm.response.code);",
+                    "    if (pm.response.code === 200) {",
+                    "        const b = pm.response.json();",
+                    "        pm.expect(b.data).to.be.an('array');",
+                    "    }",
+                    "});"
                   ],
                   "type": "text/javascript"
                 }
