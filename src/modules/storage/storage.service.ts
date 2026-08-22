@@ -28,7 +28,13 @@ export class StorageService {
       !storageKey.includes('your_supabase')
     ) {
       try {
-        const uploadEndpoint = `${storageUrl.replace(/\/$/, '')}/object/${storageBucket}/${filename}`;
+        // Normalisasi URL jika user memasukkan endpoint S3 Supabase (.storage.supabase.co/.../s3)
+        let baseUrl = storageUrl.replace(/\/$/, '').replace(/\/s3$/, '');
+        if (baseUrl.includes('.storage.supabase.co')) {
+          baseUrl = baseUrl.replace('.storage.supabase.co', '.supabase.co');
+        }
+
+        const uploadEndpoint = `${baseUrl}/object/${storageBucket}/${filename}`;
         const response = await fetch(uploadEndpoint, {
           method: 'POST',
           headers: {
@@ -40,7 +46,7 @@ export class StorageService {
         });
 
         if (response.ok) {
-          const publicUrl = `${storageUrl.replace(/\/$/, '')}/object/public/${storageBucket}/${filename}`;
+          const publicUrl = `${baseUrl}/object/public/${storageBucket}/${filename}`;
           this.logger.log(`File berhasil di-upload ke Supabase Storage: ${publicUrl}`);
           return publicUrl;
         } else {
