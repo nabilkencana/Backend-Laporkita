@@ -1,0 +1,97 @@
+# =============================================================
+# docker-compose.yml — LaporKita Dev Environment
+# Services: postgres (PostGIS) + redis + app
+# Sesuai Architecture.md §6 — deployment lokal untuk development.
+#
+# Usage:
+#   docker-compose up -d          # Start semua service
+#   docker-compose up -d postgres redis  # Hanya DB + Redis (tanpa app)
+#   docker-compose down -v        # Stop + hapus volumes
+# =============================================================
+
+services:
+  # ── PostgreSQL dengan PostGIS ─────────────────────────────
+  # Pakai image postgis/postgis agar ekstensi geometry tersedia
+  # untuk tabel zones (ERD §2.11 — geo_boundary geometry)
+  postgres:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: laporkita_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: laporkita
+      POSTGRES_PASSWORD: laporkita_dev
+      POSTGRES_DB: laporkita_db
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U laporkita -d laporkita_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - laporkita_net
+
+  # ── Redis (BullMQ job queue) ──────────────────────────────
+  # Digunakan untuk async job queue AI verification & prediction
+  # Sesuai Architecture.md §3.3
+  redis:
+    image: redis:7-alpine
+    container_name: laporkita_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - laporkita_net
+
+  # ── NestJS Backend App ────────────────────────────────────
+  # Di-build dari Dockerfile lokal — hanya aktif di docker-compose full
+  # Untuk development harian, lebih nyaman jalankan: npm run start:dev
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: laporkita_app
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://laporkita:laporkita_dev@postgres:5432/laporkita_db?schema=public
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - laporkita_net
+    profiles:
+      # Profile "full" — aktifkan dengan: docker-compose --profile full up
+      # Untuk dev sehari-hari, cukup: docker-compose up postgres redis
+      - full
+
+networks:
+  laporkita_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local

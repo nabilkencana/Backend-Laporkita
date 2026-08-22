@@ -1,0 +1,44 @@
+# =============================================================
+# .dockerignore — file yang dikecualikan dari Docker build context
+# =============================================================
+
+# Dependencies (akan di-install ulang di container)
+node_modules/
+
+# Build output (akan di-build ulang di container)
+dist/
+
+# Development & environment files
+.env
+.env.local
+.env.*.local
+
+# Git
+.git/
+.gitignore
+
+# Docs
+*.md
+docs/
+
+# Test files
+test/
+coverage/
+**/*.spec.ts
+**/*.e2e-spec.ts
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# TypeScript source maps (tidak diperlukan di production image)
+**/*.js.map
