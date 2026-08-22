@@ -69,7 +69,11 @@ services:
     env_file:
       - .env
     environment:
-      NODE_ENV: production
+      # NODE_ENV=development agar startup guard SMS tidak memblokir
+      # demo lokal dengan SMS_PROVIDER=mock (guard hanya aktif di production).
+      # Untuk deployment production asli, override ini ke "production"
+      # dan pastikan SMS_PROVIDER diisi (bukan "mock") di env production.
+      NODE_ENV: development
       DATABASE_URL: postgresql://laporkita:laporkita_dev@postgres:5432/laporkita_db?schema=public
       REDIS_URL: redis://redis:6379
     ports:

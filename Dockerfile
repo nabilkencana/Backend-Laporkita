@@ -13,12 +13,24 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-# Copy source dan build
+# Copy source (schema.prisma + prisma.config.ts WAJIB tersedia sebelum generate)
 COPY . .
-RUN npm run build
 
-# Hasilkan Prisma Client
-RUN npx prisma generate --schema=src/prisma/schema.prisma
+# FIX F1-1 QA: prisma generate WAJIB SEBELUM npm run build.
+#
+# Root cause 174× TS2305: PrismaClient/AgencyType/UserRole ter-export dari
+# node_modules/.prisma/client — belum ada saat tsc berjalan sebelumnya.
+#
+# Catatan Prisma 7.x: prisma.config.ts memanggil env('DATABASE_URL').
+# `prisma generate` adalah code-generation saja (TIDAK membuka koneksi DB),
+# tapi Prisma 7.x tetap mencoba resolve env saat load config. Kita
+# suplai dummy URL agar config loader bisa diinisialisasi; koneksi DB
+# asli TIDAK digunakan selama generate.
+RUN DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" \
+    npx prisma generate --schema=src/prisma/schema.prisma
+
+# Compile TypeScript → dist/ (Prisma client sudah tersedia sekarang)
+RUN npm run build
 
 # ── Stage 2: Production ──────────────────────────────────────
 FROM node:20-alpine AS production
@@ -33,11 +45,15 @@ RUN npm ci --omit=dev
 COPY --from=builder /app/dist ./dist
 
 # Copy Prisma client yang sudah di-generate
+# (.prisma = generated binding code; @prisma = runtime library)
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
-# Copy schema untuk prisma migrate (jika dijalankan saat startup)
+# Copy schema untuk referensi runtime Prisma 7.x
 COPY src/prisma/schema.prisma ./src/prisma/schema.prisma
+
+# Copy prisma.config.ts (dibutuhkan oleh Prisma 7.x config loader di runtime)
+COPY prisma.config.ts ./prisma.config.ts
 
 # Non-root user untuk keamanan
 RUN addgroup -g 1001 -S nodejs && \
@@ -46,7 +62,7 @@ USER nestjs
 
 EXPOSE 3000
 
-# Health check
+# Health check — tunggu 15s start-period agar NestJS sempat bootstrap
 HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
   CMD wget -qO- http://localhost:3000/api/v1/health || exit 1
 

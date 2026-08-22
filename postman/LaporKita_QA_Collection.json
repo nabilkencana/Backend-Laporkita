@@ -35,6 +35,16 @@
       "key": "userId",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "otpCode",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "phoneNumber",
+      "value": "+6281234567890",
+      "type": "string"
     }
   ],
   "item": [
@@ -91,7 +101,7 @@
       "name": "02 - Auth (JWT)",
       "item": [
         {
-          "name": "POST /api/v1/auth/register — AuthController_register_v1",
+          "name": "POST /api/v1/auth/register — Fase 3B (OTP, 202 Accepted)",
           "request": {
             "method": "POST",
             "header": [
@@ -116,7 +126,7 @@
               "mode": "raw",
               "raw": "{\n  \"full_name\": \"Budi Santoso\",\n  \"email\": \"budi@example.com\",\n  \"phone_number\": \"+6281234567890\",\n  \"password\": \"BudiPass123\"\n}"
             },
-            "description": "AuthController_register_v1",
+            "description": "Registrasi (Fase 3B OTP): response 202 Accepted, user dibuat is_active=false, OTP 4-digit dikirim via SMS (mock: lihat log server — [MOCK SMS] to +62xxx: your OTP is 1234). Email DAN nomor HP wajib keduanya (override Fase 3). OTP TIDAK pernah ada di response body.",
             "event": [
               {
                 "listen": "test",
@@ -138,6 +148,125 @@
                     "        pm.collectionVariables.set('refreshToken', body.data.refresh_token);",
                     "        pm.collectionVariables.set('userId', body.data.user.id);",
                     "    }",
+                    "}",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/v1/auth/verify-otp — Fase 3B (Aktivasi + Tokens)",
+          "request": {
+            "method": "POST",
+            "hPrekiaeader": [
+              {
+                
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/verify-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "verify-otp"
+              ]
+            },
+            "description": "Verifikasi OTP 4 digit (Fase 3B). OTP didapat dari LOG SERVER saat register (mock SMS: \"[MOCK SMS] to +62xxx: your OTP is 1234\"). OTP berlaku 5 menit (OTP_EXPIRY_MINUTES), max 5 percobaan (OTP_MAX_ATTEMPTS). Sukses → is_active=true + access/refresh token. Error codes: OTP_INVALID, OTP_EXPIRED, OTP_ALREADY_USED, OTP_MAX_ATTEMPTS.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{userId}}\",\n  \"otp_code\": \"{{otpCode}}\"\n}"
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "pm.test('Status code 200', function () { pm.response.to.have.status(200); });",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "    pm.expect(body).to.have.property('data');",
+                    "    pm.expect(body).to.have.property('error');",
+                    "});",
+                    "",
+                    "if (pm.response.code === 200) {",
+                    "    const body = pm.response.json();",
+                    "    if (body.data && body.data.access_token) {",
+                    "        pm.collectionVariables.set('accessToken', body.data.access_token);",
+                    "        pm.collectionVariables.set('refreshToken', body.data.refresh_token);",
+                    "        pm.collectionVariables.set('userId', body.data.user.id);",
+                    "        pm.environment.set('accessToken', body.data.access_token);",
+                    "        pm.environment.set('refreshToken', body.data.refresh_token);",
+                    "    }",
+                    "}",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/v1/auth/resend-otp — Fase 3B (Cooldown 45 detik)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/resend-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "resend-otp"
+              ]
+            },
+            "description": "Kirim ulang OTP (Fase 3B). Cooldown 45 detik (OTP_RESEND_COOLDOWN_SECONDS): jika dipanggil terlalu cepat → 400 OTP_RESEND_COOLDOWN + remainingSeconds di data (frontend render countdown 00:45). OTP lama di-invalidate, attempt_count di-reset.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{userId}}\"\n}"
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "pm.test('Status code 200', function () { pm.response.to.have.status(200); });",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "    pm.expect(body).to.have.property('data');",
+                    "    pm.expect(body).to.have.property('error');",
+                    "});",
+                    "",
+                    "if (pm.response.code === 200) {",
+                    "    const body = pm.response.json();",
+                    "    console.log('Resend OK — ambil OTP baru dari LOG SERVER, update {{otpCode}}.');",
+                    "}",
+                    "if (pm.response.code === 400) {",
+                    "    const body = pm.response.json();",
+                    "    pm.test('Cooldown error code jelas', function () {",
+                    "        pm.expect(body.error.code).to.be.oneOf(['OTP_RESEND_COOLDOWN', 'VALIDATION_ERROR']);",
+                    "    });",
                     "}",
                     ""
                   ],
@@ -1106,6 +1235,54 @@
                     "    pm.expect(body).to.have.property('success');",
                     "});",
                     ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/v1/reports?needs_manual_review=true — Fase 5 (Antrian Operator)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports?needs_manual_review=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports"
+              ],
+              "query": [
+                {
+                  "key": "needs_manual_review",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Filter antrian verifikasi manual operator (Rules.md §1.2): laporan pending_verification yang belum lolos AI otomatis (ai_confidence_score < 0.6 atau null). Pakai query param needs_manual_review=true. Publik (tidak butuh token).",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "pm.test('Status code 200', function () { pm.response.to.have.status(200); });",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "    pm.expect(body).to.have.property('data');",
+                    "    pm.expect(body).to.have.property('error');",
+                    "});"
                   ],
                   "type": "text/javascript"
                 }

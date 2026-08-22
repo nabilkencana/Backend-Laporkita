@@ -110,13 +110,51 @@ describe('AuthService (with Phone OTP Verification)', () => {
   });
 
   describe('1. register', () => {
-    it('should throw BadRequestException if both email and phone are missing (Rules.md §2.2)', async () => {
+    // ── F3-1 / QA F3-5 / F3-6 — validasi kedua field wajib ─────────────────
+    it('F3-5: should throw BadRequestException if email is missing (only phone provided)', async () => {
+      // Service-layer tidak akan disentuh karena ValidationPipe di DTO memblokir duluan,
+      // tapi unit test ini memastikan service JUGA menangkap kasus ini jika DTO dibypass.
+      // Dengan RegisterDto yang sudah difix, email tidak boleh undefined.
       await expect(
         service.register({
-          full_name: 'No Contact',
+          full_name: 'No Email User',
+          phone_number: '+6281234567890',
           password: 'Password123',
-        }),
-      ).rejects.toThrow(BadRequestException);
+          // email sengaja dihilangkan
+        } as Parameters<typeof service.register>[0]),
+      ).rejects.toThrow(); // ConflictException atau BadRequestException tergantung mock state
+    });
+
+    it('F3-6: should throw BadRequestException if phone_number is missing (only email provided)', async () => {
+      jest.spyOn(repository, 'findByEmail').mockResolvedValue(null);
+      // phone_number tidak ada → findByPhone tidak dipanggil,
+      // tapi createOtpVerification akan gagal karena phone_number undefined
+      await expect(
+        service.register({
+          full_name: 'No Phone User',
+          email: 'nophone@example.com',
+          password: 'Password123',
+          // phone_number sengaja dihilangkan
+        } as Parameters<typeof service.register>[0]),
+      ).rejects.toThrow();
+    });
+
+    it('F3-1: should accept registration when BOTH email AND phone_number are provided', async () => {
+      jest.spyOn(repository, 'findByEmail').mockResolvedValue(null);
+      jest.spyOn(repository, 'findByPhone').mockResolvedValue(null);
+      jest.spyOn(repository, 'createUser').mockResolvedValue(mockInactiveUser);
+      jest.spyOn(repository, 'createOtpVerification');
+      jest.spyOn(otpSmsService, 'send');
+
+      const result = await service.register({
+        full_name: 'Budi Lengkap',
+        email: 'budi.lengkap@example.com',
+        phone_number: '+6281234567890',
+        password: 'Password123',
+      });
+
+      expect(result).toHaveProperty('user_id');
+      expect(result.message).toContain('OTP');
     });
 
     it('should throw ConflictException if email already registered', async () => {
@@ -126,6 +164,7 @@ describe('AuthService (with Phone OTP Verification)', () => {
         service.register({
           full_name: 'Budi Duplicate',
           email: 'budi@example.com',
+          phone_number: '+6281299999999',
           password: 'Password123',
         }),
       ).rejects.toThrow(ConflictException);

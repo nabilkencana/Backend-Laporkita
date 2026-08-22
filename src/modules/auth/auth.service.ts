@@ -60,28 +60,21 @@ export class AuthService {
    */
   async register(dto: RegisterDto): Promise<RegisterResponse> {
     // 1. Validasi: minimal salah satu dari email atau phone wajib ada (Rules.md §2.2)
-    if (!dto.email && !dto.phone_number) {
-      throw new BadRequestException('Email atau nomor telepon wajib diisi untuk registrasi.');
+    // email DAN phone_number keduanya dijamin ada oleh RegisterDto (F3-1 fix).
+    // Guard either-or lama sudah tidak relevan — dihapus.
+
+    // 2. Cek keunikan email (selalu ada setelah F3-1 fix)
+    const existingEmail = await this.authRepository.findByEmail(dto.email);
+    if (existingEmail) {
+      throw new ConflictException('Email sudah terdaftar. Gunakan email lain atau silakan login.');
     }
 
-    // 2. Cek keunikan email jika dikirim
-    if (dto.email) {
-      const existingEmail = await this.authRepository.findByEmail(dto.email);
-      if (existingEmail) {
-        throw new ConflictException(
-          'Email sudah terdaftar. Gunakan email lain atau silakan login.',
-        );
-      }
-    }
-
-    // 3. Cek keunikan nomor telepon jika dikirim
-    if (dto.phone_number) {
-      const existingPhone = await this.authRepository.findByPhone(dto.phone_number);
-      if (existingPhone) {
-        throw new ConflictException(
-          'Nomor telepon sudah terdaftar. Gunakan nomor lain atau silakan login.',
-        );
-      }
+    // 3. Cek keunikan nomor telepon (selalu ada setelah F3-1 fix)
+    const existingPhone = await this.authRepository.findByPhone(dto.phone_number);
+    if (existingPhone) {
+      throw new ConflictException(
+        'Nomor telepon sudah terdaftar. Gunakan nomor lain atau silakan login.',
+      );
     }
 
     // 4. Hash password
@@ -98,24 +91,22 @@ export class AuthService {
       is_active: false,
     });
 
-    // 6. Generate 4-digit OTP & kirim SMS jika nomor HP disediakan
-    if (dto.phone_number) {
-      const otpCode = Math.floor(1000 + Math.random() * 9000).toString();
-      const otpCodeHash = await bcrypt.hash(otpCode, 10);
-      const expiryMinutes = Number(this.configService.get<string>('OTP_EXPIRY_MINUTES') ?? 5);
-      const expiresAt = new Date(Date.now() + expiryMinutes * 60 * 1000);
+    // 6. Generate 4-digit OTP & kirim SMS (phone_number selalu ada setelah F3-1 fix)
+    const otpCode = Math.floor(1000 + Math.random() * 9000).toString();
+    const otpCodeHash = await bcrypt.hash(otpCode, 10);
+    const expiryMinutes = Number(this.configService.get<string>('OTP_EXPIRY_MINUTES') ?? 5);
+    const expiresAt = new Date(Date.now() + expiryMinutes * 60 * 1000);
 
-      await this.authRepository.createOtpVerification({
-        user_id: newUser.id,
-        phone_number: dto.phone_number,
-        otp_code_hash: otpCodeHash,
-        purpose: OtpPurpose.register,
-        expires_at: expiresAt,
-        last_sent_at: new Date(),
-      });
+    await this.authRepository.createOtpVerification({
+      user_id: newUser.id,
+      phone_number: dto.phone_number,
+      otp_code_hash: otpCodeHash,
+      purpose: OtpPurpose.register,
+      expires_at: expiresAt,
+      last_sent_at: new Date(),
+    });
 
-      await this.otpSmsService.send(dto.phone_number, otpCode);
-    }
+    await this.otpSmsService.send(dto.phone_number, otpCode);
 
     return {
       user_id: newUser.id,

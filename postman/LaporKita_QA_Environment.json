@@ -51,6 +51,21 @@
       "key": "reportId",
       "value": "",
       "enabled": true
+    },
+    {
+      "key": "phoneNumber",
+      "value": "+6281234567890",
+      "enabled": true
+    },
+    {
+      "key": "otpCode",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "enabled": true
     }
   ],
   "_postman_variable_scope": "environment"
