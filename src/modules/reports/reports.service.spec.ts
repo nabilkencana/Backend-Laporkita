@@ -4,8 +4,13 @@ import { ReportsRepository } from './reports.repository.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { ConfigService } from '@nestjs/config';
 import { SmartPriorityService } from '../smart-priority/smart-priority.service.js';
-import { BadRequestException, ConflictException, ForbiddenException } from '@nestjs/common';
-import { ReportStatus, UserRole, Prisma } from '@prisma/client';
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
+import { ReportStatus, UserRole, MediaType, Prisma } from '@prisma/client';
 import { AuthenticatedUser } from '../../common/decorators/current-user.decorator.js';
 
 describe('ReportsService (Critical Business Logic)', () => {
@@ -416,6 +421,170 @@ describe('ReportsService (Critical Business Logic)', () => {
           target_status: ReportStatus.resolved,
         }),
       );
+    });
+  });
+
+  // ── 5. Media Upload & IDOR Authorization (Rules.md §1.1) ──────────────────
+
+  describe('uploadMedia (IDOR & Authorization Rules.md §1.1)', () => {
+    const mockCitizenReporter: AuthenticatedUser = {
+      id: reporterId,
+      full_name: 'Warga Pelapor',
+      email: 'pelapor@test.com',
+      phone_number: null,
+      role: UserRole.citizen,
+      agency_id: null,
+    };
+
+    const mockCitizenOther: AuthenticatedUser = {
+      id: otherUserId,
+      full_name: 'Warga Lain',
+      email: 'lain@test.com',
+      phone_number: null,
+      role: UserRole.citizen,
+      agency_id: null,
+    };
+
+    const mockOperatorMatchingAgency: AuthenticatedUser = {
+      id: '33333333-3333-3333-3333-333333333333',
+      full_name: 'Petugas DPUPR',
+      email: 'petugas@dpupr.go.id',
+      phone_number: null,
+      role: UserRole.operator,
+      agency_id: 'a1000000-0000-0000-0000-000000000001',
+    };
+
+    const mockOperatorDifferentAgency: AuthenticatedUser = {
+      id: '44444444-4444-4444-4444-444444444444',
+      full_name: 'Petugas Dishub',
+      email: 'petugas@dishub.go.id',
+      phone_number: null,
+      role: UserRole.operator,
+      agency_id: 'different-agency-id',
+    };
+
+    const mockAdmin: AuthenticatedUser = {
+      id: '55555555-5555-5555-5555-555555555555',
+      full_name: 'Super Admin',
+      email: 'admin@laporkita.id',
+      phone_number: null,
+      role: UserRole.admin,
+      agency_id: null,
+    };
+
+    it('should throw NotFoundException if report is not found (regresi)', async () => {
+      jest.spyOn(repository, 'findById').mockResolvedValue(null);
+
+      await expect(
+        service.uploadMedia('non-existent-report', mockCitizenReporter, {
+          type: MediaType.progress_photo,
+          url: 'https://storage.laporkita.id/reports/progress.jpg',
+        }),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ForbiddenException when citizen non-pemilik uploads completion_photo', async () => {
+      jest.spyOn(repository, 'findById').mockResolvedValue(mockReport);
+
+      await expect(
+        service.uploadMedia(reportId, mockCitizenOther, {
+          type: MediaType.completion_photo,
+          url: 'https://storage.laporkita.id/reports/done.jpg',
+        }),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should throw ForbiddenException when citizen non-pemilik uploads progress_photo', async () => {
+      jest.spyOn(repository, 'findById').mockResolvedValue(mockReport);
+
+      await expect(
+        service.uploadMedia(reportId, mockCitizenOther, {
+          type: MediaType.progress_photo,
+          url: 'https://storage.laporkita.id/reports/progress.jpg',
+        }),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should throw ForbiddenException when non-reporter uploads initial_photo', async () => {
+      jest.spyOn(repository, 'findById').mockResolvedValue(mockReport);
+
+      await expect(
+        service.uploadMedia(reportId, mockCitizenOther, {
+          type: MediaType.initial_photo,
+          url: 'https://storage.laporkita.id/reports/initial.jpg',
+        }),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should allow original reporter to upload progress_photo to their own report', async () => {
+      jest.spyOn(repository, 'findById').mockResolvedValue(mockReport);
+      jest.spyOn(repository, 'addMedia').mockResolvedValue({
+        id: 'media-1',
+        report_id: reportId,
+        uploader_id: reporterId,
+        type: MediaType.progress_photo,
+        url: 'https://storage.laporkita.id/reports/progress.jpg',
+        created_at: new Date(),
+      });
+
+      const res = await service.uploadMedia(reportId, mockCitizenReporter, {
+        type: MediaType.progress_photo,
+        url: 'https://storage.laporkita.id/reports/progress.jpg',
+      });
+
+      expect(res.id).toBe('media-1');
+      expect(res.type).toBe(MediaType.progress_photo);
+    });
+
+    it('should allow operator with matching agency to upload completion_photo', async () => {
+      jest.spyOn(repository, 'findById').mockResolvedValue(mockReport);
+      jest.spyOn(repository, 'addMedia').mockResolvedValue({
+        id: 'media-2',
+        report_id: reportId,
+        uploader_id: mockOperatorMatchingAgency.id,
+        type: MediaType.completion_photo,
+        url: 'https://storage.laporkita.id/reports/completion.jpg',
+        created_at: new Date(),
+      });
+
+      const res = await service.uploadMedia(reportId, mockOperatorMatchingAgency, {
+        type: MediaType.completion_photo,
+        url: 'https://storage.laporkita.id/reports/completion.jpg',
+      });
+
+      expect(res.id).toBe('media-2');
+      expect(res.type).toBe(MediaType.completion_photo);
+    });
+
+    it('should throw ForbiddenException when operator with different agency uploads completion_photo', async () => {
+      jest.spyOn(repository, 'findById').mockResolvedValue(mockReport);
+
+      await expect(
+        service.uploadMedia(reportId, mockOperatorDifferentAgency, {
+          type: MediaType.completion_photo,
+          url: 'https://storage.laporkita.id/reports/completion.jpg',
+        }),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should allow admin to upload completion_photo regardless of agency', async () => {
+      jest.spyOn(repository, 'findById').mockResolvedValue(mockReport);
+      jest.spyOn(repository, 'addMedia').mockResolvedValue({
+        id: 'media-3',
+        report_id: reportId,
+        uploader_id: mockAdmin.id,
+        type: MediaType.completion_photo,
+        url: 'https://storage.laporkita.id/reports/completion-admin.jpg',
+        created_at: new Date(),
+      });
+
+      const res = await service.uploadMedia(reportId, mockAdmin, {
+        type: MediaType.completion_photo,
+        url: 'https://storage.laporkita.id/reports/completion-admin.jpg',
+      });
+
+      expect(res.id).toBe('media-3');
+      expect(res.type).toBe(MediaType.completion_photo);
     });
   });
 });

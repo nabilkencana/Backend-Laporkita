@@ -17,6 +17,7 @@ import {
   ContributionReason,
   Report,
   NotificationType,
+  UserRole,
 } from '@prisma/client';
 import { ReportsRepository, ReportDetail } from './reports.repository.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
@@ -29,6 +30,7 @@ import { QueryReportsDto } from './dto/query-reports.dto.js';
 import { isWithinMalangBounds, calculateHaversineDistanceMeters } from './utils/geo.util.js';
 import { maskProfanity } from './utils/profanity-filter.util.js';
 import { generateReportCode } from './utils/report-code.util.js';
+import { validateMediaUrlFormat } from './utils/file-upload.util.js';
 import { PaginatedResult } from '../../common/interceptors/response.interceptor.js';
 import { AuthenticatedUser } from '../../common/decorators/current-user.decorator.js';
 
@@ -47,16 +49,21 @@ export class ReportsService {
   // ── 1. Submit Laporan (Rules.md §2.1 & Architecture.md §3.3) ────────────────
 
   async submitReport(dto: CreateReportDto, reporterId: string): Promise<Report> {
-    // 1. Cek Idempotency Key jika dikirim client
+    // 1. Validasi idempotency key
     if (dto.idempotency_key) {
       const existing = await this.reportsRepository.findByIdempotencyKey(dto.idempotency_key);
       if (existing) {
-        this.logger.log(`Idempotent submission detected for key: ${dto.idempotency_key}`);
+        this.logger.warn(
+          `Laporan duplikat terdeteksi dengan idempotency_key: ${dto.idempotency_key}`,
+        );
         return existing;
       }
     }
 
-    // 2. Validasi Bounding Box Kota Malang (Rules.md §2.1)
+    // 2. Validasi format & tipe file URL foto (Architecture.md §7)
+    validateMediaUrlFormat(dto.photo_url);
+
+    // 3. Validasi Geografis Kota Malang (Bounding Box) — Rules.md §2.1
     const latMin = Number(this.configService.get<number>('MALANG_LAT_MIN') ?? -8.25);
     const latMax = Number(this.configService.get<number>('MALANG_LAT_MAX') ?? -7.85);
     const lngMin = Number(this.configService.get<number>('MALANG_LNG_MIN') ?? 112.5);
@@ -469,15 +476,45 @@ export class ReportsService {
 
   async uploadMedia(
     reportId: string,
-    uploaderId: string,
+    uploader: AuthenticatedUser,
     dto: UploadMediaDto,
   ): Promise<{ id: string; url: string; type: MediaType }> {
+    validateMediaUrlFormat(dto.url);
     const report = await this.reportsRepository.findById(reportId);
     if (!report) {
       throw new NotFoundException(`Laporan dengan ID '${reportId}' tidak ditemukan.`);
     }
 
-    const media = await this.reportsRepository.addMedia(reportId, uploaderId, dto.type, dto.url);
+    // ── Validasi Otorisasi Media (Rules.md §1.1 & Anti-IDOR) ──────────────────
+    const isReporter = uploader.id === report.reporter_id;
+    const isAdmin = uploader.role === UserRole.admin;
+    const isOperator = uploader.role === UserRole.operator;
+    const isAgencyMatched =
+      !report.assigned_agency_id || uploader.agency_id === report.assigned_agency_id;
+
+    if (dto.type === MediaType.initial_photo) {
+      if (!isReporter) {
+        throw new ForbiddenException(
+          'FORBIDDEN_MEDIA: Anda tidak memiliki izin mengunggah media initial_photo untuk laporan ini.',
+        );
+      }
+    } else if (dto.type === MediaType.progress_photo) {
+      const isAllowedProgress = isReporter || isAdmin || (isOperator && isAgencyMatched);
+      if (!isAllowedProgress) {
+        throw new ForbiddenException(
+          'FORBIDDEN_MEDIA: Anda tidak memiliki izin mengunggah media progress_photo untuk laporan ini.',
+        );
+      }
+    } else if (dto.type === MediaType.completion_photo) {
+      const isAllowedCompletion = isAdmin || (isOperator && isAgencyMatched);
+      if (!isAllowedCompletion) {
+        throw new ForbiddenException(
+          'FORBIDDEN_MEDIA: Anda tidak memiliki izin mengunggah media completion_photo untuk laporan ini.',
+        );
+      }
+    }
+
+    const media = await this.reportsRepository.addMedia(reportId, uploader.id, dto.type, dto.url);
     return {
       id: media.id,
       url: media.url,

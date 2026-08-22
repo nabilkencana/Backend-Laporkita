@@ -1,8 +1,11 @@
-import { Controller, Get, Patch, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Patch, Param, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { NotificationsService } from './notifications.service.js';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard.js';
 import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
+import { UuidValidationPipe } from '../../common/pipes/uuid-validation.pipe.js';
 
+@ApiBearerAuth()
 @Controller('notifications')
 @UseGuards(JwtAuthGuard)
 export class NotificationsController {
@@ -28,7 +31,10 @@ export class NotificationsController {
    * Tandai satu notifikasi telah dibaca — PATCH /api/v1/notifications/:id/read
    */
   @Patch(':id/read')
-  async markAsRead(@Param('id', ParseUUIDPipe) id: string, @CurrentUser('id') userId: string) {
+  async markAsRead(
+    @Param('id', new UuidValidationPipe()) id: string,
+    @CurrentUser('id') userId: string,
+  ) {
     return this.notificationsService.markAsRead(id, userId);
   }
 

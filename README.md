@@ -1,10 +1,6 @@
 # 🏛️ LaporKita Backend — City Intelligence Platform
 
 <p align="center">
-  <img src="https://assets.laporkita.malangkota.go.id/branding/laporkita-banner.png" alt="LaporKita Banner" width="100%" onerror="this.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80'" />
-</p>
-
-<p align="center">
   <strong>Platform Intelijen Perkotaan & Pengaduan Fasilitas Publik Berbasis AI & Spasial</strong><br>
   <em>Pilot Project: Kota Malang — Entri Kompetisi MAGE 12</em><br>
   <strong>Tim "Saya Akan Lawan" — SMK Telkom Malang</strong>
@@ -17,8 +13,10 @@
   <img src="https://img.shields.io/badge/PostgreSQL-16_PostGIS-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
   <img src="https://img.shields.io/badge/Prisma-v7.9-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma" />
   <img src="https://img.shields.io/badge/Redis-v7.0-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis" />
-  <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
-  <img src="https://img.shields.io/badge/Tests-26%2F26_Passed-success?style=for-the-badge&logo=jest&logoColor=white" alt="Tests" />
+  <img src="https://img.shields.io/badge/BullMQ-v6.2-FF6600?style=for-the-badge&logo=redis&logoColor=white" alt="BullMQ" />
+  <img src="https://img.shields.io/badge/Swagger-OpenAPI_3.0-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" alt="Swagger" />
+  <img src="https://img.shields.io/badge/Tests-78%2F78_Passed-success?style=for-the-badge&logo=jest&logoColor=white" alt="Tests" />
+  <img src="https://img.shields.io/badge/E2E_Tests-8%2F8_Passed-success?style=for-the-badge&logo=jest&logoColor=white" alt="E2E Tests" />
 </p>
 
 ---
@@ -29,24 +27,27 @@
 2. [Fitur Unggulan Sistem](#-fitur-unggulan-sistem)
 3. [Arsitektur Sistem (Visual Flow)](#-arsitektur-sistem-visual-flow)
 4. [Diagram State Machine Laporan](#-diagram-state-machine-laporan)
-5. [Struktur Modul & Layering](#-struktur-modul--layering)
-6. [Skema Database & Spasial PostGIS](#-skema-database--spasial-postgis)
-7. [Desain API & Response Envelope](#-desain-api--response-envelope)
-8. [Matriks Role-Based Access Control (RBAC)](#-matriks-role-based-access-control-rbac)
-9. [Panduan Instalasi & Menjalankan](#-panduan-instalasi--menjalankan)
-10. [Pengujian & Validasi Kualitas](#-pengujian--validasi-kualitas)
-11. [Spesifikasi Lingkungan (.env)](#-spesifikasi-lingkungan-env)
+5. [Daftar Lengkap REST API & Matriks RBAC](#-daftar-lengkap-rest-api--matriks-rbac)
+6. [Panduan Instalasi & Menjalankan](#-panduan-instalasi--menjalankan)
+7. [Dokumentasi API Swagger / OpenAPI](#-dokumentasi-api-swagger--openapi)
+8. [Pengujian & Validasi Kualitas](#-pengujian--validasi-kualitas)
+9. [Status Integrasi Eksternal & MOCK](#-status-integrasi-eksternal--mock)
+10. [Spesifikasi Lingkungan (.env)](#-spesifikasi-lingkungan-env)
 
 ---
 
 ## 🌟 Tentang LaporKita
 
-**LaporKita** adalah backend sistem kecerdasan kota (*City Intelligence Platform*) yang merevolusi penanganan pengaduan kerusakan infrastruktur publik di **Kota Malang**. Berbeda dari aplikasi pelaporan tradisional yang bersifat statis dan manual, LaporKita mengintegrasikan:
+**LaporKita** adalah backend platform intelijen kota (*City Intelligence Platform*) dengan konsep **"From Report to Resolve"** melalui **Digital Accountability Loop**:
 
-- **AI Verification & Multi-Agent Routing**: Klasifikasi gambar kerusakan otomatis dan penugasan langsung ke OPD terkait (**DPUPRPKP**, **Dishub**, **Diskominfo**).
-- **Smart Priority Engine**: Perhitungan skor urgensi multi-faktor (*kepadatan lalu lintas, probabilitas banjir, fasilitas vital, & bobot kategori*).
-- **Citizen Spatial Validation**: Validasi warga berbasis geolokasi formula *Haversine 100m* untuk transparansi pengerjaan fisik di lapangan.
-- **Urban Emotion Map**: Pemetaan zona stres perkotaan dinamis berbasis PostGIS Polygon.
+```
+Report → AI Verification → Smart Priority → Government Action
+       → Public Tracking → Citizen Validation → Resolve
+```
+
+- **Citizen App (B2C)**: Warga melapor kerusakan (foto + GPS otomatis), memantau progres, memberi dukungan (upvote), dan melakukan *Citizen Validation*.
+- **Command Center (B2G)**: Operator OPD (DPUPR, Dishub, Diskominfo) memverifikasi, memprioritaskan, dan menindaklanjuti laporan berdasarkan data.
+- **Backend Platform**: Orkestrasi data, pipeline AI asinkron (Computer Vision, XGBoost Decay, Gemini LLM), geocoding OpenStreetMap, rate limiting, dan geofencing Route Alert.
 
 ---
 
@@ -56,15 +57,15 @@
 ┌──────────────────────────────────────────────────────────────────────────────────┐
 │                             LAPORKITA INTELLIGENCE CORE                          │
 ├──────────────────────┬──────────────────────┬────────────────────────────────────┤
-│ ⚡ Fast Ingestion    │ 🎯 Smart Routing     │ 🛡️ Anti-Abuse & Grace Period       │
+│ ⚡ Fast Ingestion    │ 🎯 Smart Routing     │ 🛡️ Anti-Abuse & Rate Limiting      │
 │ • 202 Accepted       │ • Auto-assign OPD    │ • Idempotency key per submission   │
-│ • Async BullMQ Queue │ • Urgency-weighted   │ • 5-min cancel support window      │
-│ • Non-blocking       │ • PostGIS Spatial    │ • Spammer review flag penalty      │
+│ • Async BullMQ Queue │ • Dynamic Weights DB │ • 5-min cancel support window      │
+│ • Non-blocking       │ • PostGIS Spatial    │ • Throttler: 10/min reports, 20/min│
 ├──────────────────────┼──────────────────────┼────────────────────────────────────┤
-│ 👥 Citizen Loop      │ 📊 Gamification      │ 🤖 Predictive Policy               │
-│ • 100m radius check  │ • Atomic points log  │ • Gemini LLM Policy Simulator      │
-│ • Dispute re-routing │ • Read-only points   │ • XGBoost Infrastructure Decay     │
-│ • 7-day auto resolve │ • Anti-cheat tx      │ • BMKG Weather Context Integration │
+│ 👥 Citizen Loop      │ 🗺️ OpenStreetMap    │ 🤖 Predictive Policy               │
+│ • 100m radius check  │ • Nominatim reverse  │ • Gemini LLM Policy Simulator      │
+│ • Dispute re-routing │ • 1 req/s throttled  │ • XGBoost Zone Risk Prediction     │
+│ • 7-day auto resolve │ • 4-decimal coord    │ • BMKG Weather Context Integration │
 └──────────────────────┴──────────────────────┴────────────────────────────────────┘
 ```
 
@@ -72,20 +73,20 @@
 
 ## 📐 Arsitektur Sistem (Visual Flow)
 
-LaporKita mengadopsi arsitektur **Modular Monolith** dengan pemisahan domain yang bersih, komunikasi asinkron melalui message queue, serta isolasi database layer melalui Prisma ORM dan PostGIS Engine.
-
 ```mermaid
 flowchart TD
     subgraph Clients["📱 Client Layer"]
-        CitizenApp["Flutter Mobile (Warga)"]
-        OperatorWeb["Admin Dashboard (Operator/OPD)"]
-        PolicyPortal["Executive Dashboard (Pemerintah)"]
+        CitizenApp["Flutter Mobile (Citizen App)"]
+        OperatorWeb["Command Center (Web Dashboard)"]
+        PolicyPortal["Policy Maker Dashboard"]
     end
 
     subgraph Gateway["🚪 API Gateway & Common Layer"]
         Prefix["/api/v1 Global Prefix"]
+        Swagger["Swagger UI (/api/docs)"]
+        RateLimiter["Throttler Guard (@nestjs/throttler)"]
         AuthGuard["JWT Auth Guard & Passport"]
-        RBAC["Roles Guard (RBAC)"]
+        RBAC["Roles Guard (RBAC per PRD §3)"]
         ValPipe["Global ValidationPipe (class-validator)"]
         Interceptor["Response Envelope Interceptor"]
         Filter["Global Exception Filter"]
@@ -95,218 +96,128 @@ flowchart TD
         AuthMod["Auth Module\n(JWT, Refresh Token)"]
         UserMod["Users Module\n(Profile, Gamification Points)"]
         ReportMod["Reports Module\n(State Machine, Upvotes, Validations)"]
-        CategoryMod["Categories Module\n(Auto-routing defaults)"]
-        AgencyMod["Agencies Module\n(DPUPR, Dishub, Diskominfo)"]
-        WorkerQueue["Async Queue Layer\n(BullMQ Engine)"]
+        AIVerifyMod["AI Verification Module\n(CV Vision Worker)"]
+        SmartPriorityMod["Smart Priority Module\n(Multi-factor Scoring)"]
+        MapsMod["Maps Module\n(OSM Nominatim Geocoder)"]
+        PredictionMod["Prediction Module\n(XGBoost Zone Metrics & Weather)"]
+        PolicyMod["Policy Simulator Module\n(Gemini 2.5 LLM)"]
+        NotifMod["Notifications & Route Alert\n(Geofencing Proximity)"]
     end
 
-    subgraph Intelligence["🧠 AI & External Services"]
-        GeminiAI["Gemini 2.0 / Vision\n(Image Verification & Policy Sim)"]
-        XGBoostEngine["ML Service\n(Urgency & Decay Prediction)"]
-        BMKG["BMKG Weather API"]
-    end
-
-    subgraph Storage["💾 Persistence & State Layer"]
-        Postgres[(PostgreSQL 16 + PostGIS\nSpatial GIST Indexes)]
-        RedisCache[(Redis 7\nQueue State & Rate Limits)]
+    subgraph Infra["🗄️ Database & Storage Layer"]
+        Postgres["PostgreSQL 16 + PostGIS\n(Prisma ORM 7.9)"]
+        Redis["Redis 7 (BullMQ Queue)\n- verify-report\n- reverse-geocode"]
     end
 
     Clients --> Gateway
     Gateway --> Modules
-    ReportMod -->|Dispatch Job| WorkerQueue
-    WorkerQueue <--> RedisCache
-    WorkerQueue --> Intelligence
-    Modules <--> Postgres
+    Modules --> Infra
 ```
 
 ---
 
 ## 🔄 Diagram State Machine Laporan
 
-Seluruh alur status laporan fasilitas umum dikontrol secara ketat melalui metode terpusat `transitionReportStatus()` sesuai dengan aturan **[Rules.md §1.1](file:///Users/nabilkencana/Project%20/backend-laporkita/Rules.md)**.
+Status laporan bertransisi secara ketat sesuai **Rules.md §1.1**:
 
 ```mermaid
 stateDiagram-v2
-    [*] --> pending_verification: POST /reports (202 Accepted)
+    [*] --> pending_verification: Submit Laporan (Warga)
     
-    pending_verification --> verified: AI Confidence ≥ 0.70 / Operator Lolos (+10 Poin)
-    pending_verification --> rejected: AI / Manual Reject (Wajib Note)
+    pending_verification --> verified: AI Verification / Operator Approval
+    pending_verification --> rejected: Ditolak Operator (Note Wajib)
     
-    note right of rejected
-        FINAL STATE
-        Jika user >3x reject dlm 30 hari:
-        -20 Poin & is_flagged_for_review = true
-    end note
+    verified --> assigned: Ditugaskan ke OPD / Petugas
+    assigned --> in_progress: Pengerjaan Dimulai
     
-    verified --> assigned: Auto/Manual Routing ke Instansi (DPUPR / Dishub)
-    assigned --> in_progress: Petugas Turun Lapangan
+    in_progress --> completed: Selesai Pengerjaan (+ Bukti Foto Wajib)
     
-    in_progress --> completed: Pekerjaan Selesai (Wajib Foto Completion!)
+    completed --> resolved: Citizen Validation (Valid / 7-Hari Auto)
+    completed --> disputed: Citizen Validation (Tidak Sesuai)
     
-    completed --> resolved: Validasi Warga (is_valid: true) (+5 Poin)
-    completed --> resolved: Cron Job 7 Hari Tanpa Sanggahan
-    completed --> disputed: Validasi Warga (is_valid: false) (Sengketa)
-    
-    disputed --> in_progress: Otomatis Re-Route & Skor Urgensi Naik
+    disputed --> in_progress: Kembali Dikerjakan (+ Urgency Naik)
     
     resolved --> [*]
+    rejected --> [*]
 ```
 
 ---
 
-## 📁 Struktur Modul & Layering
+## 📋 Daftar Lengkap REST API & Matriks RBAC
 
-Struktur direktori dibangun persis mengikuti panduan **[Architecture.md §3.1](file:///Users/nabilkencana/Project%20/backend-laporkita/Architecture.md)**:
-
-```
-backend-laporkita/
-├── src/
-│   ├── common/                          # Global Shared Utilities
-│   │   ├── decorators/                  # @Roles(), @Public(), @CurrentUser()
-│   │   ├── filters/                     # HttpExceptionFilter (Error Envelope)
-│   │   ├── guards/                      # JwtAuthGuard, RolesGuard (RBAC)
-│   │   └── interceptors/                # ResponseInterceptor (Success Envelope)
-│   │
-│   ├── modules/                         # Domain Modules (Controller + Service + DTO + Repo)
-│   │   ├── auth/                        # Register, Login, Refresh JWT, Passport Strategy
-│   │   ├── users/                       # Profil Pengguna, Read-Only Gamifikasi, Admin RBAC
-│   │   ├── reports/                     # State Machine, Validasi Spasial Haversine, Upvote
-│   │   │   ├── dto/                     # CreateReport, TransitionStatus, ValidateReport, dll.
-│   │   │   ├── utils/                   # geo.util (Malang BBox), profanity-filter, report-code
-│   │   │   ├── reports.controller.ts
-│   │   │   ├── reports.service.ts
-│   │   │   ├── reports.repository.ts
-│   │   │   └── reports.service.spec.ts  # Unit Tests State Machine & Spasial
-│   │   ├── categories/                  # 5 Kategori Aktif, Default Agency Routing
-│   │   ├── agencies/                    # DPUPRPKP, Dishub, Diskominfo Kota Malang
-│   │   ├── notifications/               # (Fase 4) Push Notification & Route Alert
-│   │   ├── maps/                        # (Fase 4) Urban Emotion Map PostGIS
-│   │   ├── ai-verification/             # (Fase 5) Worker Klasifikasi Gambar Gemini
-│   │   ├── smart-priority/              # (Fase 5) Algoritma Scoring Multi-Faktor
-│   │   ├── prediction/                  # (Fase 5) Model XGBoost Prediksi Kerusakan
-│   │   ├── policy-simulator/            # (Fase 5) Gemini LLM Simulasi Kebijakan
-│   │   └── points/                      # (Fase 5) Leaderboard & Reward Warga
-│   │
-│   ├── prisma/                          # Database & Migration Engine
-│   │   ├── migrations/                  # SQL Migrations (PostGIS Extension & GIST Indexes)
-│   │   ├── schema.prisma                # 15 Models + 7 Enums
-│   │   ├── prisma.service.ts            # Prisma 7.x Driver Adapter (PrismaPg)
-│   │   └── seed.ts                      # Seeding Kategori, Instansi, & Default Admin
-│   │
-│   ├── app.module.ts                    # Root Application Module
-│   └── main.ts                          # Bootstrap, Versioning (/api/v1), Pipes, CORS
-│
-├── Dockerfile                           # Multi-stage Production Build
-├── docker-compose.yml                   # PostgreSQL PostGIS + Redis Stack
-├── prisma.config.ts                     # Prisma 7 Datasource Configuration
-├── package.json
-└── tsconfig.json                        # Strict Mode Enabled
-```
-
----
-
-## 🗄️ Skema Database & Spasial PostGIS
-
-Sistem menggunakan **15 Model Entitas Relasional** yang didefinisikan secara presisi pada **[ERD.md](file:///Users/nabilkencana/Project%20/backend-laporkita/ERD.md)**:
-
-```mermaid
-erDiagram
-    users ||--o{ reports : "melaporkan"
-    users ||--o{ report_supports : "mendukung"
-    users ||--o{ report_comments : "berkomentar"
-    users ||--o{ citizen_validations : "memvalidasi"
-    users ||--o{ contribution_points_log : "riwayat poin"
-    users }o--|| agencies : "terikat instansi"
-    
-    agencies ||--o{ categories : "instansi default"
-    agencies ||--o{ reports : "ditugaskan ke"
-    
-    categories ||--o{ reports : "kategori fasilitas"
-    
-    reports ||--o{ report_media : "lampiran foto"
-    reports ||--o{ report_status_history : "audit status"
-    reports ||--o{ report_supports : "didukung oleh"
-    reports ||--o{ report_comments : "komentar warga"
-    reports ||--o{ citizen_validations : "divalidasi"
-    
-    zones ||--o{ zone_metrics : "histori metrik"
-    zones ||--o{ policy_simulations : "zona simulasi"
-```
-
-### 📍 Justifikasi Index Spasial PostGIS (Raw SQL)
-Prisma schema DSL tidak mendukung ekspresi indeks spasial `USING GIST`. Oleh karena itu, migrasi SQL ([`src/prisma/migrations/`](file:///Users/nabilkencana/Project%20/backend-laporkita/src/prisma/migrations/)) menyertakan raw SQL:
-1. **`reports_spatial_location_gist_idx`**: Indeks spasial GIST berbasis koordinat laporan `ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)` untuk akselerasi query peta interaktif dan filter Bounding Box Kota Malang.
-2. **`zones_geo_boundary_gist_idx`**: Indeks spasial GIST untuk polygon zona wilayah Urban Emotion Map.
-
----
-
-## 📬 Desain API & Response Envelope
-
-Semua endpoint backend LaporKita mengembalikan format envelope yang seragam dan konsisten sesuai **[Rules.md §3](file:///Users/nabilkencana/Project%20/backend-laporkita/Rules.md)**.
-
-### 1. Format Response Sukses
+Semua response API dibungkus dalam **Response Envelope Standar**:
 ```json
 {
   "success": true,
   "data": { ... },
-  "meta": {
-    "total": 120,
-    "limit": 20,
-    "nextCursor": "b19c9c26-dba5-468e-bd99-101ae853fb74",
-    "hasPrevious": false
-  },
-  "error": null
+  "meta": { "total": 100, "limit": 20, "nextCursor": "uuid" },
+  "message": "Operasi berhasil"
 }
 ```
 
-### 2. Format Response Error
-```json
-{
-  "success": false,
-  "data": null,
-  "error": {
-    "code": "INVALID_STATUS_TRANSITION",
-    "message": "Tidak dapat mengubah status dari 'pending_verification' ke 'completed'.",
-    "details": []
-  }
-}
-```
+### 1. Autentikasi (`/api/v1/auth`)
+| Method | Endpoint | Role Access | Keterangan |
+|---|---|---|---|
+| `POST` | `/api/v1/auth/register` | Publik | Registrasi akun warga umum (`citizen`) |
+| `POST` | `/api/v1/auth/login` | Publik | Login email / nomor telepon + password |
+| `POST` | `/api/v1/auth/refresh` | Publik | Rotasi access token via refresh token |
 
-### 3. Ringkasan Endpoint Utama
+### 2. Pengguna & Gamifikasi (`/api/v1/users`)
+| Method | Endpoint | Role Access | Keterangan |
+|---|---|---|---|
+| `GET` | `/api/v1/users/me` | Authenticated | Profil user saat ini |
+| `PATCH` | `/api/v1/users/me` | Authenticated | Update profil user saat ini |
+| `GET` | `/api/v1/users/me/points` | Authenticated | Riwayat poin kontribusi warga |
+| `GET` | `/api/v1/users` | `admin` | Daftar seluruh user (Pagination) |
+| `GET` | `/api/v1/users/:id` | `admin` | Detail user tertentu |
+| `PATCH` | `/api/v1/users/:id` | `admin` | Update role / flag review user |
+| `DELETE` | `/api/v1/users/:id` | `admin` | Hapus akun user |
 
-| Modul | Method | Endpoint | Status | Akses | Fungsi |
-|---|---|---|---|---|---|
-| **Auth** | `POST` | `/api/v1/auth/register` | `201` | Public | Registrasi warga (`role: citizen`) |
-| **Auth** | `POST` | `/api/v1/auth/login` | `200` | Public | Login akun & perolehan token pair |
-| **Auth** | `POST` | `/api/v1/auth/refresh` | `200` | Public | Pembaruan Access Token JWT |
-| **Users** | `GET` | `/api/v1/users/me` | `200` | Auth | Profil user terautentikasi |
-| **Users** | `GET` | `/api/v1/users/me/points` | `200` | Auth | **Read-only** riwayat gamifikasi poin |
-| **Users** | `GET` | `/api/v1/users` | `200` | Admin | List & filter seluruh user |
-| **Reports** | `POST` | `/api/v1/reports` | **`202`** | Auth | Submit laporan (Idempotent & cepat) |
-| **Reports** | `GET` | `/api/v1/reports` | `200` | Public | List laporan (Peta / Cursor Pagination) |
-| **Reports** | `GET` | `/api/v1/reports/:id` | `200` | Public | Detail laporan & histori audit status |
-| **Reports** | `PATCH` | `/api/v1/reports/:id/status`| `200` | Operator/Admin | Transisi status state machine |
-| **Reports** | `POST` | `/api/v1/reports/:id/support`| `201` | Auth | Beri dukungan/upvote laporan (+1 poin) |
-| **Reports** | `DELETE`| `/api/v1/reports/:id/support`| `200` | Auth | Batal dukungan (**Grace period 5 menit**) |
-| **Reports** | `POST` | `/api/v1/reports/:id/validate`| `200`| Auth | Citizen validation (**Radius 100m**) |
-| **Reports** | `POST` | `/api/v1/reports/:id/media` | `201` | Auth | Upload foto progres / completion |
-| **Categories**| `GET` | `/api/v1/categories` | `200` | Public | List 5 kategori aktif fasilitas |
-| **Agencies** | `GET` | `/api/v1/agencies` | `200` | Auth | List OPD Kota Malang & relasi laporan |
+### 3. Laporan Kerusakan Fasilitas (`/api/v1/reports`)
+| Method | Endpoint | Role Access | Keterangan |
+|---|---|---|---|
+| `POST` | `/api/v1/reports` | Authenticated | Submit laporan (Rate limit: 10/min, 202 Accepted) |
+| `GET` | `/api/v1/reports` | Publik | List laporan & pin peta (Filter & Cursor Pagination) |
+| `GET` | `/api/v1/reports/:id` | Publik | Detail lengkap laporan & timeline status |
+| `PATCH` | `/api/v1/reports/:id/status` | `operator`, `admin` | Transisi status pengerjaan laporan |
+| `POST` | `/api/v1/reports/:id/support` | Authenticated | Beri upvote / dukungan (Rate limit: 30/min) |
+| `DELETE` | `/api/v1/reports/:id/support` | Authenticated | Batalkan upvote (Grace period 5 menit) |
+| `POST` | `/api/v1/reports/:id/comments` | Authenticated | Kirim komentar (Rate limit: 20/min, Profanity masked) |
+| `GET` | `/api/v1/reports/:id/comments` | Publik | List komentar laporan (Cursor pagination) |
+| `POST` | `/api/v1/reports/:id/validate` | Authenticated | Citizen validation (Resolved / Disputed) |
+| `POST` | `/api/v1/reports/:id/media` | Authenticated | Tambah foto pengerjaan / penyelesaian |
 
----
+### 4. Prediksi & Metrik Zona (`/api/v1/predictions`)
+| Method | Endpoint | Role Access | Keterangan |
+|---|---|---|---|
+| `GET` | `/api/v1/predictions/zones` | Publik | Daftar zona Kota Malang & stress level terkini |
+| `GET` | `/api/v1/predictions/zones/:zoneId/metrics` | Publik | Histori metrik risiko & cuaca zona |
+| `POST` | `/api/v1/predictions/metrics/refresh` | `operator`, `policy_maker`, `admin` | Trigger refresh prediksi risiko seluruh zona |
 
-## 🛡️ Matriks Role-Based Access Control (RBAC)
+### 5. Policy Simulator (`/api/v1/policy-simulations`)
+| Method | Endpoint | Role Access | Keterangan |
+|---|---|---|---|
+| `POST` | `/api/v1/policy-simulations` | `policy_maker`, `admin` | Jalankan simulasi kebijakan tata ruang via LLM Gemini |
+| `GET` | `/api/v1/policy-simulations` | `policy_maker`, `admin` | Riwayat simulasi kebijakan publik |
+| `GET` | `/api/v1/policy-simulations/:id` | `policy_maker`, `admin` | Detail narasi & data proyeksi kebijakan |
 
-| Resource / Tindakan | `citizen` (Warga) | `operator` (Petugas OPD) | `policy_maker` (Pemerintah) | `admin` (Super Admin) |
-|---|:---:|:---:|:---:|:---:|
-| Submit Laporan Baru | ✅ | ✅ | ✅ | ✅ |
-| Upvote / Dukung Laporan | ✅ | ✅ | ✅ | ✅ |
-| Validasi Selesai (100m) | ✅ | ❌ | ❌ | ✅ |
-| Mutasi Status Laporan | ❌ | ✅ | ❌ | ✅ |
-| Upload Bukti Pengerjaan | ❌ | ✅ | ❌ | ✅ |
-| Simulasi Kebijakan AI | ❌ | ❌ | ✅ | ✅ |
-| CRUD Kategori & Instansi | ❌ | ❌ | ❌ | ✅ |
-| Kelola Akun & Role User | ❌ | ❌ | ❌ | ✅ |
+### 6. Notifikasi & Route Alert (`/api/v1/notifications` & `/api/v1/route-alerts`)
+| Method | Endpoint | Role Access | Keterangan |
+|---|---|---|---|
+| `POST` | `/api/v1/route-alerts/subscribe` | Authenticated | Daftar / update token FCM & koordinat Route Alert |
+| `DELETE` | `/api/v1/route-alerts/unsubscribe` | Authenticated | Hapus langganan Route Alert |
+| `POST` | `/api/v1/route-alerts/check` | Authenticated | Trigger simulasi geofencing proximity check (radius 500m) |
+| `GET` | `/api/v1/notifications` | Authenticated | List notifikasi in-app pengguna |
+| `PATCH` | `/api/v1/notifications/:id/read` | Authenticated | Tandai satu notifikasi telah dibaca |
+| `PATCH` | `/api/v1/notifications/read-all` | Authenticated | Tandai seluruh notifikasi telah dibaca |
+
+### 7. Master Data Kategori & Instansi (`/api/v1/categories` & `/api/v1/agencies`)
+| Method | Endpoint | Role Access | Keterangan |
+|---|---|---|---|
+| `GET` | `/api/v1/categories` | Publik | Daftar kategori fasilitas publik aktif |
+| `POST` / `PATCH` / `DELETE` | `/api/v1/categories` | `admin` | Manajemen master kategori |
+| `GET` | `/api/v1/agencies` | Publik | Daftar instansi / dinas (DPUPR, Dishub, dll) |
+| `POST` / `PATCH` / `DELETE` | `/api/v1/agencies` | `admin` | Manajemen master instansi |
 
 ---
 
@@ -314,16 +225,16 @@ Semua endpoint backend LaporKita mengembalikan format envelope yang seragam dan 
 
 ### 1. Prasyarat Sistem
 - **Node.js**: `v20.x` atau lebih baru
-- **Docker & Docker Compose**: Untuk PostgreSQL + PostGIS dan Redis
-- **npm** / **pnpm**
+- **Docker & Docker Compose**: Untuk PostgreSQL 16 (PostGIS) dan Redis 7
+- **npm**: `v10.x` atau lebih baru
 
-### 2. Kloning & Konfigurasi Environment
+### 2. Clone & Setup Environment
 ```bash
 # Clone repository
 git clone https://github.com/nabilkencana/Backend-Laporkita.git
 cd backend-laporkita
 
-# Salin template environment variables
+# Salin environment file
 cp .env.example .env
 ```
 
@@ -338,51 +249,80 @@ docker compose up -d
 # Install seluruh dependensi
 npm install
 
-# Generate Prisma Client (Prisma 7)
+# Generate Prisma Client
 npm run db:generate
 
-# Deploy migrasi DDL & PostGIS Index
+# Deploy migrasi database
 npx prisma migrate deploy
 
-# Seed data awal (3 Instansi, 5 Kategori Aktif, & 1 Admin User)
+# Seed data awal (3 Instansi, 5 Kategori, 5 Zona Malang, Bobot Prioritas DB, & Akun Admin)
 npm run db:seed
 ```
 
 ### 5. Menjalankan Server Backend
 ```bash
-# Mode Development (Watch Mode)
-npm run start:dev
+# Mode Development (Hot Reload)
+npm run dev
+# atau: npm run start:dev
 
-# Mode Production
+# Mode Production Build
 npm run build
 npm run start:prod
 ```
-> Server akan aktif di: **`http://localhost:3000/api/v1`** (Health check: `GET /api/v1/health`).
+> Server aktif di: **`http://localhost:3000/api/v1`** (Health check: `GET /api/v1/health`).
+
+---
+
+## 📖 Dokumentasi API Swagger / OpenAPI
+
+Dokumentasi interaktif OpenAPI 3.0 tersedia secara otomatis saat server berjalan:
+
+🔗 **URL Swagger UI**: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
+
+Fitur Swagger UI:
+- **Try it out** langsung dari browser.
+- **Authorize Bearer Token**: Masukkan access token JWT untuk mencoba endpoint yang dilindungi role RBAC.
+- Kontrak request, DTO schema, response envelope, dan HTTP status code.
 
 ---
 
 ## 🧪 Pengujian & Validasi Kualitas
 
-Backend LaporKita dilengkapi dengan automated testing suite untuk memverifikasi keandalan bisnis:
+Backend LaporKita dilengkapi dengan test suite lengkap (Unit Tests, Audit Trail Integration Tests, dan End-to-End Supertest Tests):
 
 ```bash
-# Menjalankan seluruh unit test suite
-npm run test
+# 1. Menjalankan seluruh Unit Tests & Integration Tests (13 test suites, 78 tests)
+npm test
 
-# Menjalankan linter TypeScript strict
+# 2. Menjalankan End-to-End Tests (Supertest)
+npm run test:e2e
+
+# 3. Menjalankan Linter TypeScript strict
 npm run lint
 
-# Menjalankan pengujian cakupan kode (Code Coverage)
+# 4. Menjalankan Test Coverage
 npm run test:cov
 ```
 
-### 🎯 Cakupan Pengujian Otomatis
-- ✅ **State Machine**: Verifikasi seluruh transisi status legal dan penolakan status ilegal (`ConflictException: 409`).
-- ✅ **Completion Photo Gate**: Penguncian transisi status `completed` tanpa bukti foto pengerjaan.
-- ✅ **Upvote Grace Period**: Pembatalan dukungan sukses dlm 5 menit dan ditolak setelah 5 menit.
-- ✅ **Haversine Distance**: Pengecekan radius spasial 100m untuk Citizen Validation non-pelapor.
-- ✅ **Automated 7-Day Resolver**: Pengujian Cron Job pembersihan laporan `completed` menggantung.
-- ✅ **Anti-Spam Penalty**: Sanksi penalti `-20 poin` dan review flag jika user ditolak >3x dlm 30 hari.
+---
+
+## 🔌 Status Integrasi Eksternal & MOCK
+
+Modul backend dibangun dengan arsitektur interface adapter yang dapat beralih antara **MOCK** (untuk pengujian lokal & offline) dan **Layanan Eksternal Asli** tanpa mengubah kode pemanggil:
+
+| Modul | Komponen | Status Saat Ini | Cara Beralih ke Asli |
+|---|---|---|---|
+| `ai-verification` | Computer Vision Service | **HTTP Client + MOCK Fallback** | Jalankan service Python FastAPI (`AI_SERVICE_URL`) |
+| `prediction` | XGBoost & BMKG Weather | **HTTP Client + MOCK Fallback** | Jalankan microservice Python (`AI_SERVICE_URL`) |
+| `policy-simulator` | Gemini 2.5 Flash LLM | **Gemini API + MOCK Fallback** | Isi `GEMINI_API_KEY` di file `.env` |
+| `maps` | OpenStreetMap / Nominatim | **Aktif (OSM Public API)** | Menggunakan public Nominatim (Throttled 1 req/s) |
+| `notifications` | FCM Push Notifications | **In-App Notif (FCM TODO)** | Tambahkan Firebase Admin SDK credentials |
+
+### Rekomendasi Urutan Integrasi Eksternal Selanjutnya:
+1. **Google Gemini API Key**: Cukup pasang `GEMINI_API_KEY` di `.env` untuk mengaktifkan output LLM asli pada Policy Simulator.
+2. **AI Microservice Python FastAPI**: Deploy FastAPI service dengan model YOLOv11 & XGBoost untuk evaluasi akurasi Computer Vision real-time.
+3. **Firebase Cloud Messaging (FCM)**: Pasang `firebase-admin` service account untuk push notification background ke aplikasi Flutter mobile warga.
+4. **Self-Hosted Nominatim / Photon**: Jika skala laporan meningkat pesat, swap `NOMINATIM_BASE_URL` ke server lokal/Photon.
 
 ---
 
@@ -393,16 +333,17 @@ npm run test:cov
 | `NODE_ENV` | Mode runtime aplikasi | `development` |
 | `PORT` | Port server aplikasi | `3000` |
 | `DATABASE_URL` | Koneksi PostgreSQL PostGIS | `postgresql://laporkita:laporkita_dev@localhost:5433/laporkita_db?schema=public` |
-| `JWT_SECRET` | Secret key Access Token (min 32 char) | `[Random Secret Key]` |
-| `JWT_REFRESH_SECRET` | Secret key Refresh Token (min 32 char) | `[Random Secret Key]` |
 | `REDIS_URL` | URL instance Redis | `redis://localhost:6379` |
-| `MALANG_LAT_MIN` | Bounding Box Selatan Kota Malang | `-8.2500` |
-| `MALANG_LAT_MAX` | Bounding Box Utara Kota Malang | `-7.8500` |
-| `MALANG_LNG_MIN` | Bounding Box Barat Kota Malang | `112.5000` |
-| `MALANG_LNG_MAX` | Bounding Box Timur Kota Malang | `112.8000` |
-| `CITIZEN_VALIDATION_RADIUS_M` | Toleransi radius validasi warga | `100` (meter) |
-| `SUPPORT_GRACE_PERIOD_MINUTES`| Jendela pembatalan dukungan | `5` (menit) |
-| `CITIZEN_VALIDATION_AUTO_RESOLVE_DAYS`| Batas hari auto-resolve | `7` (hari) |
+| `JWT_SECRET` | Secret key Access Token | `[Min 32 characters secret key]` |
+| `JWT_REFRESH_SECRET` | Secret key Refresh Token | `[Min 32 characters secret key]` |
+| `NOMINATIM_BASE_URL` | Base URL Geocoding OpenStreetMap | `https://nominatim.openstreetmap.org` |
+| `NOMINATIM_USER_AGENT` | Header User-Agent wajib OSM | `LaporKita-CityIntelligence/1.0 (contact@laporkita.id)` |
+| `AI_SERVICE_URL` | URL AI Microservice Python | `http://localhost:8000` |
+| `GEMINI_API_KEY` | API Key Google Gemini Flash | `AIzaSy...` |
+| `MALANG_LAT_MIN` | Batas Selatan Kota Malang | `-8.2500` |
+| `MALANG_LAT_MAX` | Batas Utara Kota Malang | `-7.8500` |
+| `MALANG_LNG_MIN` | Batas Barat Kota Malang | `112.5000` |
+| `MALANG_LNG_MAX` | Batas Timur Kota Malang | `112.8000` |
 
 ---
 

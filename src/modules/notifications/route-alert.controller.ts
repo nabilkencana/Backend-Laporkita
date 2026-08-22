@@ -1,10 +1,12 @@
 import { Controller, Post, Delete, Body, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { NotificationsService } from './notifications.service.js';
 import { RouteAlertSubscribeDto } from './dto/route-alert-subscribe.dto.js';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../../common/guards/roles.guard.js';
 import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 
+@ApiBearerAuth()
 @Controller('route-alerts')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class RouteAlertController {

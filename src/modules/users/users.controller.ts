@@ -1,14 +1,5 @@
-import {
-  Controller,
-  Get,
-  Patch,
-  Delete,
-  Param,
-  Body,
-  Query,
-  UseGuards,
-  ParseUUIDPipe,
-} from '@nestjs/common';
+import { Controller, Get, Patch, Delete, Param, Body, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService, UserResponse } from './users.service.js';
 import { UpdateMeDto } from './dto/update-me.dto.js';
 import { AdminUpdateUserDto } from './dto/admin-update-user.dto.js';
@@ -18,9 +9,11 @@ import { RolesGuard } from '../../common/guards/roles.guard.js';
 import { Roles } from '../../common/decorators/roles.decorator.js';
 import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator.js';
+import { UuidValidationPipe } from '../../common/pipes/uuid-validation.pipe.js';
 import { PaginatedResult } from '../../common/interceptors/response.interceptor.js';
 import { UserRole } from '@prisma/client';
 
+@ApiBearerAuth()
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
@@ -71,14 +64,14 @@ export class UsersController {
 
   @Get(':id')
   @Roles(UserRole.admin)
-  async findUserById(@Param('id', ParseUUIDPipe) id: string): Promise<UserResponse> {
+  async findUserById(@Param('id', new UuidValidationPipe()) id: string): Promise<UserResponse> {
     return this.usersService.findUserById(id);
   }
 
   @Patch(':id')
   @Roles(UserRole.admin)
   async adminUpdateUser(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', new UuidValidationPipe()) id: string,
     @Body() dto: AdminUpdateUserDto,
   ): Promise<UserResponse> {
     return this.usersService.adminUpdateUser(id, dto);
@@ -87,7 +80,7 @@ export class UsersController {
   @Delete(':id')
   @Roles(UserRole.admin)
   async deleteUser(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', new UuidValidationPipe()) id: string,
     @CurrentUser() currentUser: AuthenticatedUser,
   ): Promise<{ message: string }> {
     return this.usersService.deleteUser(id, currentUser.id);

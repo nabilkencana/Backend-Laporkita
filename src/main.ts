@@ -3,6 +3,7 @@ import { ValidationPipe, Logger, VersioningType } from '@nestjs/common';
 import { AppModule } from './app.module.js';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor.js';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 /**
  * Bootstrap aplikasi LaporKita Backend.
@@ -12,6 +13,7 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor.
  * - ValidationPipe (whitelist + forbidNonWhitelisted) (Rules.md §4.1)
  * - HttpExceptionFilter — format error envelope (Rules.md §3)
  * - ResponseInterceptor — format success envelope (Rules.md §3)
+ * - Swagger OpenAPI docs di /api/docs
  * - CORS — akan di-restrict ke domain spesifik di production
  */
 async function bootstrap(): Promise<void> {
@@ -54,6 +56,42 @@ async function bootstrap(): Promise<void> {
   // ── Global Response Interceptor ─────────────────────────────────────────
   // Otomatis bungkus response sukses ke envelope Rules.md §3.
   app.useGlobalInterceptors(new ResponseInterceptor());
+
+  // ── Swagger / OpenAPI Documentation ──────────────────────────────────────
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('LaporKita — City Intelligence Platform API')
+    .setDescription(
+      'Dokumentasi REST API lengkap LaporKita Backend untuk Citizen App (B2C) dan Command Center (B2G).',
+    )
+    .setVersion('1.0.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Masukkan access token JWT',
+        in: 'header',
+      },
+      'bearer',
+    )
+    .addTag('Auth', 'Autentikasi & Token JWT')
+    .addTag('Users', 'Profil & Manajemen Pengguna')
+    .addTag('Categories', 'Kategori Fasilitas Publik')
+    .addTag('Agencies', 'Dinas / Instansi Terkait')
+    .addTag('Reports', 'Pelaporan, Status Tracking, Dukungan, Komentar, & Validasi')
+    .addTag('Notifications', 'Notifikasi Pengguna')
+    .addTag('Route Alerts', 'Peringatan Rute Geofencing')
+    .addTag('Predictions', 'Prediksi Risiko Zona XGBoost & Cuaca')
+    .addTag('Policy Simulator', 'Simulasi Kebijakan Tata Ruang Gemini LLM')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api/docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  });
 
   // ── CORS ─────────────────────────────────────────────────────────────────
   // TODO fase production: restrict origin ke domain Flutter app yang spesifik.

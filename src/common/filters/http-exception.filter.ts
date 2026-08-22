@@ -43,6 +43,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     const { status, errorResponse } = this.resolveException(exception);
 
+    if (status === Number(HttpStatus.TOO_MANY_REQUESTS)) {
+      response.setHeader('Retry-After', '60');
+    }
+
     // Log error — 500 sebagai error, sisanya sebagai warn
     if (status >= 500) {
       this.logger.error(
@@ -66,6 +70,33 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
+
+      // Deteksi parsing error dari body-parser (Pekerjaan 5)
+      if (status === Number(HttpStatus.BAD_REQUEST)) {
+        const rawMsg =
+          typeof exceptionResponse === 'string'
+            ? exceptionResponse
+            : typeof exceptionResponse === 'object' &&
+                exceptionResponse !== null &&
+                'message' in exceptionResponse
+              ? String((exceptionResponse as Record<string, unknown>).message)
+              : exception.message;
+
+        if (/JSON|Unexpected token|Unexpected end|Expected propert/i.test(rawMsg)) {
+          return {
+            status: HttpStatus.BAD_REQUEST,
+            errorResponse: {
+              success: false,
+              data: null,
+              error: {
+                code: 'INVALID_JSON',
+                message: 'Format body JSON tidak valid.',
+                details: ['Request body harus berupa JSON yang valid.'],
+              },
+            },
+          };
+        }
+      }
 
       // ValidationPipe menghasilkan BadRequestException dengan array pesan
       if (

@@ -1,0 +1,57 @@
+{
+  "id": "5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b",
+  "name": "LaporKita QA (Local)",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "enabled": true
+    },
+    {
+      "key": "adminEmail",
+      "value": "admin@laporkita.malangkota.go.id",
+      "enabled": true
+    },
+    {
+      "key": "adminPassword",
+      "value": "AdminLaporKita2026!",
+      "enabled": true
+    },
+    {
+      "key": "citizenEmail",
+      "value": "budi@example.com",
+      "enabled": true
+    },
+    {
+      "key": "citizenPassword",
+      "value": "BudiPass123",
+      "enabled": true
+    },
+    {
+      "key": "categoryId",
+      "value": "c5000000-0000-4000-8000-000000000005",
+      "enabled": true
+    },
+    {
+      "key": "agencyId",
+      "value": "a1000000-0000-4000-8000-000000000001",
+      "enabled": true
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "reportId",
+      "value": "",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}

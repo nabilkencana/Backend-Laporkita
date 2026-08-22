@@ -19,9 +19,12 @@ import { MapsModule } from './modules/maps/maps.module.js';
 import { PredictionModule } from './modules/prediction/prediction.module.js';
 import { PolicySimulatorModule } from './modules/policy-simulator/policy-simulator.module.js';
 
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+
 /**
  * AppModule — root module aplikasi LaporKita backend.
- * Sesuai Architecture.md §3.1.
+ * Sesuai Architecture.md §3.1 & §7.
  */
 @Module({
   imports: [
@@ -30,6 +33,15 @@ import { PolicySimulatorModule } from './modules/policy-simulator/policy-simulat
       isGlobal: true,
       envFilePath: ['.env', '.env.local'],
     }),
+
+    // ── Rate Limiting (Architecture.md §7) ──────────────────────────────────
+    ThrottlerModule.forRoot([
+      {
+        name: 'default',
+        ttl: 60000, // 60 detik
+        limit: 100, // default 100 requests per menit
+      },
+    ]),
 
     // ── BullMQ Redis Connection (global) ───────────────────────────────────
     BullModule.forRootAsync({
@@ -59,11 +71,14 @@ import { PolicySimulatorModule } from './modules/policy-simulator/policy-simulat
     MapsModule,
     PredictionModule,
     PolicySimulatorModule,
-
-    // Modul fase selanjutnya:
-    // PointsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

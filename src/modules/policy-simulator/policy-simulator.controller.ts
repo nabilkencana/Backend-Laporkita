@@ -6,18 +6,20 @@ import {
   Param,
   Query,
   UseGuards,
-  ParseUUIDPipe,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { PolicySimulatorService } from './policy-simulator.service.js';
 import { CreatePolicySimulationDto } from './dto/create-simulation.dto.js';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../../common/guards/roles.guard.js';
 import { Roles } from '../../common/decorators/roles.decorator.js';
 import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
+import { UuidValidationPipe } from '../../common/pipes/uuid-validation.pipe.js';
 import { UserRole } from '@prisma/client';
 
+@ApiBearerAuth()
 @Controller('policy-simulations')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.policy_maker, UserRole.admin)
@@ -49,7 +51,7 @@ export class PolicySimulatorController {
    * Detail Simulasi Kebijakan — GET /api/v1/policy-simulations/:id
    */
   @Get(':id')
-  async findById(@Param('id', ParseUUIDPipe) id: string) {
+  async findById(@Param('id', new UuidValidationPipe()) id: string) {
     return this.policySimulatorService.findById(id);
   }
 }

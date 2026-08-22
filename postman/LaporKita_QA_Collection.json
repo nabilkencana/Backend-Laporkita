@@ -1,0 +1,2145 @@
+{
+  "info": {
+    "_postman_id": "0f9e2a1b-3c4d-4e5f-8a9b-1c2d3e4f5a6b",
+    "name": "LaporKita API — QA Collection (National Competition)",
+    "description": "Koleksi Postman lengkap untuk pengujian REST API LaporKita (NestJS).\nBase URL: http://localhost:3000/api/v1\nFlow: 1) Register/Login → token tersimpan otomatis ke collection variable 'accessToken'. 2) Endpoint protected membaca token tersebut (Authorization: Bearer).\n3) Ganti {id} di URL dengan ID nyata dari respons create.\nDokumentasi Swagger: http://localhost:3000/api/docs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Base & Health",
+      "item": [
+        {
+          "name": "GET /api/v1/health — AppController_getHealth_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "health"
+              ]
+            },
+            "description": "AppController_getHealth_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 - Auth (JWT)",
+      "item": [
+        {
+          "name": "POST /api/v1/auth/register — AuthController_register_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Budi Santoso\",\n  \"email\": \"budi@example.com\",\n  \"phone_number\": \"+6281234567890\",\n  \"password\": \"BudiPass123\"\n}"
+            },
+            "description": "AuthController_register_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 201', function () {",
+                    "    pm.response.to.have.status(201);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    "",
+                    "if (pm.response.code === 200 || pm.response.code === 201) {",
+                    "    const body = pm.response.json();",
+                    "    if (body.data && body.data.access_token) {",
+                    "        pm.collectionVariables.set('accessToken', body.data.access_token);",
+                    "        pm.collectionVariables.set('refreshToken', body.data.refresh_token);",
+                    "        pm.collectionVariables.set('userId', body.data.user.id);",
+                    "    }",
+                    "}",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/v1/auth/login — AuthController_login_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"admin@laporkita.malangkota.go.id\",\n  \"password\": \"AdminLaporKita2026!\"\n}"
+            },
+            "description": "AuthController_login_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    "",
+                    "if (pm.response.code === 200 || pm.response.code === 201) {",
+                    "    const body = pm.response.json();",
+                    "    if (body.data && body.data.access_token) {",
+                    "        pm.collectionVariables.set('accessToken', body.data.access_token);",
+                    "        pm.collectionVariables.set('refreshToken', body.data.refresh_token);",
+                    "        pm.collectionVariables.set('userId', body.data.user.id);",
+                    "    }",
+                    "}",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/v1/auth/refresh — AuthController_refresh_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "refresh"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refreshToken}}\"\n}"
+            },
+            "description": "AuthController_refresh_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 - Users",
+      "item": [
+        {
+          "name": "GET /api/v1/users/me — UsersController_getMe_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ]
+            },
+            "description": "UsersController_getMe_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/v1/users/me — UsersController_updateMe_v1",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Budi Santoso Update\",\n  \"avatar_url\": \"https://storage.example.com/avatar.png\"\n}"
+            },
+            "description": "UsersController_updateMe_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/v1/users/me/points — UsersController_getMyPoints_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/points",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "points"
+              ]
+            },
+            "description": "UsersController_getMyPoints_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/v1/users — UsersController_findAllUsers_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "UsersController_findAllUsers_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/v1/users/{id} — UsersController_findUserById_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "847ff810-812d-4042-acf7-c97b8c3299b3"
+              ]
+            },
+            "description": "UsersController_findUserById_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/v1/users/{id} — UsersController_adminUpdateUser_v1",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "847ff810-812d-4042-acf7-c97b8c3299b3"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"operator\"\n}"
+            },
+            "description": "UsersController_adminUpdateUser_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/v1/users/{id} — UsersController_deleteUser_v1",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "847ff810-812d-4042-acf7-c97b8c3299b3"
+              ]
+            },
+            "description": "UsersController_deleteUser_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 - Categories",
+      "item": [
+        {
+          "name": "GET /api/v1/categories — CategoriesController_findAll_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories"
+              ]
+            },
+            "description": "CategoriesController_findAll_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/v1/categories — CategoriesController_create_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jalan Berlubang Baru\",\n  \"icon_url\": \"https://assets.example.com/icons/new.svg\",\n  \"urgency_weight\": 1.5,\n  \"default_agency_id\": \"a1000000-0000-4000-8000-000000000001\"\n}"
+            },
+            "description": "CategoriesController_create_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 201', function () {",
+                    "    pm.response.to.have.status(201);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/v1/categories/{id} — CategoriesController_findById_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories",
+                "847ff810-812d-4042-acf7-c97b8c3299b3"
+              ]
+            },
+            "description": "CategoriesController_findById_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/v1/categories/{id} — CategoriesController_update_v1",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories",
+                "847ff810-812d-4042-acf7-c97b8c3299b3"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"urgency_weight\": 1.6\n}"
+            },
+            "description": "CategoriesController_update_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/v1/categories/{id} — CategoriesController_delete_v1",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories",
+                "847ff810-812d-4042-acf7-c97b8c3299b3"
+              ]
+            },
+            "description": "CategoriesController_delete_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05 - Agencies",
+      "item": [
+        {
+          "name": "GET /api/v1/agencies — AgenciesController_findAll_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/agencies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "agencies"
+              ]
+            },
+            "description": "AgenciesController_findAll_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/v1/agencies — AgenciesController_create_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/agencies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "agencies"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dinas Kebersihan Kota Malang\",\n  \"type\": \"dpupr\",\n  \"contact_email\": \"kebersihan@malangkota.go.id\"\n}"
+            },
+            "description": "AgenciesController_create_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 201', function () {",
+                    "    pm.response.to.have.status(201);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/v1/agencies/{id} — AgenciesController_findById_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/agencies/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "agencies",
+                "847ff810-812d-4042-acf7-c97b8c3299b3"
+              ]
+            },
+            "description": "AgenciesController_findById_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/v1/agencies/{id} — AgenciesController_update_v1",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/agencies/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "agencies",
+                "847ff810-812d-4042-acf7-c97b8c3299b3"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contact_email\": \"update@malangkota.go.id\"\n}"
+            },
+            "description": "AgenciesController_update_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/v1/agencies/{id} — AgenciesController_delete_v1",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/agencies/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "agencies",
+                "847ff810-812d-4042-acf7-c97b8c3299b3"
+              ]
+            },
+            "description": "AgenciesController_delete_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "06 - Reports (Core Flow)",
+      "item": [
+        {
+          "name": "POST /api/v1/reports — ReportsController_submitReport_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": \"c5000000-0000-4000-8000-000000000005\",\n  \"photo_url\": \"https://storage.example.com/pothole.jpg\",\n  \"latitude\": -7.982,\n  \"longitude\": 112.63,\n  \"address_text\": \"Jl. Soekarno Hatta, Kota Malang\",\n  \"description\": \"Lubang besar di tengah jalan membahayakan pengendara motor.\",\n  \"idempotency_key\": \"idem-001\"\n}"
+            },
+            "description": "ReportsController_submitReport_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 202', function () {",
+                    "    pm.response.to.have.status(202);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/v1/reports — ReportsController_findAll_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Jumlah data (1-100)"
+                },
+                {
+                  "key": "status",
+                  "value": "pending_verification",
+                  "description": "Filter status laporan"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "urgency",
+                  "description": "newest | oldest | urgency | most_supported"
+                }
+              ]
+            },
+            "description": "ReportsController_findAll_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/v1/reports/{id} — ReportsController_findById_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "847ff810-812d-4042-acf7-c97b8c3299b3"
+              ]
+            },
+            "description": "ReportsController_findById_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/v1/reports/{id}/status — ReportsController_transitionStatus_v1",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"verified\",\n  \"note\": \"Foto & GPS valid\"\n}"
+            },
+            "description": "ReportsController_transitionStatus_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/v1/reports/{id}/support — ReportsController_supportReport_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3/support",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "support"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "description": "ReportsController_supportReport_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 201', function () {",
+                    "    pm.response.to.have.status(201);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/v1/reports/{id}/support — ReportsController_cancelSupport_v1",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3/support",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "support"
+              ]
+            },
+            "description": "ReportsController_cancelSupport_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/v1/reports/{id}/comments — ReportsController_addComment_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "comments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Mohon segera ditindaklanjuti.\"\n}"
+            },
+            "description": "ReportsController_addComment_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 201', function () {",
+                    "    pm.response.to.have.status(201);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/v1/reports/{id}/comments — ReportsController_getComments_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "comments"
+              ]
+            },
+            "description": "ReportsController_getComments_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/v1/reports/{id}/validate — ReportsController_validateReport_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3/validate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "validate"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_valid\": true,\n  \"latitude\": -7.982,\n  \"longitude\": 112.63,\n  \"note\": \"Perbaikan sudah selesai\"\n}"
+            },
+            "description": "ReportsController_validateReport_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 201', function () {",
+                    "    pm.response.to.have.status(201);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/v1/reports/{id}/media — ReportsController_uploadMedia_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3/media",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "media"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"progress_photo\",\n  \"url\": \"https://storage.example.com/progress.jpg\"\n}"
+            },
+            "description": "ReportsController_uploadMedia_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 201', function () {",
+                    "    pm.response.to.have.status(201);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "07 - Notifications",
+      "item": [
+        {
+          "name": "GET /api/v1/notifications — NotificationsController_getNotifications_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "notifications"
+              ]
+            },
+            "description": "NotificationsController_getNotifications_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/v1/notifications/{id}/read — NotificationsController_markAsRead_v1",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notifications/847ff810-812d-4042-acf7-c97b8c3299b3/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "notifications",
+                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "read"
+              ]
+            },
+            "description": "NotificationsController_markAsRead_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/v1/notifications/read-all — NotificationsController_markAllAsRead_v1",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notifications/read-all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "notifications",
+                "read-all"
+              ]
+            },
+            "description": "NotificationsController_markAllAsRead_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "08 - Route Alerts",
+      "item": [
+        {
+          "name": "POST /api/v1/route-alerts/subscribe — RouteAlertController_subscribe_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/route-alerts/subscribe",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "route-alerts",
+                "subscribe"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device_token\": \"fcm-device-token-123\",\n  \"last_lat\": -7.982,\n  \"last_long\": 112.63\n}"
+            },
+            "description": "RouteAlertController_subscribe_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/v1/route-alerts/unsubscribe — RouteAlertController_unsubscribe_v1",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/route-alerts/unsubscribe",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "route-alerts",
+                "unsubscribe"
+              ]
+            },
+            "description": "RouteAlertController_unsubscribe_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/v1/route-alerts/check — RouteAlertController_triggerProximityCheck_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/route-alerts/check",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "route-alerts",
+                "check"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "description": "RouteAlertController_triggerProximityCheck_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "09 - Predictions",
+      "item": [
+        {
+          "name": "GET /api/v1/predictions/zones — PredictionController_getZones_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/predictions/zones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "predictions",
+                "zones"
+              ]
+            },
+            "description": "PredictionController_getZones_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/v1/predictions/zones/{zoneId}/metrics — PredictionController_getZoneMetrics_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/predictions/zones/00000000-0000-4000-8000-000000000001/metrics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "predictions",
+                "zones",
+                "00000000-0000-4000-8000-000000000001",
+                "metrics"
+              ]
+            },
+            "description": "PredictionController_getZoneMetrics_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/v1/predictions/metrics/refresh — PredictionController_refreshMetrics_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/predictions/metrics/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "predictions",
+                "metrics",
+                "refresh"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "description": "PredictionController_refreshMetrics_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "10 - Policy Simulator",
+      "item": [
+        {
+          "name": "POST /api/v1/policy-simulations — PolicySimulatorController_createSimulation_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/policy-simulations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "policy-simulations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt_text\": \"Apa dampak penambahan drainase di Kecamatan Klojen terhadap risiko banjir?\"\n}"
+            },
+            "description": "PolicySimulatorController_createSimulation_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 201', function () {",
+                    "    pm.response.to.have.status(201);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/v1/policy-simulations — PolicySimulatorController_findAll_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/policy-simulations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "policy-simulations"
+              ]
+            },
+            "description": "PolicySimulatorController_findAll_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/v1/policy-simulations/{id} — PolicySimulatorController_findById_v1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/policy-simulations/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "policy-simulations",
+                "847ff810-812d-4042-acf7-c97b8c3299b3"
+              ]
+            },
+            "description": "PolicySimulatorController_findById_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

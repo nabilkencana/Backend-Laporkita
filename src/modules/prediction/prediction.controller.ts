@@ -5,14 +5,15 @@ import {
   Param,
   Query,
   UseGuards,
-  ParseUUIDPipe,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { PredictionService } from './prediction.service.js';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../../common/guards/roles.guard.js';
 import { Roles, Public } from '../../common/decorators/roles.decorator.js';
+import { UuidValidationPipe } from '../../common/pipes/uuid-validation.pipe.js';
 import { UserRole } from '@prisma/client';
 
 @Controller('predictions')
@@ -35,7 +36,7 @@ export class PredictionController {
   @Public()
   @Get('zones/:zoneId/metrics')
   async getZoneMetrics(
-    @Param('zoneId', ParseUUIDPipe) zoneId: string,
+    @Param('zoneId', new UuidValidationPipe()) zoneId: string,
     @Query('limit') limit?: number,
   ) {
     return this.predictionService.getZoneMetricsHistory(zoneId, limit ? Number(limit) : 20);
@@ -46,6 +47,7 @@ export class PredictionController {
    * Khusus operator, policy_maker, dan admin
    */
   @Post('metrics/refresh')
+  @ApiBearerAuth()
   @Roles(UserRole.operator, UserRole.policy_maker, UserRole.admin)
   @HttpCode(HttpStatus.OK)
   async refreshMetrics() {
