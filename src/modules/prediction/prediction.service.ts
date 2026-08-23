@@ -61,7 +61,15 @@ export class PredictionService implements IPredictionService {
               zone_name: zone.name,
               active_reports: activeReportCount,
             },
-            { timeout: 5000 },
+            {
+              headers: {
+                'X-API-Key':
+                  this.configService.get<string>('INTERNAL_API_KEY') ||
+                  this.configService.get<string>('AI_SERVICE_API_KEY') ||
+                  '',
+              },
+              timeout: 5000,
+            },
           ),
         );
 

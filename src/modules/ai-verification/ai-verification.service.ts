@@ -74,7 +74,15 @@ export class AIVerificationService implements IAIVerificationService {
               reported_category: report.category.name,
               created_at: report.created_at.toISOString(),
             },
-            { timeout: 5000 },
+            {
+              headers: {
+                'X-API-Key':
+                  this.configService.get<string>('INTERNAL_API_KEY') ||
+                  this.configService.get<string>('AI_SERVICE_API_KEY') ||
+                  '',
+              },
+              timeout: 5000,
+            },
           ),
         );
 
