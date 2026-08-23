@@ -230,3 +230,39 @@ File disediakan di folder `postman/`:
 - Script QA: `/tmp/qa_laporkita.py`, `/tmp/qa_laporkita2.py`, `/tmp/qa_laporkita3.py`
 - Log eksekusi: `/tmp/qa_run_*.log`
 - Spesifikasi OpenAPI: `/tmp/openapi.json` (dari http://localhost:3000/api/docs-json)
+
+---
+
+# 8. Penutupan Integrasi AI Service & Status Final (Update 2026-08-23)
+
+## 8.1 Integrasi Gateway ↔ AI Microservice (SELESAI)
+
+1. **Autentikasi service-to-service:** seluruh panggilan HTTP dari gateway
+   NestJS ke AI microservice kini mengirim header `X-API-Key` (dibaca dari
+   env `INTERNAL_API_KEY` — tanpa hardcode di source code)
+   - `src/modules/ai-verification/ai-verification.service.ts` (endpoint
+     `/api/v1/verify`)
+   - `src/modules/prediction/prediction.service.ts` (endpoint
+     `/api/v1/predict/zone-metrics`)
+2. **Key internal dirotasi** (2026-08-23) — nilai baru hanya tersimpan di
+   `.env` (gitignored), sinkron antara `backend-laporkita/.env` dan
+   `ai-service/.env`
+3. **Verifikasi E2E nyata** (lewat gateway, bukan ai-service langsung):
+   - Alur: register/login → create report (upload foto multipart) → job
+     BullMQ `verify-report` → processor → HTTP ke
+     `https://ai.canadev.my.id/api/v1/verify` (tunnel publik)
+   - Hasil: **HTTP 200 OK** di ai-service (autentikasi lolos), report
+     ter-update status `pending_verification` + `ai_confidence_score`
+   - Key lama → 403, key baru → 200 (diverifikasi)
+
+## 8.2 Status Kelayakan Akhir
+
+| Aspek | Status |
+|---|---|
+| Modul inti (auth, reports, categories, agencies, notifications, dll) | ✅ Lulus uji (QA awal §3) |
+| Integrasi AI verification & risk prediction | ✅ Terverifikasi end-to-end |
+| Autentikasi internal service | ✅ Aktif (401/403/200) |
+| Keamanan (SMS provider, upload, validasi input) | ✅ Diterapkan |
+| Git & deployment | ✅ Working tree bersih, container berjalan |
+
+**KESIMPULAN: SEMUA TEMUAN QA BACKEND & INTEGRASI TERTUTUP. STATUS: READY.**
