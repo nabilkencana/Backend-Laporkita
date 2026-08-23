@@ -437,7 +437,7 @@ erDiagram
 
     route_alert_subscriptions {
         UUID id PK
-        UUID user_id FK UK
+        UUID user_id FK "unique per user"
         VARCHAR device_token
         DECIMAL last_lat
         DECIMAL last_long
