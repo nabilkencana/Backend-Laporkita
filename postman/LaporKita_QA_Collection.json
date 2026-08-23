@@ -1,8 +1,8 @@
 {
   "info": {
     "_postman_id": "0f9e2a1b-3c4d-4e5f-8a9b-1c2d3e4f5a6b",
-    "name": "LaporKita API — QA Collection (National Competition)",
-    "description": "Koleksi Postman lengkap untuk pengujian REST API LaporKita (NestJS).\nBase URL: http://localhost:3000/api/v1\nFlow: 1) Register/Login → token tersimpan otomatis ke collection variable 'accessToken'. 2) Endpoint protected membaca token tersebut (Authorization: Bearer).\n3) Ganti {id} di URL dengan ID nyata dari respons create.\nDokumentasi Swagger: http://localhost:3000/api/docs",
+    "name": "LaporKita API \u2014 QA Collection (National Competition)",
+    "description": "Koleksi Postman lengkap untuk pengujian REST API LaporKita (NestJS).\nBase URL: http://localhost:3000/api/v1\nFlow: 1) Register/Login \u2192 token tersimpan otomatis ke collection variable 'accessToken'. 2) Endpoint protected membaca token tersebut (Authorization: Bearer).\n3) Ganti {id} di URL dengan ID nyata dari respons create.\nDokumentasi Swagger: http://localhost:3000/api/docs",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -57,7 +57,7 @@
       "name": "01 - Base & Health",
       "item": [
         {
-          "name": "GET /api/v1/health — AppController_getHealth_v1",
+          "name": "GET /api/v1/health \u2014 AppController_getHealth_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -106,7 +106,7 @@
       "name": "02 - Auth (JWT)",
       "item": [
         {
-          "name": "POST /api/v1/auth/register — Fase 3B (OTP, 202 Accepted)",
+          "name": "POST /api/v1/auth/register \u2014 Fase 3B (OTP, 202 Accepted)",
           "request": {
             "method": "POST",
             "header": [
@@ -131,7 +131,7 @@
               "mode": "raw",
               "raw": "{\n  \"full_name\": \"Budi Santoso\",\n  \"email\": \"budi@example.com\",\n  \"phone_number\": \"+6281234567890\",\n  \"password\": \"BudiPass123\"\n}"
             },
-            "description": "Registrasi (Fase 3B OTP): response 202 Accepted, user dibuat is_active=false, OTP 4-digit dikirim via SMS (mock: lihat log server — [MOCK SMS] to +62xxx: your OTP is 1234). Email DAN nomor HP wajib keduanya (override Fase 3). OTP TIDAK pernah ada di response body.",
+            "description": "Registrasi (Fase 3B OTP): response 202 Accepted, user dibuat is_active=false, OTP 4-digit dikirim via SMS (mock: lihat log server \u2014 [MOCK SMS] to +62xxx: your OTP is 1234). Email DAN nomor HP wajib keduanya (override Fase 3). OTP TIDAK pernah ada di response body.",
             "event": [
               {
                 "listen": "test",
@@ -164,7 +164,7 @@
           "response": []
         },
         {
-          "name": "POST /api/v1/auth/verify-otp — Fase 3B (Aktivasi + Tokens)",
+          "name": "POST /api/v1/auth/verify-otp \u2014 Fase 3B (Aktivasi + Tokens)",
           "request": {
             "method": "POST",
             "hPrekiaeader": [
@@ -185,7 +185,7 @@
                 "verify-otp"
               ]
             },
-            "description": "Verifikasi OTP 4 digit (Fase 3B). OTP didapat dari LOG SERVER saat register (mock SMS: \"[MOCK SMS] to +62xxx: your OTP is 1234\"). OTP berlaku 5 menit (OTP_EXPIRY_MINUTES), max 5 percobaan (OTP_MAX_ATTEMPTS). Sukses → is_active=true + access/refresh token. Error codes: OTP_INVALID, OTP_EXPIRED, OTP_ALREADY_USED, OTP_MAX_ATTEMPTS.",
+            "description": "Verifikasi OTP 4 digit (Fase 3B). OTP didapat dari LOG SERVER saat register (mock SMS: \"[MOCK SMS] to +62xxx: your OTP is 1234\"). OTP berlaku 5 menit (OTP_EXPIRY_MINUTES), max 5 percobaan (OTP_MAX_ATTEMPTS). Sukses \u2192 is_active=true + access/refresh token. Error codes: OTP_INVALID, OTP_EXPIRED, OTP_ALREADY_USED, OTP_MAX_ATTEMPTS.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"user_id\": \"{{userId}}\",\n  \"otp_code\": \"{{otpCode}}\"\n}"
@@ -223,7 +223,7 @@
           "response": []
         },
         {
-          "name": "POST /api/v1/auth/resend-otp — Fase 3B (Cooldown 45 detik)",
+          "name": "POST /api/v1/auth/resend-otp \u2014 Fase 3B (Cooldown 45 detik)",
           "request": {
             "method": "POST",
             "header": [
@@ -244,7 +244,7 @@
                 "resend-otp"
               ]
             },
-            "description": "Kirim ulang OTP (Fase 3B). Cooldown 45 detik (OTP_RESEND_COOLDOWN_SECONDS): jika dipanggil terlalu cepat → 400 OTP_RESEND_COOLDOWN + remainingSeconds di data (frontend render countdown 00:45). OTP lama di-invalidate, attempt_count di-reset.",
+            "description": "Kirim ulang OTP (Fase 3B). Cooldown 45 detik (OTP_RESEND_COOLDOWN_SECONDS): jika dipanggil terlalu cepat \u2192 400 OTP_RESEND_COOLDOWN + remainingSeconds di data (frontend render countdown 00:45). OTP lama di-invalidate, attempt_count di-reset.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"user_id\": \"{{userId}}\"\n}"
@@ -264,7 +264,7 @@
                     "",
                     "if (pm.response.code === 200) {",
                     "    const body = pm.response.json();",
-                    "    console.log('Resend OK — ambil OTP baru dari LOG SERVER, update {{otpCode}}.');",
+                    "    console.log('Resend OK \u2014 ambil OTP baru dari LOG SERVER, update {{otpCode}}.');",
                     "}",
                     "if (pm.response.code === 400) {",
                     "    const body = pm.response.json();",
@@ -282,7 +282,7 @@
           "response": []
         },
         {
-          "name": "POST /api/v1/auth/login — AuthController_login_v1",
+          "name": "POST /api/v1/auth/login \u2014 AuthController_login_v1",
           "request": {
             "method": "POST",
             "header": [
@@ -340,7 +340,7 @@
           "response": []
         },
         {
-          "name": "POST /api/v1/auth/refresh — AuthController_refresh_v1",
+          "name": "POST /api/v1/auth/refresh \u2014 AuthController_refresh_v1",
           "request": {
             "method": "POST",
             "header": [
@@ -365,7 +365,7 @@
               "mode": "raw",
               "raw": "{\n  \"refresh_token\": \"{{refreshToken}}\"\n}"
             },
-            "description": "Refresh token (FIX3-B1): SINGLE-USE dengan rotasi. Sukses → access_token & refresh_token BARU (token lama otomatis invalid). Replay token lama → 401 REFRESH_TOKEN_INVALID.",
+            "description": "Refresh token (FIX3-B1): SINGLE-USE dengan rotasi. Sukses \u2192 access_token & refresh_token BARU (token lama otomatis invalid). Replay token lama \u2192 401 REFRESH_TOKEN_INVALID.",
             "event": [
               {
                 "listen": "test",
@@ -413,7 +413,7 @@
       "name": "03 - Users",
       "item": [
         {
-          "name": "GET /api/v1/users/me — UsersController_getMe_v1",
+          "name": "GET /api/v1/users/me \u2014 UsersController_getMe_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -458,7 +458,7 @@
           "response": []
         },
         {
-          "name": "PATCH /api/v1/users/me — UsersController_updateMe_v1",
+          "name": "PATCH /api/v1/users/me \u2014 UsersController_updateMe_v1",
           "request": {
             "method": "PATCH",
             "header": [
@@ -507,7 +507,7 @@
           "response": []
         },
         {
-          "name": "GET /api/v1/users/me/points — UsersController_getMyPoints_v1",
+          "name": "GET /api/v1/users/me/points \u2014 UsersController_getMyPoints_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -553,7 +553,7 @@
           "response": []
         },
         {
-          "name": "GET /api/v1/users — UsersController_findAllUsers_v1",
+          "name": "GET /api/v1/users \u2014 UsersController_findAllUsers_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -603,7 +603,7 @@
           "response": []
         },
         {
-          "name": "GET /api/v1/users/{id} — UsersController_findUserById_v1",
+          "name": "GET /api/v1/users/{id} \u2014 UsersController_findUserById_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -613,7 +613,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -621,7 +621,7 @@
                 "api",
                 "v1",
                 "users",
-                "847ff810-812d-4042-acf7-c97b8c3299b3"
+                "{{userId}}"
               ]
             },
             "description": "UsersController_findUserById_v1",
@@ -648,7 +648,7 @@
           "response": []
         },
         {
-          "name": "PATCH /api/v1/users/{id} — UsersController_adminUpdateUser_v1",
+          "name": "PATCH /api/v1/users/{id} \u2014 UsersController_adminUpdateUser_v1",
           "request": {
             "method": "PATCH",
             "header": [
@@ -658,7 +658,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -666,7 +666,7 @@
                 "api",
                 "v1",
                 "users",
-                "847ff810-812d-4042-acf7-c97b8c3299b3"
+                "{{userId}}"
               ]
             },
             "body": {
@@ -697,7 +697,7 @@
           "response": []
         },
         {
-          "name": "DELETE /api/v1/users/{id} — UsersController_deleteUser_v1",
+          "name": "DELETE /api/v1/users/{id} \u2014 UsersController_deleteUser_v1",
           "request": {
             "method": "DELETE",
             "header": [
@@ -707,7 +707,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -715,7 +715,7 @@
                 "api",
                 "v1",
                 "users",
-                "847ff810-812d-4042-acf7-c97b8c3299b3"
+                "{{userId}}"
               ]
             },
             "description": "UsersController_deleteUser_v1",
@@ -747,7 +747,7 @@
       "name": "04 - Categories",
       "item": [
         {
-          "name": "GET /api/v1/categories — CategoriesController_findAll_v1",
+          "name": "GET /api/v1/categories \u2014 CategoriesController_findAll_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -791,7 +791,7 @@
           "response": []
         },
         {
-          "name": "POST /api/v1/categories — CategoriesController_create_v1",
+          "name": "POST /api/v1/categories \u2014 CategoriesController_create_v1",
           "request": {
             "method": "POST",
             "header": [
@@ -839,7 +839,7 @@
           "response": []
         },
         {
-          "name": "GET /api/v1/categories/{id} — CategoriesController_findById_v1",
+          "name": "GET /api/v1/categories/{id} \u2014 CategoriesController_findById_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -849,7 +849,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/categories/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "raw": "{{baseUrl}}/api/v1/categories/{{categoryId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -857,7 +857,7 @@
                 "api",
                 "v1",
                 "categories",
-                "847ff810-812d-4042-acf7-c97b8c3299b3"
+                "{{categoryId}}"
               ]
             },
             "description": "CategoriesController_findById_v1",
@@ -884,7 +884,7 @@
           "response": []
         },
         {
-          "name": "PATCH /api/v1/categories/{id} — CategoriesController_update_v1",
+          "name": "PATCH /api/v1/categories/{id} \u2014 CategoriesController_update_v1",
           "request": {
             "method": "PATCH",
             "header": [
@@ -894,7 +894,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/categories/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "raw": "{{baseUrl}}/api/v1/categories/{{categoryId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -902,7 +902,7 @@
                 "api",
                 "v1",
                 "categories",
-                "847ff810-812d-4042-acf7-c97b8c3299b3"
+                "{{categoryId}}"
               ]
             },
             "body": {
@@ -933,7 +933,7 @@
           "response": []
         },
         {
-          "name": "DELETE /api/v1/categories/{id} — CategoriesController_delete_v1",
+          "name": "DELETE /api/v1/categories/{id} \u2014 CategoriesController_delete_v1",
           "request": {
             "method": "DELETE",
             "header": [
@@ -943,7 +943,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/categories/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "raw": "{{baseUrl}}/api/v1/categories/{{categoryId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -951,7 +951,7 @@
                 "api",
                 "v1",
                 "categories",
-                "847ff810-812d-4042-acf7-c97b8c3299b3"
+                "{{categoryId}}"
               ]
             },
             "description": "CategoriesController_delete_v1",
@@ -983,7 +983,7 @@
       "name": "05 - Agencies",
       "item": [
         {
-          "name": "GET /api/v1/agencies — AgenciesController_findAll_v1",
+          "name": "GET /api/v1/agencies \u2014 AgenciesController_findAll_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -1027,7 +1027,7 @@
           "response": []
         },
         {
-          "name": "POST /api/v1/agencies — AgenciesController_create_v1",
+          "name": "POST /api/v1/agencies \u2014 AgenciesController_create_v1",
           "request": {
             "method": "POST",
             "header": [
@@ -1075,7 +1075,7 @@
           "response": []
         },
         {
-          "name": "GET /api/v1/agencies/{id} — AgenciesController_findById_v1",
+          "name": "GET /api/v1/agencies/{id} \u2014 AgenciesController_findById_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -1085,7 +1085,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/agencies/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "raw": "{{baseUrl}}/api/v1/agencies/{{agencyId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1093,7 +1093,7 @@
                 "api",
                 "v1",
                 "agencies",
-                "847ff810-812d-4042-acf7-c97b8c3299b3"
+                "{{agencyId}}"
               ]
             },
             "description": "AgenciesController_findById_v1",
@@ -1120,7 +1120,7 @@
           "response": []
         },
         {
-          "name": "PATCH /api/v1/agencies/{id} — AgenciesController_update_v1",
+          "name": "PATCH /api/v1/agencies/{id} \u2014 AgenciesController_update_v1",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1130,7 +1130,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/agencies/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "raw": "{{baseUrl}}/api/v1/agencies/{{agencyId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1138,7 +1138,7 @@
                 "api",
                 "v1",
                 "agencies",
-                "847ff810-812d-4042-acf7-c97b8c3299b3"
+                "{{agencyId}}"
               ]
             },
             "body": {
@@ -1169,7 +1169,7 @@
           "response": []
         },
         {
-          "name": "DELETE /api/v1/agencies/{id} — AgenciesController_delete_v1",
+          "name": "DELETE /api/v1/agencies/{id} \u2014 AgenciesController_delete_v1",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1179,7 +1179,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/agencies/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "raw": "{{baseUrl}}/api/v1/agencies/{{agencyId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1187,7 +1187,7 @@
                 "api",
                 "v1",
                 "agencies",
-                "847ff810-812d-4042-acf7-c97b8c3299b3"
+                "{{agencyId}}"
               ]
             },
             "description": "AgenciesController_delete_v1",
@@ -1219,7 +1219,7 @@
       "name": "06 - Reports (Core Flow)",
       "item": [
         {
-          "name": "POST /api/v1/reports — ReportsController_submitReport_v1",
+          "name": "POST /api/v1/reports \u2014 ReportsController_submitReport_v1",
           "request": {
             "method": "POST",
             "header": [
@@ -1253,7 +1253,7 @@
               "mode": "raw",
               "raw": "{\n  \"category_id\": \"c5000000-0000-4000-8000-000000000005\",\n  \"photo_url\": \"https://storage.example.com/pothole.jpg\",\n  \"latitude\": -7.982,\n  \"longitude\": 112.63,\n  \"address_text\": \"Jl. Soekarno Hatta, Kota Malang\",\n  \"description\": \"Lubang besar di tengah jalan membahayakan pengendara motor.\",\n  \"idempotency_key\": \"idem-001\"\n}"
             },
-            "description": "[NONAKTIF — SEC-1] Body memakai field yang dihapus (photo_url/url). Pindah ke multipart. [NONAKTIF — SEC-1] Contoh lama yang memakai photo_url raw JSON TIDAK LAGI VALID (bypass validasi ditutup: 400 \"property photo_url should not exist\"). GUNAKAN request \"multipart upload (FIX-3)\" di folder ini.",
+            "description": "[NONAKTIF \u2014 SEC-1] Body memakai field yang dihapus (photo_url/url). Pindah ke multipart. [NONAKTIF \u2014 SEC-1] Contoh lama yang memakai photo_url raw JSON TIDAK LAGI VALID (bypass validasi ditutup: 400 \"property photo_url should not exist\"). GUNAKAN request \"multipart upload (FIX-3)\" di folder ini.",
             "event": [
               {
                 "listen": "test",
@@ -1279,7 +1279,7 @@
           "_disabled": true
         },
         {
-          "name": "POST /api/v1/reports — multipart upload (FIX-3)",
+          "name": "POST /api/v1/reports \u2014 multipart upload (FIX-3)",
           "request": {
             "method": "POST",
             "header": [
@@ -1362,7 +1362,7 @@
           "response": []
         },
         {
-          "name": "GET /api/v1/reports?needs_manual_review=true — Fase 5 (Antrian Operator)",
+          "name": "GET /api/v1/reports?needs_manual_review=true \u2014 Fase 5 (Antrian Operator)",
           "request": {
             "method": "GET",
             "header": [
@@ -1388,7 +1388,7 @@
                 }
               ]
             },
-            "description": "Filter antrian verifikasi manual operator (Rules.md §1.2): laporan pending_verification yang belum lolos AI otomatis (ai_confidence_score < 0.6 atau null). Pakai query param needs_manual_review=true. Publik (tidak butuh token).",
+            "description": "Filter antrian verifikasi manual operator (Rules.md \u00a71.2): laporan pending_verification yang belum lolos AI otomatis (ai_confidence_score < 0.6 atau null). Pakai query param needs_manual_review=true. Publik (tidak butuh token).",
             "event": [
               {
                 "listen": "test",
@@ -1410,7 +1410,7 @@
           "response": []
         },
         {
-          "name": "GET /api/v1/reports — ReportsController_findAll_v1",
+          "name": "GET /api/v1/reports \u2014 ReportsController_findAll_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -1471,7 +1471,7 @@
           "response": []
         },
         {
-          "name": "GET /api/v1/reports/{id} — ReportsController_findById_v1",
+          "name": "GET /api/v1/reports/{id} \u2014 ReportsController_findById_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -1481,7 +1481,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "raw": "{{baseUrl}}/api/v1/reports/{{reportId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1489,7 +1489,7 @@
                 "api",
                 "v1",
                 "reports",
-                "847ff810-812d-4042-acf7-c97b8c3299b3"
+                "{{reportId}}"
               ]
             },
             "description": "ReportsController_findById_v1",
@@ -1516,7 +1516,7 @@
           "response": []
         },
         {
-          "name": "PATCH /api/v1/reports/{id}/status — ReportsController_transitionStatus_v1",
+          "name": "PATCH /api/v1/reports/{id}/status \u2014 ReportsController_transitionStatus_v1",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1526,7 +1526,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3/status",
+              "raw": "{{baseUrl}}/api/v1/reports/{{reportId}}/status",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1534,7 +1534,7 @@
                 "api",
                 "v1",
                 "reports",
-                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "{{reportId}}",
                 "status"
               ]
             },
@@ -1566,7 +1566,7 @@
           "response": []
         },
         {
-          "name": "POST /api/v1/reports/{id}/support — ReportsController_supportReport_v1",
+          "name": "POST /api/v1/reports/{id}/support \u2014 ReportsController_supportReport_v1",
           "request": {
             "method": "POST",
             "header": [
@@ -1576,7 +1576,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3/support",
+              "raw": "{{baseUrl}}/api/v1/reports/{{reportId}}/support",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1584,7 +1584,7 @@
                 "api",
                 "v1",
                 "reports",
-                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "{{reportId}}",
                 "support"
               ]
             },
@@ -1616,7 +1616,7 @@
           "response": []
         },
         {
-          "name": "DELETE /api/v1/reports/{id}/support — ReportsController_cancelSupport_v1",
+          "name": "DELETE /api/v1/reports/{id}/support \u2014 ReportsController_cancelSupport_v1",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1626,7 +1626,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3/support",
+              "raw": "{{baseUrl}}/api/v1/reports/{{reportId}}/support",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1634,7 +1634,7 @@
                 "api",
                 "v1",
                 "reports",
-                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "{{reportId}}",
                 "support"
               ]
             },
@@ -1662,7 +1662,7 @@
           "response": []
         },
         {
-          "name": "POST /api/v1/reports/{id}/comments — ReportsController_addComment_v1",
+          "name": "POST /api/v1/reports/{id}/comments \u2014 ReportsController_addComment_v1",
           "request": {
             "method": "POST",
             "header": [
@@ -1672,7 +1672,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3/comments",
+              "raw": "{{baseUrl}}/api/v1/reports/{{reportId}}/comments",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1680,7 +1680,7 @@
                 "api",
                 "v1",
                 "reports",
-                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "{{reportId}}",
                 "comments"
               ]
             },
@@ -1712,7 +1712,7 @@
           "response": []
         },
         {
-          "name": "GET /api/v1/reports/{id}/comments — ReportsController_getComments_v1",
+          "name": "GET /api/v1/reports/{id}/comments \u2014 ReportsController_getComments_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -1722,7 +1722,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3/comments",
+              "raw": "{{baseUrl}}/api/v1/reports/{{reportId}}/comments",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1730,7 +1730,7 @@
                 "api",
                 "v1",
                 "reports",
-                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "{{reportId}}",
                 "comments"
               ]
             },
@@ -1758,7 +1758,7 @@
           "response": []
         },
         {
-          "name": "POST /api/v1/reports/{id}/validate — ReportsController_validateReport_v1",
+          "name": "POST /api/v1/reports/{id}/validate \u2014 ReportsController_validateReport_v1",
           "request": {
             "method": "POST",
             "header": [
@@ -1768,7 +1768,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3/validate",
+              "raw": "{{baseUrl}}/api/v1/reports/{{reportId}}/validate",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1776,7 +1776,7 @@
                 "api",
                 "v1",
                 "reports",
-                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "{{reportId}}",
                 "validate"
               ]
             },
@@ -1808,7 +1808,7 @@
           "response": []
         },
         {
-          "name": "POST /api/v1/reports/{id}/media — ReportsController_uploadMedia_v1",
+          "name": "POST /api/v1/reports/{id}/media \u2014 ReportsController_uploadMedia_v1",
           "request": {
             "method": "POST",
             "header": [
@@ -1818,7 +1818,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/reports/847ff810-812d-4042-acf7-c97b8c3299b3/media",
+              "raw": "{{baseUrl}}/api/v1/reports/{{reportId}}/media",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1826,7 +1826,7 @@
                 "api",
                 "v1",
                 "reports",
-                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "{{reportId}}",
                 "media"
               ]
             },
@@ -1834,7 +1834,7 @@
               "mode": "raw",
               "raw": "{\n  \"type\": \"progress_photo\",\n  \"url\": \"https://storage.example.com/progress.jpg\"\n}"
             },
-            "description": "[NONAKTIF — SEC-1] Body memakai field yang dihapus (photo_url/url). Pindah ke multipart. ReportsController_uploadMedia_v1",
+            "description": "[NONAKTIF \u2014 SEC-1] Body memakai field yang dihapus (photo_url/url). Pindah ke multipart. ReportsController_uploadMedia_v1",
             "event": [
               {
                 "listen": "test",
@@ -1858,7 +1858,7 @@
           "response": []
         },
         {
-          "name": "POST /api/v1/reports/:id/media — multipart upload (FIX-3)",
+          "name": "POST /api/v1/reports/:id/media \u2014 multipart upload (FIX-3)",
           "request": {
             "method": "POST",
             "header": [
@@ -1927,7 +1927,7 @@
           "response": []
         },
         {
-          "name": "GET /api/v1/reports/comments/flagged — Moderasi (SA-1)",
+          "name": "GET /api/v1/reports/comments/flagged \u2014 Moderasi (SA-1)",
           "request": {
             "method": "GET",
             "header": [
@@ -1986,7 +1986,7 @@
       "name": "07 - Notifications",
       "item": [
         {
-          "name": "GET /api/v1/notifications — NotificationsController_getNotifications_v1",
+          "name": "GET /api/v1/notifications \u2014 NotificationsController_getNotifications_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -2030,7 +2030,7 @@
           "response": []
         },
         {
-          "name": "PATCH /api/v1/notifications/{id}/read — NotificationsController_markAsRead_v1",
+          "name": "PATCH /api/v1/notifications/{id}/read \u2014 NotificationsController_markAsRead_v1",
           "request": {
             "method": "PATCH",
             "header": [
@@ -2040,7 +2040,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/notifications/847ff810-812d-4042-acf7-c97b8c3299b3/read",
+              "raw": "{{baseUrl}}/api/v1/notifications/{{notificationId}}/read",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2048,7 +2048,7 @@
                 "api",
                 "v1",
                 "notifications",
-                "847ff810-812d-4042-acf7-c97b8c3299b3",
+                "{{notificationId}}",
                 "read"
               ]
             },
@@ -2076,7 +2076,7 @@
           "response": []
         },
         {
-          "name": "PATCH /api/v1/notifications/read-all — NotificationsController_markAllAsRead_v1",
+          "name": "PATCH /api/v1/notifications/read-all \u2014 NotificationsController_markAllAsRead_v1",
           "request": {
             "method": "PATCH",
             "header": [
@@ -2126,7 +2126,7 @@
       "name": "08 - Route Alerts",
       "item": [
         {
-          "name": "POST /api/v1/route-alerts/subscribe — RouteAlertController_subscribe_v1",
+          "name": "POST /api/v1/route-alerts/subscribe \u2014 RouteAlertController_subscribe_v1",
           "request": {
             "method": "POST",
             "header": [
@@ -2175,7 +2175,7 @@
           "response": []
         },
         {
-          "name": "DELETE /api/v1/route-alerts/unsubscribe — RouteAlertController_unsubscribe_v1",
+          "name": "DELETE /api/v1/route-alerts/unsubscribe \u2014 RouteAlertController_unsubscribe_v1",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2220,7 +2220,7 @@
           "response": []
         },
         {
-          "name": "POST /api/v1/route-alerts/check — RouteAlertController_triggerProximityCheck_v1",
+          "name": "POST /api/v1/route-alerts/check \u2014 RouteAlertController_triggerProximityCheck_v1",
           "request": {
             "method": "POST",
             "header": [
@@ -2274,7 +2274,7 @@
       "name": "09 - Predictions",
       "item": [
         {
-          "name": "GET /api/v1/predictions/zones — PredictionController_getZones_v1",
+          "name": "GET /api/v1/predictions/zones \u2014 PredictionController_getZones_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -2319,7 +2319,7 @@
           "response": []
         },
         {
-          "name": "GET /api/v1/predictions/zones/{zoneId}/metrics — PredictionController_getZoneMetrics_v1",
+          "name": "GET /api/v1/predictions/zones/{zoneId}/metrics \u2014 PredictionController_getZoneMetrics_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -2329,7 +2329,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/predictions/zones/00000000-0000-4000-8000-000000000001/metrics",
+              "raw": "{{baseUrl}}/api/v1/predictions/zones/{{zoneId}}/metrics",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2338,7 +2338,7 @@
                 "v1",
                 "predictions",
                 "zones",
-                "00000000-0000-4000-8000-000000000001",
+                "{{zoneId}}",
                 "metrics"
               ]
             },
@@ -2366,7 +2366,7 @@
           "response": []
         },
         {
-          "name": "POST /api/v1/predictions/metrics/refresh — PredictionController_refreshMetrics_v1",
+          "name": "POST /api/v1/predictions/metrics/refresh \u2014 PredictionController_refreshMetrics_v1",
           "request": {
             "method": "POST",
             "header": [
@@ -2421,7 +2421,7 @@
       "name": "10 - Policy Simulator",
       "item": [
         {
-          "name": "POST /api/v1/policy-simulations — PolicySimulatorController_createSimulation_v1",
+          "name": "POST /api/v1/policy-simulations \u2014 PolicySimulatorController_createSimulation_v1",
           "request": {
             "method": "POST",
             "header": [
@@ -2469,7 +2469,7 @@
           "response": []
         },
         {
-          "name": "GET /api/v1/policy-simulations — PolicySimulatorController_findAll_v1",
+          "name": "GET /api/v1/policy-simulations \u2014 PolicySimulatorController_findAll_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -2513,7 +2513,7 @@
           "response": []
         },
         {
-          "name": "GET /api/v1/policy-simulations/{id} — PolicySimulatorController_findById_v1",
+          "name": "GET /api/v1/policy-simulations/{id} \u2014 PolicySimulatorController_findById_v1",
           "request": {
             "method": "GET",
             "header": [
@@ -2523,7 +2523,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/policy-simulations/847ff810-812d-4042-acf7-c97b8c3299b3",
+              "raw": "{{baseUrl}}/api/v1/policy-simulations/{{simulationId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2531,7 +2531,7 @@
                 "api",
                 "v1",
                 "policy-simulations",
-                "847ff810-812d-4042-acf7-c97b8c3299b3"
+                "{{simulationId}}"
               ]
             },
             "description": "PolicySimulatorController_findById_v1",

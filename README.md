@@ -543,8 +543,9 @@ Semua response dibungkus dalam **Response Envelope Standar**:
 | `DELETE` | `/reports/:id/support` | Authenticated | Batalkan upvote (grace period 5 menit) |
 | `POST` | `/reports/:id/comments` | Authenticated | Kirim komentar (rate limit 20/min, profanity masked) |
 | `GET` | `/reports/:id/comments` | Publik | List komentar (cursor pagination) |
+| `GET` | `/reports/comments/flagged` | `operator`, `admin` | Moderasi komentar terflag kata kasar |
 | `POST` | `/reports/:id/validate` | Authenticated | Citizen validation (`resolved` / `disputed`) |
-| `POST` | `/reports/:id/media` | Authenticated | Upload foto pengerjaan / penyelesaian |
+| `POST` | `/reports/:id/media` | Authenticated | Upload foto pengerjaan / penyelesaian (JSON / multipart) |
 
 ### 4. Prediksi & Metrik Zona — `/api/v1/predictions`
 
@@ -558,7 +559,7 @@ Semua response dibungkus dalam **Response Envelope Standar**:
 
 | Method | Endpoint | Akses | Keterangan |
 |---|---|---|---|
-| `POST` | `/policy-simulations` | `policy_maker`, `admin` | Jalankan simulasi kebijakan via Gemini LLM |
+| `POST` | `/policy-simulations` | `policy_maker`, `admin` | Jalankan simulasi kebijakan via Gemini / DeepSeek LLM |
 | `GET` | `/policy-simulations` | `policy_maker`, `admin` | Riwayat simulasi kebijakan |
 | `GET` | `/policy-simulations/:id` | `policy_maker`, `admin` | Detail narasi & proyeksi kebijakan |
 
@@ -578,9 +579,15 @@ Semua response dibungkus dalam **Response Envelope Standar**:
 | Method | Endpoint | Akses | Keterangan |
 |---|---|---|---|
 | `GET` | `/categories` | Publik | Daftar kategori fasilitas aktif |
-| `POST` / `PATCH` / `DELETE` | `/categories` | `admin` | Manajemen master kategori |
-| `GET` | `/agencies` | Publik | Daftar instansi OPD |
-| `POST` / `PATCH` / `DELETE` | `/agencies` | `admin` | Manajemen master instansi |
+| `GET` | `/categories/:id` | Publik | Detail kategori fasilitas |
+| `POST` | `/categories` | `admin` | Tambah kategori fasilitas baru |
+| `PATCH` | `/categories/:id` | `admin` | Update kategori fasilitas |
+| `DELETE` | `/categories/:id` | `admin` | Hapus kategori fasilitas |
+| `GET` | `/agencies` | Publik | Daftar instansi OPD (DPUPR, Dishub, dll) |
+| `GET` | `/agencies/:id` | Publik | Detail instansi OPD |
+| `POST` | `/agencies` | `admin` | Tambah instansi OPD baru |
+| `PATCH` | `/agencies/:id` | `admin` | Update instansi OPD |
+| `DELETE` | `/agencies/:id` | `admin` | Hapus instansi OPD |
 
 ### Matriks RBAC
 

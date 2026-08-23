@@ -4,7 +4,7 @@
   "values": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:3000/api/v1",
+      "value": "http://localhost:3000",
       "enabled": true
     },
     {
@@ -29,12 +29,37 @@
     },
     {
       "key": "categoryId",
-      "value": "c5000000-0000-4000-8000-000000000005",
+      "value": "c1000000-0000-4000-8000-000000000001",
       "enabled": true
     },
     {
       "key": "agencyId",
       "value": "a1000000-0000-4000-8000-000000000001",
+      "enabled": true
+    },
+    {
+      "key": "zoneId",
+      "value": "b1000000-0000-4000-8000-000000000001",
+      "enabled": true
+    },
+    {
+      "key": "userId",
+      "value": "00000000-0000-4000-8000-000000000001",
+      "enabled": true
+    },
+    {
+      "key": "reportId",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "simulationId",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "notificationId",
+      "value": "",
       "enabled": true
     },
     {
@@ -48,22 +73,17 @@
       "enabled": true
     },
     {
-      "key": "reportId",
-      "value": "",
-      "enabled": true
-    },
-    {
       "key": "phoneNumber",
       "value": "+6281234567890",
       "enabled": true
     },
     {
       "key": "otpCode",
-      "value": "",
+      "value": "1234",
       "enabled": true
     },
     {
-      "key": "userId",
+      "key": "idempotencyKey",
       "value": "",
       "enabled": true
     }
