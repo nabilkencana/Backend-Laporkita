@@ -12,7 +12,7 @@ import { defineConfig, env } from 'prisma/config';
 export default defineConfig({
   schema: 'src/prisma/schema.prisma',
   datasource: {
-    url: env('DATABASE_URL'),
+    url: process.env.DATABASE_URL || 'postgresql://dummy:dummy@localhost:5432/dummy',
   },
   migrations: {
     path: 'src/prisma/migrations',

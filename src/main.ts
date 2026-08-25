@@ -101,8 +101,8 @@ async function bootstrap(): Promise<void> {
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Idempotency-Key'],
   });
 
-  const port = process.env.PORT ?? 3000;
-  await app.listen(port);
+  const port = Number(process.env.PORT) || 3000;
+  await app.listen(port, '0.0.0.0');
 
   logger.log(`🚀 LaporKita Backend running on: http://localhost:${port}/api/v1`);
   logger.log(`📋 Environment: ${process.env.NODE_ENV ?? 'development'}`);
