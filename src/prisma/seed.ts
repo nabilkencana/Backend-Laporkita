@@ -128,41 +128,106 @@ async function main(): Promise<void> {
     '✅ 5 Kategori aktif berhasil di-seed (Jalan Berlubang, Lampu Jalan, Rambu Lalu Lintas, Trotoar, Drainase)',
   );
 
-  // ── 3. Seed Default Admin User ───────────────────────────────────────────
-  // Password dan email dibaca dari env vars, di-hash dengan bcrypt (Rules.md §4.1)
-  console.log('👤 Seeding default admin user...');
+  // ── 3. Seed Users untuk Tiap Role (Admin, Citizen, Operator DPUPR/Dishub/Diskominfo, Policy Maker) ──
+  console.log('👤 Seeding users untuk semua role...');
 
   const adminEmail = process.env.ADMIN_EMAIL ?? 'admin@laporkita.malangkota.go.id';
   const adminRawPassword = process.env.ADMIN_PASSWORD ?? 'AdminLaporKita2026!';
   const adminName = process.env.ADMIN_NAME ?? 'Admin LaporKita Kota Malang';
-  const passwordHash = await bcrypt.hash(adminRawPassword, 10);
+  const defaultPasswordHash = await bcrypt.hash('Password123!', 10);
+  const adminPasswordHash = await bcrypt.hash(adminRawPassword, 10);
 
-  const adminUser = await prisma.user.upsert({
-    where: { email: adminEmail },
-    update: {
-      full_name: adminName,
-      password_hash: passwordHash,
-      role: UserRole.admin,
-      is_active: true,
-      phone_verified_at: new Date(),
-    },
-    create: {
+  const usersToSeed = [
+    {
       id: '00000000-0000-4000-8000-000000000001',
       full_name: adminName,
       email: adminEmail,
       phone_number: '+6281133344455',
-      password_hash: passwordHash,
+      password_hash: adminPasswordHash,
       role: UserRole.admin,
+      agency_id: null,
       contribution_points: 0,
       is_active: true,
       phone_verified_at: new Date(),
     },
-  });
+    {
+      id: '00000000-0000-4000-8000-000000000002',
+      full_name: 'Budi Santoso (Warga Kota Malang)',
+      email: 'warga@laporkita.malangkota.go.id',
+      phone_number: '+6281234567890',
+      password_hash: defaultPasswordHash,
+      role: UserRole.citizen,
+      agency_id: null,
+      contribution_points: 250,
+      is_active: true,
+      phone_verified_at: new Date(),
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000003',
+      full_name: 'Operator DPUPRPKP Kota Malang',
+      email: 'operator.dpupr@laporkita.malangkota.go.id',
+      phone_number: '+6281234567891',
+      password_hash: defaultPasswordHash,
+      role: UserRole.operator,
+      agency_id: agencyDpupr.id,
+      contribution_points: 0,
+      is_active: true,
+      phone_verified_at: new Date(),
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000004',
+      full_name: 'Operator Dishub Kota Malang',
+      email: 'operator.dishub@laporkita.malangkota.go.id',
+      phone_number: '+6281234567892',
+      password_hash: defaultPasswordHash,
+      role: UserRole.operator,
+      agency_id: agencyDishub.id,
+      contribution_points: 0,
+      is_active: true,
+      phone_verified_at: new Date(),
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000005',
+      full_name: 'Operator Diskominfo Kota Malang',
+      email: 'operator.diskominfo@laporkita.malangkota.go.id',
+      phone_number: '+6281234567893',
+      password_hash: defaultPasswordHash,
+      role: UserRole.operator,
+      agency_id: agencyDiskominfo.id,
+      contribution_points: 0,
+      is_active: true,
+      phone_verified_at: new Date(),
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000006',
+      full_name: 'Dr. Hendra Wijaya (Bappeda / Policy Maker)',
+      email: 'policymaker@laporkita.malangkota.go.id',
+      phone_number: '+6281234567894',
+      password_hash: defaultPasswordHash,
+      role: UserRole.policy_maker,
+      agency_id: agencyDiskominfo.id,
+      contribution_points: 0,
+      is_active: true,
+      phone_verified_at: new Date(),
+    },
+  ];
 
-  console.log(`✅ Default Admin user berhasil di-seed:`);
-  console.log(`   - ID: ${adminUser.id}`);
-  console.log(`   - Email: ${adminUser.email}`);
-  console.log(`   - Role: ${adminUser.role}`);
+  for (const u of usersToSeed) {
+    const seeded = await prisma.user.upsert({
+      where: { email: u.email },
+      update: {
+        full_name: u.full_name,
+        password_hash: u.password_hash,
+        role: u.role,
+        agency_id: u.agency_id,
+        is_active: true,
+        phone_verified_at: u.phone_verified_at,
+        contribution_points: u.contribution_points,
+      },
+      create: u,
+    });
+    console.log(`✅ User seeded: [${seeded.role.toUpperCase()}] ${seeded.email} (ID: ${seeded.id})`);
+  }
 
   // ── 4. Seed Dynamic System Configs (Smart Priority Weights & AI Thresholds) ─
   // Sesuai Rules.md §1.3 (bobot disimpan di DB bukan hardcode)
