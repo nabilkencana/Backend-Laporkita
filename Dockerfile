@@ -52,6 +52,11 @@ COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 # Copy schema untuk referensi runtime Prisma 7.x
 COPY src/prisma/schema.prisma ./src/prisma/schema.prisma
 
+# Copy migrations — WAJIB untuk `prisma migrate deploy` di start command.
+# Tanpa ini Prisma melaporkan "No migration found in prisma/migrations"
+# dan tabel tidak pernah dibuat (DATABASE_ERROR 500).
+COPY src/prisma/migrations ./src/prisma/migrations
+
 # Copy prisma.config.ts (dibutuhkan oleh Prisma 7.x config loader di runtime)
 COPY prisma.config.ts ./prisma.config.ts
 
