@@ -231,57 +231,105 @@ async function main(): Promise<void> {
     {
       id: 'b1000000-0000-4000-8000-000000000001',
       name: 'Klojen (Pusat Kota)',
-      polygonWkt:
-        'POLYGON((112.615 -7.990, 112.645 -7.990, 112.645 -7.965, 112.615 -7.965, 112.615 -7.990))',
-      stressLevel: 'low',
+      geoBoundary: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [112.615, -7.99],
+            [112.645, -7.99],
+            [112.645, -7.965],
+            [112.615, -7.965],
+            [112.615, -7.99],
+          ],
+        ],
+      },
+      stressLevel: 'low' as const,
     },
     {
       id: 'b2000000-0000-4000-8000-000000000002',
       name: 'Blimbing (Malang Utara)',
-      polygonWkt:
-        'POLYGON((112.630 -7.965, 112.670 -7.965, 112.670 -7.925, 112.630 -7.925, 112.630 -7.965))',
-      stressLevel: 'low',
+      geoBoundary: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [112.63, -7.965],
+            [112.67, -7.965],
+            [112.67, -7.925],
+            [112.63, -7.925],
+            [112.63, -7.965],
+          ],
+        ],
+      },
+      stressLevel: 'low' as const,
     },
     {
       id: 'b3000000-0000-4000-8000-000000000003',
       name: 'Kedungkandang (Malang Timur)',
-      polygonWkt:
-        'POLYGON((112.635 -8.030, 112.680 -8.030, 112.680 -7.975, 112.635 -7.975, 112.635 -8.030))',
-      stressLevel: 'low',
+      geoBoundary: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [112.635, -8.03],
+            [112.68, -8.03],
+            [112.68, -7.975],
+            [112.635, -7.975],
+            [112.635, -8.03],
+          ],
+        ],
+      },
+      stressLevel: 'low' as const,
     },
     {
       id: 'b4000000-0000-4000-8000-000000000004',
       name: 'Sukun (Malang Selatan)',
-      polygonWkt:
-        'POLYGON((112.590 -8.030, 112.635 -8.030, 112.635 -7.975, 112.590 -7.975, 112.590 -8.030))',
-      stressLevel: 'low',
+      geoBoundary: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [112.59, -8.03],
+            [112.635, -8.03],
+            [112.635, -7.975],
+            [112.59, -7.975],
+            [112.59, -8.03],
+          ],
+        ],
+      },
+      stressLevel: 'low' as const,
     },
     {
       id: 'b5000000-0000-4000-8000-000000000005',
       name: 'Lowokwaru (Malang Barat Laut)',
-      polygonWkt:
-        'POLYGON((112.590 -7.975, 112.635 -7.975, 112.635 -7.925, 112.590 -7.925, 112.590 -7.975))',
-      stressLevel: 'low',
+      geoBoundary: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [112.59, -7.975],
+            [112.635, -7.975],
+            [112.635, -7.925],
+            [112.59, -7.925],
+            [112.59, -7.975],
+          ],
+        ],
+      },
+      stressLevel: 'low' as const,
     },
   ];
 
   for (const zone of zonesData) {
-    await prisma.$executeRaw`
-      INSERT INTO "zones" ("id", "name", "geo_boundary", "stress_level", "updated_at")
-      VALUES (
-        ${zone.id}::uuid,
-        ${zone.name},
-        ST_GeomFromText(${zone.polygonWkt}, 4326),
-        ${zone.stressLevel}::"StressLevel",
-        CURRENT_TIMESTAMP
-      )
-      ON CONFLICT ("id") DO UPDATE
-      SET
-        "name" = EXCLUDED."name",
-        "geo_boundary" = EXCLUDED."geo_boundary",
-        "stress_level" = EXCLUDED."stress_level",
-        "updated_at" = CURRENT_TIMESTAMP;
-    `;
+    await prisma.zone.upsert({
+      where: { id: zone.id },
+      update: {
+        name: zone.name,
+        geo_boundary: zone.geoBoundary,
+        stress_level: zone.stressLevel,
+      },
+      create: {
+        id: zone.id,
+        name: zone.name,
+        geo_boundary: zone.geoBoundary,
+        stress_level: zone.stressLevel,
+      },
+    });
   }
   console.log('✅ 5 Zona Kota Malang berhasil di-seed!');
 

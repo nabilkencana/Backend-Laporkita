@@ -351,8 +351,8 @@ model ContributionPointsLog {
 model Zone {
   id           String      @id @default(uuid()) @db.Uuid
   name         String      @db.VarChar(100)
-  /// PostGIS geometry(Polygon, 4326) — dikelola via raw SQL migration terpisah
-  geo_boundary Unsupported("geometry")?
+  /// GeoJSON Polygon — kompatibel native dengan PostgreSQL standar
+  geo_boundary Json?
   stress_level StressLevel @default(low)
   updated_at   DateTime    @updatedAt
 
