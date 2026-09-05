@@ -11,6 +11,32 @@ export const MALANG_BOUNDS = {
   LNG_MAX: 112.8,
 };
 
+// Bounding box koordinat geografis Pulau Jawa + Madura (loose, untuk MVP)
+// Intentionally broad so routing accepts coordinates anywhere on Java/Madura;
+// can be tightened in production.
+export const JAVA_BOUNDS = {
+  LAT_MIN: -8.95,
+  LAT_MAX: -5.75,
+  LNG_MIN: 105.0,
+  LNG_MAX: 115.0,
+};
+
+/**
+ * Validasi apakah koordinat berada di dalam wilayah Jawa / Madura (MVP)
+ */
+export function isWithinJavaBounds(
+  latitude: number,
+  longitude: number,
+  bounds = JAVA_BOUNDS,
+): boolean {
+  return (
+    latitude >= bounds.LAT_MIN &&
+    latitude <= bounds.LAT_MAX &&
+    longitude >= bounds.LNG_MIN &&
+    longitude <= bounds.LNG_MAX
+  );
+}
+
 /**
  * Validasi apakah koordinat berada di dalam wilayah pilot Kota Malang
  */

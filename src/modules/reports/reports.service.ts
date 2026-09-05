@@ -610,7 +610,56 @@ export class ReportsService {
     return report;
   }
 
-  // ── 8. Scheduled Auto-Resolve (Rules.md §1.5) ──────────────────────────────
+  // ── 8. Geospatial Route Queries ──────────────────────────────────────────
+
+  async findReportsAlongRoute(
+    routePoints: { lat: number; lng: number }[],
+    radiusMeters: number = 300,
+  ): Promise<Array<Record<string, unknown> & { distance_from_route_meters: number }>> {
+    const activeReports = await this.prisma.report.findMany({
+      where: {
+        status: {
+          in: [ReportStatus.verified, ReportStatus.assigned, ReportStatus.in_progress],
+        },
+      },
+      include: {
+        category: { select: { name: true } },
+      },
+    });
+
+    const results: Array<Record<string, unknown> & { distance_from_route_meters: number }> = [];
+
+    for (const report of activeReports) {
+      let minDistance = Infinity;
+      const reportLat = Number(report.latitude);
+      const reportLng = Number(report.longitude);
+
+      for (const point of routePoints) {
+        const dist = calculateHaversineDistanceMeters(
+          point.lat,
+          point.lng,
+          reportLat,
+          reportLng,
+        );
+        if (dist < minDistance) minDistance = dist;
+      }
+
+      if (minDistance <= radiusMeters) {
+        results.push({
+          ...report,
+          distance_from_route_meters: Math.round(minDistance),
+        } as unknown as Record<string, unknown> & { distance_from_route_meters: number });
+      }
+    }
+
+    results.sort(
+      (a, b) => a.distance_from_route_meters - b.distance_from_route_meters,
+    );
+
+    return results;
+  }
+
+  // ── 9. Scheduled Auto-Resolve (Rules.md §1.5) ──────────────────────────────
 
   /**
    * Cron Job harian: Otomatis menyelesaikan (resolved) laporan berstatus 'completed'

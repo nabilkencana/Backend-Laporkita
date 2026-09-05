@@ -1979,6 +1979,60 @@
             ]
           },
           "response": []
+        },
+        {
+          "name": "POST /api/v1/reports/along-route \u2014 ReportsController_findAlongRoute_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports/along-route",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "along-route"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"route_points\": [ { \"lat\": -7.9827, \"lng\": 112.6304 }, { \"lat\": -7.9820, \"lng\": 112.6310 }, { \"lat\": -7.9701, \"lng\": 112.6412 } ],\n  \"radius_meters\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "ReportsController_findAlongRoute_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
         }
       ]
     },
@@ -2535,6 +2589,65 @@
               ]
             },
             "description": "PolicySimulatorController_findById_v1",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "// Auto-generated QA assertion (LaporKita)",
+                    "pm.test('Status code 200', function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});",
+                    "pm.test('Response envelope exists', function () {",
+                    "    const body = pm.response.json();",
+                    "    pm.expect(body).to.have.property('success');",
+                    "});",
+                    ""
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ]
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "11 - Maps",
+      "item": [
+        {
+          "name": "POST /api/v1/maps/route \u2014 MapsController_getRoute_v1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/maps/route",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "maps",
+                "route"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origin_lat\": -7.9827,\n  \"origin_lng\": 112.6304,\n  \"destination_lat\": -7.9701,\n  \"destination_lng\": 112.6412\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "MapsController_getRoute_v1",
             "event": [
               {
                 "listen": "test",

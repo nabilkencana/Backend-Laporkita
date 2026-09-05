@@ -16,7 +16,7 @@ import {
   Headers,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiHeader, ApiConsumes } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiConsumes, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ReportsService } from './reports.service.js';
 import { ReportDetail } from './reports.repository.js';
 import { CreateReportDto } from './dto/create-report.dto.js';
@@ -25,6 +25,7 @@ import { CreateCommentDto } from './dto/create-comment.dto.js';
 import { ValidateReportDto } from './dto/validate-report.dto.js';
 import { UploadMediaDto } from './dto/upload-media.dto.js';
 import { QueryReportsDto } from './dto/query-reports.dto.js';
+import { ReportsAlongRouteDto } from './dto/reports-along-route.dto.js';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../../common/guards/roles.guard.js';
 import { Roles, Public } from '../../common/decorators/roles.decorator.js';
@@ -76,6 +77,26 @@ export class ReportsController {
     return this.reportsService.submitReport(
       { ...dto, idempotency_key: finalIdempotencyKey, photo_url: photoUrl },
       reporterId,
+    );
+  }
+
+  /**
+   * Laporan di Sepanjang Rute — POST /api/v1/reports/along-route
+   * Mengembalikan laporan aktif dalam radius tertentu dari setiap titik rute.
+   */
+  @Public()
+  @Post('along-route')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Laporan di sepanjang rute',
+    description: 'Mengembalikan laporan aktif yang berada dalam radius dari titik-titik rute yang diberikan. Hasil diurutkan dari yang terdekat.',
+  })
+  @ApiResponse({ status: 200, description: 'Daftar laporan di sepanjang rute' })
+  @ApiResponse({ status: 400, description: 'Validasi gagal / data tidak valid' })
+  async findReportsAlongRoute(@Body() dto: ReportsAlongRouteDto) {
+    return this.reportsService.findReportsAlongRoute(
+      dto.route_points,
+      dto.radius_meters,
     );
   }
 

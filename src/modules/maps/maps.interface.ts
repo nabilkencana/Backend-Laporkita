@@ -14,3 +14,10 @@ export interface ReverseGeocodeJobData {
   latitude: number;
   longitude: number;
 }
+
+export interface RouteResult {
+  coordinates: number[][]; // [lng, lat][] format OSRM
+  distance_meters: number;
+  duration_seconds: number;
+  cached?: boolean;
+}

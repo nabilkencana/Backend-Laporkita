@@ -82,6 +82,7 @@ async function bootstrap(): Promise<void> {
     .addTag('Reports', 'Pelaporan, Status Tracking, Dukungan, Komentar, & Validasi')
     .addTag('Notifications', 'Notifikasi Pengguna')
     .addTag('Route Alerts', 'Peringatan Rute Geofencing')
+    .addTag('Maps', 'Routing & Peta (Proxy OSRM)')
     .addTag('Predictions', 'Prediksi Risiko Zona XGBoost & Cuaca')
     .addTag('Policy Simulator', 'Simulasi Kebijakan Tata Ruang Gemini LLM')
     .build();

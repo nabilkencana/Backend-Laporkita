@@ -1,8 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { IGeocodingService, ReverseGeocodeResult } from './maps.interface.js';
+import { IGeocodingService, ReverseGeocodeResult, RouteResult } from './maps.interface.js';
 
 export const OSM_ATTRIBUTION = '© OpenStreetMap contributors';
 
@@ -20,10 +20,20 @@ interface NominatimReverseResponse {
   licence?: string;
 }
 
+interface OSRMRouteResponse {
+  code: string;
+  routes?: Array<{
+    geometry: { coordinates: number[][] };
+    distance: number;
+    duration: number;
+  }>;
+}
+
 @Injectable()
 export class MapsService implements IGeocodingService {
   private readonly logger = new Logger(MapsService.name);
   private readonly cache = new Map<string, ReverseGeocodeResult>();
+  private readonly routeCache = new Map<string, RouteResult>();
 
   constructor(
     private readonly configService: ConfigService,
@@ -98,6 +108,63 @@ export class MapsService implements IGeocodingService {
         cached: false,
       };
     }
+  }
+
+  async getRoute(
+    originLat: number,
+    originLng: number,
+    destLat: number,
+    destLng: number,
+  ): Promise<RouteResult> {
+    const cacheKey = `${Number(originLat).toFixed(4)},${Number(originLng).toFixed(4)},${Number(
+      destLat,
+    ).toFixed(4)},${Number(destLng).toFixed(4)}`;
+
+    const cached = this.routeCache.get(cacheKey);
+    if (cached) {
+      this.logger.debug(`Cache hit untuk route: ${cacheKey}`);
+      return { ...cached, cached: true };
+    }
+
+    const osrmBaseUrl =
+      this.configService.get<string>('OSRM_BASE_URL') ?? 'https://router.project-osrm.org';
+
+    this.logger.log(
+      `Memanggil OSRM route dari (${originLat}, ${originLng}) ke (${destLat}, ${destLng})`,
+    );
+
+    const response = await firstValueFrom(
+      this.httpService.get<OSRMRouteResponse>(
+        `${osrmBaseUrl}/route/v1/driving/${originLng},${originLat};${destLng},${destLat}`,
+        {
+          params: {
+            overview: 'full',
+            geometries: 'geojson',
+            steps: 'true',
+          },
+          timeout: 10000,
+        },
+      ),
+    );
+
+    if (response.data.code !== 'Ok') {
+      throw new BadRequestException('Rute tidak dapat ditemukan antara kedua lokasi');
+    }
+
+    const route = response.data.routes?.[0];
+    if (!route) {
+      throw new BadRequestException('Rute tidak dapat ditemukan antara kedua lokasi');
+    }
+
+    const result: RouteResult = {
+      coordinates: route.geometry.coordinates,
+      distance_meters: route.distance,
+      duration_seconds: route.duration,
+      cached: false,
+    };
+
+    this.routeCache.set(cacheKey, result);
+    return result;
   }
 
   private formatNominatimAddress(data: NominatimReverseResponse, lat: number, lng: number): string {

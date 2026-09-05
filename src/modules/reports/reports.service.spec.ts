@@ -76,6 +76,9 @@ describe('ReportsService (Critical Business Logic)', () => {
     };
 
     const mockPrismaService = {
+      report: {
+        findMany: jest.fn(),
+      },
       category: {
         findUnique: jest.fn(),
       },
@@ -668,6 +671,106 @@ describe('ReportsService (Critical Business Logic)', () => {
       expect(res.data).toHaveLength(1);
       expect(res.data[0].is_flagged).toBe(true);
       expect(res.meta.total).toBe(1);
+    });
+  });
+
+  // ── 8. Reports Along Route (Haversine) ─────────────────────────────────────
+
+  describe('findReportsAlongRoute (Reports along route waypoints)', () => {
+    const routePoints = [
+      { lat: -7.9827, lng: 112.6304 },
+      { lat: -7.9701, lng: 112.6412 },
+    ];
+
+    it('should return only reports within radius of any route point, sorted by distance', async () => {
+      // report-1 near first waypoint (~within 300m), report-2 far (>300m from both)
+      const mockActiveReports = [
+        {
+          id: 'report-1',
+          report_code: '#LP-2026-000001',
+          status: ReportStatus.verified,
+          latitude: new Prisma.Decimal(-7.982), // ~78m from (-7.9827, 112.6304)
+          longitude: new Prisma.Decimal(112.631),
+          category: { name: 'Jalan Berlubang' },
+        },
+        {
+          id: 'report-2',
+          report_code: '#LP-2026-000002',
+          status: ReportStatus.in_progress,
+          latitude: new Prisma.Decimal(-7.96), // far from both waypoints
+          longitude: new Prisma.Decimal(112.64),
+          category: { name: 'Trotoar Rusak' },
+        },
+      ];
+      jest.spyOn(prisma.report, 'findMany').mockResolvedValue(mockActiveReports);
+
+      const result = await service.findReportsAlongRoute(routePoints, 300);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe('report-1');
+      expect(result[0].distance_from_route_meters).toEqual(expect.any(Number));
+      expect(result[0]).toHaveProperty('category');
+    });
+
+    it('should return empty array when radius is too small to reach any report', async () => {
+      const mockActiveReports = [
+        {
+          id: 'report-1',
+          report_code: '#LP-2026-000001',
+          status: ReportStatus.verified,
+          latitude: new Prisma.Decimal(-7.982),
+          longitude: new Prisma.Decimal(112.631),
+          category: { name: 'Jalan Berlubang' },
+        },
+      ];
+      jest.spyOn(prisma.report, 'findMany').mockResolvedValue(mockActiveReports);
+
+      // radius=1m is far below the ~78m distance of report-1
+      const result = await service.findReportsAlongRoute(routePoints, 1);
+
+      expect(result).toEqual([]);
+    });
+
+    it('should include only reports under the given radius from any route point', async () => {
+      // distances from waypoint (-7.9827, 112.6304):
+//  near   (-7.9820, 112.6310)  ~78m
+//  mid    (-7.982,  112.6320)  ~190m (within 200m)
+      //  far    (-7.99,   112.64)    ~1km+ (excluded)
+      const mockReports = [
+        {
+          id: 'near',
+          report_code: '#LP-2026-000001',
+          status: ReportStatus.assigned,
+          latitude: new Prisma.Decimal(-7.982),
+          longitude: new Prisma.Decimal(112.631),
+          category: { name: 'Jalan Berlubang' },
+        },
+        {
+          id: 'mid',
+          report_code: '#LP-2026-000002',
+          status: ReportStatus.in_progress,
+          latitude: new Prisma.Decimal(-7.982),
+          longitude: new Prisma.Decimal(112.632),
+          category: { name: 'Trotoar Rusak' },
+        },
+        {
+          id: 'far',
+          report_code: '#LP-2026-000003',
+          status: ReportStatus.verified,
+          latitude: new Prisma.Decimal(-7.99),
+          longitude: new Prisma.Decimal(112.64),
+          category: { name: 'Lampu Rusak' },
+        },
+      ];
+      jest.spyOn(prisma.report, 'findMany').mockResolvedValue(mockReports);
+
+      const result = await service.findReportsAlongRoute(routePoints, 200);
+
+      // 'far' (~1km) excluded; 'near' and 'mid' (<=200m) included, sorted ascending
+      expect(result.map((r) => r.id)).toEqual(['near', 'mid']);
+      expect(result[0].distance_from_route_meters).toBeLessThanOrEqual(
+        result[1].distance_from_route_meters,
+      );
     });
   });
 });
