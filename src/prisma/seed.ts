@@ -381,20 +381,16 @@ async function main(): Promise<void> {
   ];
 
   for (const zone of zonesData) {
-    await prisma.zone.upsert({
-      where: { id: zone.id },
-      update: {
-        name: zone.name,
-        geo_boundary: zone.geoBoundary,
-        stress_level: zone.stressLevel,
-      },
-      create: {
-        id: zone.id,
-        name: zone.name,
-        geo_boundary: zone.geoBoundary,
-        stress_level: zone.stressLevel,
-      },
-    });
+    const geoJsonStr = JSON.stringify(zone.geoBoundary);
+    await prisma.$executeRaw`
+      INSERT INTO "zones" ("id", "name", "geo_boundary", "stress_level", "updated_at")
+      VALUES (${zone.id}::uuid, ${zone.name}, ST_GeomFromGeoJSON(${geoJsonStr}), ${zone.stressLevel}::"StressLevel", NOW())
+      ON CONFLICT ("id") DO UPDATE
+      SET "name" = ${zone.name},
+          "geo_boundary" = ST_GeomFromGeoJSON(${geoJsonStr}),
+          "stress_level" = ${zone.stressLevel}::"StressLevel",
+          "updated_at" = NOW()
+    `;
   }
   console.log('✅ 5 Zona Kota Malang berhasil di-seed!');
 

@@ -351,8 +351,8 @@ model ContributionPointsLog {
 model Zone {
   id           String      @id @default(uuid()) @db.Uuid
   name         String      @db.VarChar(100)
-  /// GeoJSON Polygon — kompatibel native dengan PostgreSQL standar
-  geo_boundary Json?
+  /// GeoJSON Polygon — PostGIS geometry, diabaikan oleh query Prisma native
+  geo_boundary Unsupported("geometry")?
   stress_level StressLevel @default(low)
   updated_at   DateTime    @updatedAt
 
