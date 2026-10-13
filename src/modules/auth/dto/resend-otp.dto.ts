@@ -3,7 +3,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ResendOtpDto {
   @ApiPropertyOptional({
-    description: 'ID pengguna (UUID)',
+    description: 'ID pengguna (UUID v4)',
     example: '11111111-1111-4000-8000-000000000001',
   })
   @IsOptional()
@@ -11,7 +11,7 @@ export class ResendOtpDto {
   user_id?: string;
 
   @ApiPropertyOptional({
-    description: 'Nomor telepon pengguna',
+    description: 'Nomor telepon terdaftar pengguna',
     example: '+6281234567890',
   })
   @IsOptional()

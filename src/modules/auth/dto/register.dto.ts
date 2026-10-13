@@ -9,19 +9,19 @@ import { ApiProperty } from '@nestjs/swagger';
  * permanen stuck is_active=false.
  */
 export class RegisterDto {
-  @ApiProperty({ example: 'Budi Santoso', description: 'Nama lengkap pengguna' })
+  @ApiProperty({ example: 'Budi Santoso', description: 'Nama lengkap pengguna', minLength: 2, maxLength: 100 })
   @IsNotEmpty({ message: 'Nama lengkap wajib diisi.' })
   @IsString({ message: 'Nama lengkap harus berupa string.' })
   @MinLength(2, { message: 'Nama lengkap minimal 2 karakter.' })
   @MaxLength(100, { message: 'Nama lengkap maksimal 100 karakter.' })
   full_name!: string;
 
-  @ApiProperty({ example: 'budi@example.com', description: 'Alamat email — wajib diisi' })
+  @ApiProperty({ example: 'budi@example.com', description: 'Alamat email pengguna' })
   @IsNotEmpty({ message: 'Email wajib diisi.' })
   @IsEmail({}, { message: 'Format email tidak valid.' })
   email!: string;
 
-  @ApiProperty({ example: '+6281234567890', description: 'Nomor telepon — wajib diisi untuk OTP' })
+  @ApiProperty({ example: '+6281234567890', description: 'Nomor telepon format E.164 untuk verifikasi OTP' })
   @IsNotEmpty({ message: 'Nomor telepon wajib diisi.' })
   @IsString({ message: 'Nomor telepon harus berupa string.' })
   @Matches(/^\+?[0-9]{9,15}$/, {
@@ -31,7 +31,8 @@ export class RegisterDto {
 
   @ApiProperty({
     example: 'Password123',
-    description: 'Password min 8 karakter, kombinasi huruf & angka',
+    description: 'Kata sandi akun (minimal 8 karakter kombinasi huruf & angka)',
+    minLength: 8,
   })
   @IsNotEmpty({ message: 'Password wajib diisi.' })
   @IsString({ message: 'Password harus berupa string.' })

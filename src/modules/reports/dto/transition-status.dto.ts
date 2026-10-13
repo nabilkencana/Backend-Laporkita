@@ -1,7 +1,13 @@
 import { IsNotEmpty, IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ReportStatus } from '@prisma/client';
 
 export class TransitionStatusDto {
+  @ApiProperty({
+    description: 'Status target laporan sesuai state machine',
+    enum: ReportStatus,
+    example: ReportStatus.verified,
+  })
   @IsNotEmpty({ message: 'Target status wajib diisi.' })
   @IsEnum(ReportStatus, {
     message:
@@ -9,6 +15,12 @@ export class TransitionStatusDto {
   })
   status!: ReportStatus;
 
+  @ApiPropertyOptional({
+    description: 'Catatan transisi status oleh operator/petugas',
+    example:
+      'Laporan diverifikasi oleh tim survei lapangan DPUPR dan dijadwalkan untuk penambalan aspal.',
+    maxLength: 1000,
+  })
   @IsOptional()
   @IsString({ message: 'Catatan harus berupa string.' })
   @MaxLength(1000, { message: 'Catatan maksimal 1000 karakter.' })

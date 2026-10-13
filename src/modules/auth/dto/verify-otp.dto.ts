@@ -3,7 +3,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class VerifyOtpDto {
   @ApiPropertyOptional({
-    description: 'ID pengguna (UUID)',
+    description: 'ID pengguna (UUID v4)',
     example: '11111111-1111-4000-8000-000000000001',
   })
   @IsOptional()
@@ -11,7 +11,7 @@ export class VerifyOtpDto {
   user_id?: string;
 
   @ApiPropertyOptional({
-    description: 'Nomor telepon pengguna',
+    description: 'Nomor telepon terdaftar pengguna',
     example: '+6281234567890',
   })
   @IsOptional()
@@ -19,8 +19,10 @@ export class VerifyOtpDto {
   phone_number?: string;
 
   @ApiProperty({
-    description: 'Kode OTP 4 digit yang diterima via SMS',
+    description: 'Kode OTP 4-digit yang diterima via SMS',
     example: '1234',
+    minLength: 4,
+    maxLength: 4,
   })
   @IsNotEmpty({ message: 'Kode OTP wajib diisi.' })
   @IsString({ message: 'Kode OTP harus berupa string.' })

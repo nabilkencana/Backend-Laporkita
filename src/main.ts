@@ -75,6 +75,7 @@ async function bootstrap(): Promise<void> {
       },
       'bearer',
     )
+    .addTag('System', 'Health Check & Status Layanan')
     .addTag('Auth', 'Autentikasi & Token JWT')
     .addTag('Users', 'Profil & Manajemen Pengguna')
     .addTag('Categories', 'Kategori Fasilitas Publik')
@@ -91,7 +92,11 @@ async function bootstrap(): Promise<void> {
   SwaggerModule.setup('api/docs', app, document, {
     swaggerOptions: {
       persistAuthorization: true,
+      docExpansion: 'none',
+      filter: true,
+      showRequestDuration: true,
     },
+    customSiteTitle: 'LaporKita API Documentation',
   });
 
   // ── CORS ─────────────────────────────────────────────────────────────────

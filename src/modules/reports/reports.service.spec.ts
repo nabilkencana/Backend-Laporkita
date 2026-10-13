@@ -677,11 +677,14 @@ describe('ReportsService (Critical Business Logic)', () => {
   // ── 8. Reports Along Route (Haversine) ─────────────────────────────────────
 
   describe('findReportsAlongRoute (Reports along route waypoints)', () => {
+    type ActiveReportPayload = Prisma.ReportGetPayload<{
+      include: { category: { select: { name: true } } };
+    }>[];
+
     const routePoints = [
       { lat: -7.9827, lng: 112.6304 },
       { lat: -7.9701, lng: 112.6412 },
     ];
-
     it('should return only reports within radius of any route point, sorted by distance', async () => {
       // report-1 near first waypoint (~within 300m), report-2 far (>300m from both)
       const mockActiveReports = [
@@ -702,7 +705,7 @@ describe('ReportsService (Critical Business Logic)', () => {
           category: { name: 'Trotoar Rusak' },
         },
       ];
-      jest.spyOn(prisma.report, 'findMany').mockResolvedValue(mockActiveReports);
+      jest.spyOn(prisma.report, 'findMany').mockResolvedValue(mockActiveReports as unknown as ActiveReportPayload);
 
       const result = await service.findReportsAlongRoute(routePoints, 300);
 
@@ -723,7 +726,7 @@ describe('ReportsService (Critical Business Logic)', () => {
           category: { name: 'Jalan Berlubang' },
         },
       ];
-      jest.spyOn(prisma.report, 'findMany').mockResolvedValue(mockActiveReports);
+      jest.spyOn(prisma.report, 'findMany').mockResolvedValue(mockActiveReports as unknown as ActiveReportPayload);
 
       // radius=1m is far below the ~78m distance of report-1
       const result = await service.findReportsAlongRoute(routePoints, 1);
@@ -762,7 +765,7 @@ describe('ReportsService (Critical Business Logic)', () => {
           category: { name: 'Lampu Rusak' },
         },
       ];
-      jest.spyOn(prisma.report, 'findMany').mockResolvedValue(mockReports);
+      jest.spyOn(prisma.report, 'findMany').mockResolvedValue(mockReports as unknown as ActiveReportPayload);
 
       const result = await service.findReportsAlongRoute(routePoints, 200);
 

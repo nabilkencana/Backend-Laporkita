@@ -28,6 +28,42 @@ export class AuthController {
   @ApiResponse({
     status: 202,
     description: 'Registrasi berhasil diterima, OTP dikirimkan.',
+    schema: {
+      example: {
+        success: true,
+        data: {
+          user_id: '11111111-1111-4000-8000-000000000001',
+          phone_number: '+6281234567890',
+          email: 'budi@example.com',
+          message:
+            'Registrasi berhasil. Silakan verifikasi nomor telepon menggunakan kode OTP 4-digit yang telah dikirim via SMS.',
+        },
+        meta: null,
+        error: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Validasi input gagal',
+    schema: {
+      example: {
+        success: false,
+        data: null,
+        error: { code: 'BAD_REQUEST', message: 'Email atau nomor telepon wajib diisi.' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Email atau nomor telepon sudah terdaftar',
+    schema: {
+      example: {
+        success: false,
+        data: null,
+        error: { code: 'CONFLICT', message: 'Email atau nomor telepon sudah terdaftar.' },
+      },
+    },
   })
   async register(@Body() dto: RegisterDto): Promise<RegisterResponse> {
     return this.authService.register(dto);
@@ -47,6 +83,40 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'Verifikasi berhasil, mengembalikan JWT tokens.',
+    schema: {
+      example: {
+        success: true,
+        data: {
+          access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+          refresh_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+          expires_in: '15m',
+          token_type: 'Bearer',
+          user: {
+            id: '11111111-1111-4000-8000-000000000001',
+            full_name: 'Budi Santoso',
+            email: 'budi@example.com',
+            phone_number: '+6281234567890',
+            role: 'citizen',
+            agency_id: null,
+            contribution_points: 0,
+            avatar_url: null,
+          },
+        },
+        meta: null,
+        error: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Kode OTP tidak valid atau kadaluarsa',
+    schema: {
+      example: {
+        success: false,
+        data: null,
+        error: { code: 'INVALID_OTP', message: 'Kode OTP tidak valid atau telah kadaluarsa.' },
+      },
+    },
   })
   async verifyOtp(@Body() dto: VerifyOtpDto): Promise<AuthTokens> {
     return this.authService.verifyOtp(dto);
@@ -67,6 +137,31 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'Kode OTP baru berhasil dikirim.',
+    schema: {
+      example: {
+        success: true,
+        data: {
+          message: 'Kode OTP baru berhasil dikirim via SMS.',
+          cooldown_seconds: 45,
+        },
+        meta: null,
+        error: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 429,
+    description: 'Cooldown resend OTP belum tercapai',
+    schema: {
+      example: {
+        success: false,
+        data: null,
+        error: {
+          code: 'OTP_RESEND_COOLDOWN',
+          message: 'Harap tunggu 35 detik sebelum meminta OTP kembali.',
+        },
+      },
+    },
   })
   async resendOtp(
     @Body() dto: ResendOtpDto,
@@ -89,6 +184,40 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'Login berhasil, mengembalikan JWT tokens.',
+    schema: {
+      example: {
+        success: true,
+        data: {
+          access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+          refresh_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+          expires_in: '15m',
+          token_type: 'Bearer',
+          user: {
+            id: '11111111-1111-4000-8000-000000000001',
+            full_name: 'Budi Santoso',
+            email: 'budi@example.com',
+            phone_number: '+6281234567890',
+            role: 'citizen',
+            agency_id: null,
+            contribution_points: 25,
+            avatar_url: 'https://storage.laporkita.id/avatars/user-1.jpg',
+          },
+        },
+        meta: null,
+        error: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Kredensial salah atau nomor belum terverifikasi',
+    schema: {
+      example: {
+        success: false,
+        data: null,
+        error: { code: 'UNAUTHORIZED', message: 'Email/nomor telepon atau password salah.' },
+      },
+    },
   })
   async login(@Body() dto: LoginDto): Promise<AuthTokens> {
     return this.authService.login(dto);
@@ -107,6 +236,40 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'Token berhasil diperbarui.',
+    schema: {
+      example: {
+        success: true,
+        data: {
+          access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+          refresh_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+          expires_in: '15m',
+          token_type: 'Bearer',
+          user: {
+            id: '11111111-1111-4000-8000-000000000001',
+            full_name: 'Budi Santoso',
+            email: 'budi@example.com',
+            phone_number: '+6281234567890',
+            role: 'citizen',
+            agency_id: null,
+            contribution_points: 25,
+            avatar_url: null,
+          },
+        },
+        meta: null,
+        error: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Refresh token tidak valid atau kadaluarsa',
+    schema: {
+      example: {
+        success: false,
+        data: null,
+        error: { code: 'INVALID_REFRESH_TOKEN', message: 'Refresh token tidak valid atau telah kadaluarsa.' },
+      },
+    },
   })
   async refresh(@Body() dto: RefreshTokenDto): Promise<AuthTokens> {
     return this.authService.refresh(dto);

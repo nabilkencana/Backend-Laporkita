@@ -23,11 +23,45 @@ export class MapsController {
   @Post('route')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'Routing A→B via OSRM',
-    description: 'Proxy ke OSRM untuk menghitung rute jalan antara 2 titik. Output dalam format GeoJSON coordinates.',
+    summary: 'Routing Navigasi A→B via OSRM (Pulau Jawa)',
+    description:
+      'Proxy ke OSRM untuk menghitung rute berkendara antara 2 titik koordinat di Pulau Jawa dengan output GeoJSON coordinates.',
   })
-  @ApiResponse({ status: 200, description: 'Rute ditemukan' })
-  @ApiResponse({ status: 400, description: 'Rute tidak ditemukan / koordinat luar Jawa' })
+  @ApiResponse({
+    status: 200,
+    description: 'Rute ditemukan',
+    schema: {
+      example: {
+        success: true,
+        data: {
+          coordinates: [
+            [112.631782, -7.978469],
+            [112.63185, -7.9782],
+            [112.615668, -7.942493],
+          ],
+          distance_meters: 5240.8,
+          duration_seconds: 780.2,
+          cached: false,
+        },
+        meta: null,
+        error: null,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Koordinat di luar Pulau Jawa atau rute tidak ditemukan',
+    schema: {
+      example: {
+        success: false,
+        data: null,
+        error: {
+          code: 'BAD_REQUEST',
+          message: 'Koordinat asal berada di luar wilayah Jawa. Rute hanya tersedia di Pulau Jawa.',
+        },
+      },
+    },
+  })
   async getRoute(@Body() dto: CreateRouteDto) {
     // Validasi bounding box Java untuk origin
     if (!isWithinJavaBounds(dto.origin_lat, dto.origin_lng)) {
