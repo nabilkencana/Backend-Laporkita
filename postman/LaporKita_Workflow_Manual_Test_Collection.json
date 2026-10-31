@@ -1,0 +1,3494 @@
+{
+  "info": {
+    "_postman_id": "laporkita-full-workflow-manual-test-2026",
+    "name": "LaporKita — Manual Workflow E2E Test Collection",
+    "description": "Koleksi Postman lengkap untuk pengujian manual seluruh alur kerja bisnis platform LaporKita (Backend API & AI Microservice) pada lingkungan produksi live Canadev.\n\nSemua request telah dilengkapi Auto-Save Test Script yang secara otomatis mengekstrak token otentikasi (citizenToken, operatorToken, adminToken, policyMakerToken), ID laporan (reportId, reportCode), ID simulasi kebijakan, dan ID master data ke dalam environment, sehingga pengujian alur kerja dapat dilakukan berurutan dengan sekali klik.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 - System Health & Discovery",
+      "description": "Memverifikasi kesiapan operasional server backend dan microservice AI sebelum memulai alur kerja.",
+      "item": [
+        {
+          "name": "1.1 GET Backend Health Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Mengecek status ketersediaan backend server, versi aplikasi, dan koneksi database."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Status data is ok\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.data.status).to.eql(\"ok\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.2 GET Swagger Documentation UI",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              }
+            ],
+            "url": {
+              "raw": "{{backendRoot}}/api/docs",
+              "host": [
+                "{{backendRoot}}"
+              ],
+              "path": [
+                "api",
+                "docs"
+              ]
+            },
+            "description": "Membuka tampilan interaktif Swagger UI untuk eksplorasi dokumentasi REST API."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.3 GET OpenAPI 3.0 Schema JSON",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              }
+            ],
+            "url": {
+              "raw": "{{backendRoot}}/api/docs-json",
+              "host": [
+                "{{backendRoot}}"
+              ],
+              "path": [
+                "api",
+                "docs-json"
+              ]
+            },
+            "description": "Mengambil skema OpenAPI 3.0 lengkap dalam format JSON (35+ endpoints)."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 & OpenAPI 3.0\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.openapi).to.eql(\"3.0.0\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.4 GET AI Service Health & Model Flags",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{aiApiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{aiBaseUrl}}/health",
+              "host": [
+                "{{aiBaseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Memeriksa status model AI (YOLOv11, XGBoost, Google Gemini)."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.data.models.yolo_classification_loaded).to.be.true;",
+                  "    pm.expect(json.data.models.xgboost_risk_loaded).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.5 GET AI Sandbox Console Demo",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{aiApiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{aiBaseUrl}}/demo",
+              "host": [
+                "{{aiBaseUrl}}"
+              ],
+              "path": [
+                "demo"
+              ]
+            },
+            "description": "Tampilan antarmuka pengujian visual mandiri AI Console."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.6 GET AI Sample Images Dataset",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{aiApiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{aiBaseUrl}}/sample_images.json",
+              "host": [
+                "{{aiBaseUrl}}"
+              ],
+              "path": [
+                "sample_images.json"
+              ]
+            },
+            "description": "Dataset sampel foto fasilitas publik Kota Malang (Drainase, Jalan Berlubang, Lampu Jalan, Rambu, Trotoar)."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    if (json[\"Jalan Berlubang\"]) {",
+                  "        pm.environment.set(\"sampleImageBase64\", json[\"Jalan Berlubang\"]);",
+                  "        console.log(\"sampleImageBase64 updated in environment\");",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Authentication & Roles",
+      "description": "Login untuk 4 role berbeda. Script otomatis menyimpan access token ke environment masing-masing.",
+      "item": [
+        {
+          "name": "2.1 POST Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login sebagai Administrator LaporKita Kota Malang. Token disimpan ke {{adminToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login Admin Success (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.data.user.role).to.eql(\"admin\");",
+                  "    pm.environment.set(\"adminToken\", json.data.access_token);",
+                  "    pm.environment.set(\"adminUserId\", json.data.user.id);",
+                  "    console.log(\"adminToken saved successfully\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.2 POST Login Citizen (Warga)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"{{citizenEmail}}\",\n  \"password\": \"{{citizenPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login sebagai Warga Kota Malang. Token disimpan ke {{citizenToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login Citizen Success (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.data.user.role).to.eql(\"citizen\");",
+                  "    pm.environment.set(\"citizenToken\", json.data.access_token);",
+                  "    pm.environment.set(\"citizenUserId\", json.data.user.id);",
+                  "    console.log(\"citizenToken saved successfully\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.3 POST Login Operator DPUPR",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"{{operatorEmail}}\",\n  \"password\": \"{{operatorPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login sebagai Petugas/Operator DPUPR Kota Malang. Token disimpan ke {{operatorToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login Operator Success (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.data.user.role).to.eql(\"operator\");",
+                  "    pm.environment.set(\"operatorToken\", json.data.access_token);",
+                  "    console.log(\"operatorToken saved successfully\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.4 POST Login Policy Maker (Bappeda)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"{{policyMakerEmail}}\",\n  \"password\": \"{{policyMakerPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login sebagai Pengambil Kebijakan / Policy Maker (Bappeda). Token disimpan ke {{policyMakerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login Policy Maker Success (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.data.user.role).to.eql(\"policy_maker\");",
+                  "    pm.environment.set(\"policyMakerToken\", json.data.access_token);",
+                  "    console.log(\"policyMakerToken saved successfully\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.5 POST Refresh Token Rotation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "Rotasi refresh token untuk memperbarui access token."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Token refreshed\", function () {",
+                  "    if (pm.response.code === 200) {",
+                  "        var json = pm.response.json();",
+                  "        pm.environment.set(\"citizenToken\", json.data.access_token);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.6 POST Register New Citizen (Warga Baru)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Warga Simulasi Manual\",\n  \"email\": \"warga.manual.1793469810766@malangkota.id\",\n  \"phone_number\": \"+6281237591508\",\n  \"password\": \"Password123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Pendaftaran akun warga baru (mengembalikan 202 Accepted untuk verifikasi OTP)."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Registration accepted (202)\", function () {",
+                  "    pm.expect([200, 201, 202]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.7 POST Resend OTP Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone_number\": \"+6281234567890\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/resend-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "resend-otp"
+              ]
+            },
+            "description": "Minta kirim ulang kode OTP aktivasi WhatsApp/SMS."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Resend OTP response handled\", function () {",
+                  "    pm.expect([200, 400, 429]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.8 POST Verify OTP (Negative Check)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone_number\": \"+6281234567890\",\n  \"otp_code\": \"0000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "verify-otp"
+              ]
+            },
+            "description": "Uji coba verifikasi OTP dengan kode salah (harus mengembalikan HTTP 400 Bad Request)."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Invalid OTP rejected with 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - Core Report Lifecycle (Citizen-to-Resolve)",
+      "description": "Siklus penuh akuntabilitas digital: Lapor ➔ Upvote ➔ Komentar & Moderasi ➔ Verifikasi ➔ Penugasan Satgas ➔ Pengerjaan Fisik ➔ Foto Selesai ➔ Validasi Warga di Lokasi (RESOLVED).",
+      "item": [
+        {
+          "name": "3.1 POST Submit Laporan Baru (Warga)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "category_id",
+                  "value": "{{categoryId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "latitude",
+                  "value": "-7.9826",
+                  "type": "text",
+                  "description": "Alun-Alun Merdeka Malang"
+                },
+                {
+                  "key": "longitude",
+                  "value": "112.6308",
+                  "type": "text",
+                  "description": "Alun-Alun Merdeka Malang"
+                },
+                {
+                  "key": "description",
+                  "value": "Jalan berlubang cukup dalam di dekat Alun-Alun Merdeka Malang sangat membahayakan pengendara motor di malam hari.",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "description": "Pilih file gambar JPEG/PNG kerusakan (opsional di Postman bila menggunakan multipart)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reports",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports"
+              ]
+            },
+            "description": "Warga mengajukan laporan kerusakan infrastruktur publik. ID laporan otomatis disimpan ke {{reportId}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Report submitted successfully (201/202)\", function () {",
+                  "    pm.expect([200, 201, 202]).to.include(pm.response.code);",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.id) {",
+                  "        pm.environment.set(\"reportId\", json.data.id);",
+                  "        pm.environment.set(\"reportCode\", json.data.report_code);",
+                  "        console.log(\"Saved reportId: \" + json.data.id + \" (\" + json.data.report_code + \")\");",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.2 GET Detail Laporan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "{{reportId}}"
+              ]
+            },
+            "description": "Melihat detail lengkap laporan, media yang terlampir, status, dan skor urgensi cerdas."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Report details retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.data.id).to.eql(pm.environment.get(\"reportId\"));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.3 GET Daftar Laporan Publik & Filter",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports?limit=10&page=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports?limit=10&page=1"
+              ]
+            },
+            "description": "Mengambil daftar laporan publik dengan paginasi dan filter."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Reports list retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.4 POST Dukung Laporan (Upvote Warga)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}/support",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "{{reportId}}",
+                "support"
+              ]
+            },
+            "description": "Warga memberikan dukungan (upvote) pada laporan untuk menaikkan skor prioritas penanganan."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Upvote success (200/201)\", function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.5 POST Cegah Upvote Ganda (Check 409 Conflict)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}/support",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "{{reportId}}",
+                "support"
+              ]
+            },
+            "description": "Warga mencoba upvote untuk kedua kalinya; sistem wajib menolak dengan HTTP 409 Conflict."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Duplicate upvote prevented with 409 Conflict\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.6 DELETE Batalkan Dukungan (Grace Period 5 Menit)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}/support",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "{{reportId}}",
+                "support"
+              ]
+            },
+            "description": "Warga membatalkan upvote dalam batas grace period 5 menit."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Support cancelled (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.7 POST Tambah Ulang Upvote",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}/support",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "{{reportId}}",
+                "support"
+              ]
+            },
+            "description": "Memberikan kembali upvote untuk kelanjutan workflow laporan."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Re-upvote success (201)\", function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.8 POST Tambah Komentar Konstruktif",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Semalam ada pengendara motor terperosok di titik ini, mohon segera ditambal.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "{{reportId}}",
+                "comments"
+              ]
+            },
+            "description": "Warga mengirim komentar positif yang membantu penanganan."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Comment created (201)\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.data.is_flagged).to.be.false;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.9 POST Komentar Uji Sensor Kata Kasar (Profanity Filter)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Jalan anjing rusak parah bikin celaka warga!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "{{reportId}}",
+                "comments"
+              ]
+            },
+            "description": "Uji filter kata kasar; sistem otomatis menandai is_flagged: true dan memfilter konten."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Profanity flagged (201 & is_flagged true)\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.data.is_flagged).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.10 GET Daftar Komentar Laporan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "{{reportId}}",
+                "comments"
+              ]
+            },
+            "description": "Melihat riwayat komentar publik pada laporan ini."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Comments retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.11 GET Antrean Moderasi Komentar (Operator/Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operatorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/comments/flagged",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "comments",
+                "flagged"
+              ]
+            },
+            "description": "Petugas melihat daftar komentar yang terindikasi melanggar etika untuk dimoderasi."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Flagged comments retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.12 PATCH Operator: Verifikasi Laporan (verified)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operatorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"verified\",\n  \"note\": \"Laporan diverifikasi valid oleh Operator DPUPR Kota Malang.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "{{reportId}}",
+                "status"
+              ]
+            },
+            "description": "Operator memverifikasi laporan dari status pending_verification ke verified."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Report status updated (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.13 PATCH Operator: Tugaskan ke Tim Satgas (assigned)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operatorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"assigned\",\n  \"note\": \"Ditugaskan ke Tim Reaksi Cepat Satgas Jalan DPUPR.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "{{reportId}}",
+                "status"
+              ]
+            },
+            "description": "Operator menugaskan laporan ke satgas lapangan terkait."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Report status assigned (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.14 PATCH Operator: Mulai Pengerjaan (in_progress)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operatorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"in_progress\",\n  \"note\": \"Alat berat dan aspal cold-mix tiba di lokasi; perbaikan dimulai.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "{{reportId}}",
+                "status"
+              ]
+            },
+            "description": "Status berubah menjadi sedang dikerjakan (in_progress)."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Report in_progress (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.15 POST Operator: Unggah Foto Bukti Selesai",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operatorToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "type",
+                  "value": "completion_photo",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "description": "Pilih file foto bukti aspal selesai diperbaiki"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}/media",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "{{reportId}}",
+                "media"
+              ]
+            },
+            "description": "Operator mengunggah foto bukti fisik perbaikan telah rampung."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Completion photo uploaded (201)\", function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.16 PATCH Operator: Selesaikan Pekerjaan (completed)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operatorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\",\n  \"note\": \"Penambalan aspal selesai 100%, menunggu validasi warga pelapor.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "{{reportId}}",
+                "status"
+              ]
+            },
+            "description": "Petugas menandai pekerjaan selesai fisik."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Report marked completed (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.17 POST Validasi Warga di Lokasi (RESOLVED!)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_valid\": true,\n  \"latitude\": -7.9826,\n  \"longitude\": 112.6308,\n  \"note\": \"Sudah saya cek langsung di Alun-Alun, jalanan sudah mulus dan aman dilalui motor.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}/validate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "{{reportId}}",
+                "validate"
+              ]
+            },
+            "description": "Warga memverifikasi langsung di lokasi (radius <= 100m). Status akhir laporan berubah menjadi RESOLVED."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Report successfully RESOLVED (200/201)\", function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "    var json = pm.response.json();",
+                  "    var status = json.data.new_status || json.data.status;",
+                  "    pm.expect(status).to.eql(\"resolved\");",
+                  "    console.log(\"Accountability loop completed: \" + json.data.message);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - User Profile & Gamification",
+      "description": "Manajemen profil pengguna, saldo poin gamifikasi warga, dan pengelolaan user oleh admin.",
+      "item": [
+        {
+          "name": "4.1 GET Profil Saya (Warga)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            },
+            "description": "Mengambil data profil diri warga yang sedang login."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"User profile retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.2 PATCH Perbarui Nama Profil",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Budi Santoso (Warga Peduli Malang)\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            },
+            "description": "Memperbarui nama lengkap profil diri."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Profile updated (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.3 GET Riwayat Poin Kontribusi Warga",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/me/points",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "points"
+              ]
+            },
+            "description": "Melihat histori perolehan poin gamifikasi dari pelaporan, validasi, dan dukungan."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Points history retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.4 GET Daftar Pengguna (Admin Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users?limit=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users?limit=5"
+              ]
+            },
+            "description": "Admin melihat daftar seluruh pengguna terdaftar dengan paginasi."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Users list retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.5 GET Detail Pengguna Tertentu (Admin Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{citizenUserId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{citizenUserId}}"
+              ]
+            },
+            "description": "Admin melihat detail lengkap salah satu pengguna berdasarkan UUID."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"User detail retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.6 PATCH Perbarui Akun Pengguna oleh Admin",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"avatar_url\": \"https://storage.laporkita.id/avatars/user-verified.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{citizenUserId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{citizenUserId}}"
+              ]
+            },
+            "description": "Admin memperbarui data pengguna lain."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"User updated by admin (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.7 DELETE Uji Proteksi Hapus Diri Sendiri (Check 400)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{adminUserId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{adminUserId}}"
+              ]
+            },
+            "description": "Admin mencoba menghapus akunnya sendiri; sistem wajib menolak demi keamanan."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Self delete protected with 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 - GIS, Navigation & Route Alerts",
+      "description": "Routing navigasi OSRM, koridor bahaya di sepanjang rute, dan peringatan geofencing proaktif.",
+      "item": [
+        {
+          "name": "5.1 POST Routing Navigasi OSRM (Alun-Alun ke Lowokwaru)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origin_lat\": -7.9827,\n  \"origin_lng\": 112.6304,\n  \"destination_lat\": -7.9701,\n  \"destination_lng\": 112.6412\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/maps/route",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "maps",
+                "route"
+              ]
+            },
+            "description": "Kalkulasi rute jalan tercepat melalui engine OSRM Kota Malang."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Route calculated (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.data.distance_meters).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5.2 POST Deteksi Bahaya di Sepanjang Koridor Rute",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"route_points\": [\n    {\n      \"lat\": -7.9827,\n      \"lng\": 112.6304\n    },\n    {\n      \"lat\": -7.9781,\n      \"lng\": 112.635\n    },\n    {\n      \"lat\": -7.9701,\n      \"lng\": 112.6412\n    }\n  ],\n  \"radius_meters\": 1000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reports/along-route",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "along-route"
+              ]
+            },
+            "description": "Mengambil daftar laporan aktif yang berada dalam koridor radius rute pengendara."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Hazards along route checked (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5.3 POST Berlangganan Geofencing Route Alert",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device_token\": \"fcm-token-qa-manual-user\",\n  \"last_lat\": -7.9827,\n  \"last_long\": 112.6304\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/route-alerts/subscribe",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "route-alerts",
+                "subscribe"
+              ]
+            },
+            "description": "Mendaftarkan push notification FCM untuk peringatan geofencing proaktif."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Route alert subscribed (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5.4 POST Pengecekan Kedekatan Titik Bahaya",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_lat\": -7.9826,\n  \"current_lng\": 112.6308\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/route-alerts/check",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "route-alerts",
+                "check"
+              ]
+            },
+            "description": "Memicu pengecekan ada tidaknya lubang jalan atau genangan aktif di radius dekat."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Route alert check completed (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5.5 DELETE Hentikan Langganan Geofencing",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/route-alerts/unsubscribe",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "route-alerts",
+                "unsubscribe"
+              ]
+            },
+            "description": "Membatalkan langganan geofencing route alert."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Route alert unsubscribed (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 - Peta Emosi Kota & Policy Simulator",
+      "description": "Zona kecamatan Kota Malang, histori risiko banjir XGBoost, dan simulasi dampak kebijakan AI Gemini.",
+      "item": [
+        {
+          "name": "6.1 GET 5 Zona Kecamatan Kota Malang",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/predictions/zones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "predictions",
+                "zones"
+              ]
+            },
+            "description": "Mengambil daftar 5 zona kecamatan (Klojen, Blimbing, Kedungkandang, Sukun, Lowokwaru)."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"5 Zones retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.data.length).to.eql(5);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6.2 GET Histori Metrik Risiko Zona Klojen",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/predictions/zones/{{zoneId}}/metrics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "predictions",
+                "zones",
+                "{{zoneId}}",
+                "metrics"
+              ]
+            },
+            "description": "Menampilkan riwayat time-series densitas laporan, cuaca, dan risiko banjir zona Klojen."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Zone metrics retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6.3 POST Refresh Metrik Risiko (Operator)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{operatorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/predictions/metrics/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "predictions",
+                "metrics",
+                "refresh"
+              ]
+            },
+            "description": "Operator memicu pembaruan inferensi risiko seluruh zona via AI Service."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Metrics refreshed (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6.4 POST Simulasi Kebijakan AI (Policy Maker)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{policyMakerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt_text\": \"Simulasi normalisasi drainase terpadu dan penambahan pompa bergerak di kawasan Lowokwaru dan Klojen\",\n  \"zone_id\": \"{{zoneId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/policy-simulations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "policy-simulations"
+              ]
+            },
+            "description": "Policy Maker menjalankan analisis skenario tata ruang menggunakan AI Google Gemini. ID disimpan ke {{simulationId}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Simulation created (201/200)\", function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.id) {",
+                  "        pm.environment.set(\"simulationId\", json.data.id);",
+                  "        console.log(\"Saved simulationId: \" + json.data.id);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6.5 GET Riwayat Simulasi Kebijakan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{policyMakerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/policy-simulations?limit=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "policy-simulations?limit=5"
+              ]
+            },
+            "description": "Melihat histori simulasi kebijakan yang pernah diajukan Bappeda/Dinas."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Simulations history retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6.6 GET Detail Simulasi Kebijakan Tertentu",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{policyMakerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/policy-simulations/{{simulationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "policy-simulations",
+                "{{simulationId}}"
+              ]
+            },
+            "description": "Melihat narasi analisis lengkap, rekomendasi mitigasi risiko, dan proyeksi anggaran dari simulasi."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Simulation detail retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "07 - In-App Notifications",
+      "description": "Notifikasi in-app untuk warga mengenai pembaruan status pengerjaan laporan mereka.",
+      "item": [
+        {
+          "name": "7.1 GET Daftar Notifikasi Warga",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            },
+            "description": "Menampilkan daftar notifikasi dan counter unreadCount."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Notifications retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.length > 0) {",
+                  "        pm.environment.set(\"notificationId\", json.data[0].id);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "7.2 PATCH Tandai Satu Notifikasi Sudah Dibaca",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/{{notificationId}}/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "{{notificationId}}",
+                "read"
+              ]
+            },
+            "description": "Mengubah status satu notifikasi menjadi is_read: true."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Notification marked read (200)\", function () {",
+                  "    pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "7.3 PATCH Tandai Semua Notifikasi Sudah Dibaca",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{citizenToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/read-all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "read-all"
+              ]
+            },
+            "description": "Menandai seluruh notifikasi yang belum dibaca milik pengguna."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"All notifications marked read (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "08 - Master Data Management (Admin CRUD)",
+      "description": "Pengelolaan master data kategori fasilitas dan dinas/instansi penanggung jawab oleh Administrator.",
+      "item": [
+        {
+          "name": "8.1 GET Daftar Kategori Fasilitas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            },
+            "description": "Melihat 5 kategori fasilitas publik Kota Malang."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Categories retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8.2 GET Detail Kategori Jalan Berlubang",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "{{categoryId}}"
+              ]
+            },
+            "description": "Melihat detail nama, bobot urgensi, dan dinas default penanggung jawab."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Category detail retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8.3 POST Admin Tambah Kategori Baru",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kategori Manual Test 1206\",\n  \"default_agency_id\": \"{{agencyId}}\",\n  \"urgency_weight\": 1.5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            },
+            "description": "Admin membuat kategori fasilitas publik baru. ID disimpan ke {{createdCategoryId}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Category created (201)\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var json = pm.response.json();",
+                  "    pm.environment.set(\"createdCategoryId\", json.data.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8.4 PATCH Admin Perbarui Kategori",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"urgency_weight\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{createdCategoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "{{createdCategoryId}}"
+              ]
+            },
+            "description": "Admin mengubah bobot urgensi kategori."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Category updated (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8.5 DELETE Admin Hapus Kategori",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{createdCategoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "{{createdCategoryId}}"
+              ]
+            },
+            "description": "Admin menghapus kategori uji coba yang baru dibuat."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Category deleted (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8.6 GET Daftar Instansi Pemerintah",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agencies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agencies"
+              ]
+            },
+            "description": "Melihat daftar OPD terkait (DPUPR, Dishub, Diskominfo)."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Agencies retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8.7 GET Detail Instansi DPUPR",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agencies/{{agencyId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agencies",
+                "{{agencyId}}"
+              ]
+            },
+            "description": "Melihat kontak email dan tipe dinas DPUPR."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Agency detail retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8.8 POST Admin Tambah Instansi Baru",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dinas Manual Test 2279\",\n  \"type\": \"lainnya\",\n  \"contact_email\": \"manual.dinas@malangkota.go.id\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/agencies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agencies"
+              ]
+            },
+            "description": "Admin mendaftarkan OPD baru. ID disimpan ke {{createdAgencyId}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Agency created (201)\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var json = pm.response.json();",
+                  "    pm.environment.set(\"createdAgencyId\", json.data.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8.9 PATCH Admin Perbarui Email Instansi",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contact_email\": \"updated.manual@malangkota.go.id\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/agencies/{{createdAgencyId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agencies",
+                "{{createdAgencyId}}"
+              ]
+            },
+            "description": "Admin memperbarui email kontak instansi."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Agency updated (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8.10 DELETE Admin Hapus Instansi",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agencies/{{createdAgencyId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agencies",
+                "{{createdAgencyId}}"
+              ]
+            },
+            "description": "Admin menghapus instansi uji coba."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Agency deleted (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "09 - AI Microservice Standalone Engines",
+      "description": "Pengujian langsung ke server microservice AI: Computer Vision YOLOv11, Forensik Citra, Prediksi Risiko Banjir XGBoost, Google Gemini Policy Simulator, dan Continuous Active Learning.",
+      "item": [
+        {
+          "name": "9.1 GET AI Health & Model Verification",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{aiApiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{aiBaseUrl}}/health",
+              "host": [
+                "{{aiBaseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Mengecek ketersediaan model YOLOv11, XGBoost, dan Gemini."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"AI Models loaded (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9.2 POST YOLOv11 Computer Vision Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{aiApiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"image_base64\": \"{{sampleImageBase64}}\",\n  \"claimed_category\": \"Jalan Berlubang\",\n  \"latitude\": -7.9826,\n  \"longitude\": 112.6308,\n  \"support_count\": 5,\n  \"report_density\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{aiBaseUrl}}/v1/verify",
+              "host": [
+                "{{aiBaseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "verify"
+              ]
+            },
+            "description": "Deteksi klasifikasi kerusakan jalan, forensik keaslian citra, konsistensi GPS, dan perhitungan Smart Priority."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Verification passed (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.data.predicted_category).to.eql(\"Jalan Berlubang\");",
+                  "    pm.expect(json.data.authenticity.is_authentic).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9.3 POST XGBoost Flood & Urban Risk Prediction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{aiApiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"report_density\": 15,\n  \"rainfall_mm\": 45,\n  \"traffic_density\": 0.8,\n  \"category\": \"Drainase\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{aiBaseUrl}}/v1/predict-risk",
+              "host": [
+                "{{aiBaseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "predict-risk"
+              ]
+            },
+            "description": "Inferensi model XGBoost terlatih untuk estimasi probabilitas genangan dan rekomendasi taktis."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Risk predicted (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.data.flood_risk_probability).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9.4 POST Zone Batch Prediction Metrics",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{aiApiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"zone_name\": \"Klojen\",\n  \"active_reports\": 12\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{aiBaseUrl}}/v1/predict/zone-metrics",
+              "host": [
+                "{{aiBaseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "predict",
+                "zone-metrics"
+              ]
+            },
+            "description": "Kompatibilitas batch prediction metrik zona untuk backend NestJS."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Zone metrics predicted (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9.5 POST Google Gemini Policy Simulator Direct",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{aiApiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt_text\": \"Simulasi penambahan pompa portabel di kawasan Klojen menjelang puncak musim hujan\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{aiBaseUrl}}/v1/policy-simulate",
+              "host": [
+                "{{aiBaseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "policy-simulate"
+              ]
+            },
+            "description": "Pemanggilan langsung simulasi kebijakan ke microservice AI menggunakan Google Gemini 2.5 Flash."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Simulation response handled\", function () {",
+                  "    pm.expect([200, 502, 503]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9.6 GET Active Learning Class Distribution",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{aiApiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{aiBaseUrl}}/v1/training/dataset-stats",
+              "host": [
+                "{{aiBaseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "training",
+                "dataset-stats"
+              ]
+            },
+            "description": "Statistik distribusi data latih pada Active Learning pipeline (6 kelas)."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Dataset stats retrieved (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9.7 POST Active Learning Ingest Correction Sample",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{aiApiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"image_base64\": \"{{sampleImageBase64}}\",\n  \"verified_category\": \"Jalan Berlubang\",\n  \"original_prediction\": \"Trotoar\",\n  \"confidence_score\": 0.5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{aiBaseUrl}}/v1/training/ingest-sample",
+              "host": [
+                "{{aiBaseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "training",
+                "ingest-sample"
+              ]
+            },
+            "description": "Ingesti sampel koreksi citra warga untuk retraining model otomatis."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Sample ingested (201/200)\", function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.saved_file) {",
+                  "        var filename = json.data.saved_file.split(\"/\").pop();",
+                  "        pm.environment.set(\"sampleFilename\", filename);",
+                  "        console.log(\"Saved sampleFilename: \" + filename);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9.8 GET Active Learning Download Ingested Sample",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{aiApiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{aiBaseUrl}}/v1/training/samples/Jalan_Berlubang/{{sampleFilename}}",
+              "host": [
+                "{{aiBaseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "training",
+                "samples",
+                "Jalan_Berlubang",
+                "{{sampleFilename}}"
+              ]
+            },
+            "description": "Mengunduh file citra sampel yang baru saja di-ingest ke server."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Sample image downloaded (200)\", function () {",
+                  "    pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9.9 GET Active Learning Download Dataset Zip",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{aiApiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{aiBaseUrl}}/v1/training/download-dataset",
+              "host": [
+                "{{aiBaseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "training",
+                "download-dataset"
+              ]
+            },
+            "description": "Mengunduh arsip zip dataset Active Learning lengkap."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Dataset zip downloaded (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9.10 POST Predict Risk (NestJS Route Compatibility)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{aiApiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"report_density\": 10,\n  \"rainfall_mm\": 30,\n  \"traffic_density\": 0.5,\n  \"category\": \"Drainase\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{aiBaseUrl}}/api/v1/predict-risk",
+              "host": [
+                "{{aiBaseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "predict-risk"
+              ]
+            },
+            "description": "Verifikasi kompatibilitas prefix /api/v1 untuk integrasi internal backend."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Prefix compatibility success (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
