@@ -31,8 +31,13 @@ export class HttpSmsService implements OTPSmsService {
 
     this.logger.log(`Mengirim OTP via [${provider.toUpperCase()}] ke: ${phoneNumber}`);
 
-    const message = `[LaporKita] Kode verifikasi Anda: ${code}\n\nJangan bagikan kode ini kepada siapa pun. Berlaku 5 menit.`;
+    const typeMessage = (this.configService.get<string>('FONNTE_TYPE') ?? 'whatsapp').toLowerCase();
 
+    // Format pesan: jika WhatsApp gunakan format resmi Smart City Malang bertata letak rapi, jika SMS gunakan format padat
+    const message =
+      provider === 'fonnte' && typeMessage === 'whatsapp'
+        ? `🏛️ *LAPORKITA KOTA MALANG*\n_Layanan Aspirasi & Pengaduan Fasilitas Publik_\n━━━━━━━━━━━━━━━━━━━━\n\nHalo Warga Kota Malang! 👋\n\nBerikut adalah *Kode Verifikasi (OTP)* akun Anda:\n\n🔐 Kode OTP: *${code}*\n\n⏱️ _Kode ini berlaku selama 5 menit._\n⚠️ *PENTING:* Demi keamanan akun Anda, jangan berikan kode rahasia ini kepada siapa pun, termasuk pihak yang mengatasnamakan Pemkot Malang atau LaporKita.\n\n━━━━━━━━━━━━━━━━━━━━\n_Pemerintah Kota Malang — Bersama Warga Peduli Kota_`
+        : `[LaporKita] Kode verifikasi OTP Anda: ${code}. Berlaku 5 menit. Jangan berikan kode ini kepada siapa pun.`;
     try {
       if (provider === 'fonnte') {
         await this.sendViaFonnte(apiKey, baseUrl, phoneNumber, message);
