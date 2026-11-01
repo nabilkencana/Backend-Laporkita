@@ -4,6 +4,9 @@ export interface AIVerificationResult {
   isValidGps: boolean;
   isValidTimestamp: boolean;
   damageSeverity: number;
+  isAuthentic?: boolean;
+  isValid?: boolean;
+  needsManualReview?: boolean;
   reason?: string;
   isMock: boolean;
 }

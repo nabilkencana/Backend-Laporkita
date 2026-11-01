@@ -219,5 +219,64 @@ describe('ReportVerificationProcessor (Rules.md §1.2 Threshold & Worker Logic)'
       expect(result.status).toBe('MANUAL_REVIEW_REQUIRED');
       expect(transitionSpy).not.toHaveBeenCalled();
     });
+
+    it('MM-03: should route to manual review when category is bukan_fasilitas even if confidence >= 0.85', async () => {
+      jest.spyOn(aiService, 'verifyReport').mockResolvedValue({
+        confidence: 0.9999,
+        category: 'bukan_fasilitas',
+        isValidGps: true,
+        isValidTimestamp: true,
+        damageSeverity: 0.0,
+        isMock: false,
+      });
+      const transitionSpy = jest.spyOn(reportsService, 'transitionReportStatus');
+      const updateSpy = jest.spyOn(prisma.report, 'update');
+
+      const result = await processor.process(mockJob);
+
+      expect(result.status).toBe('MANUAL_REVIEW_REQUIRED');
+      expect(transitionSpy).not.toHaveBeenCalled();
+      expect(updateSpy).toHaveBeenCalledWith({
+        where: { id: mockReport.id },
+        data: { needs_manual_review: true },
+      });
+    });
+
+    it('MM-03: should route to manual review when isAuthentic is false even if confidence >= 0.85', async () => {
+      jest.spyOn(aiService, 'verifyReport').mockResolvedValue({
+        confidence: 0.91,
+        category: 'Jalan Berlubang',
+        isValidGps: true,
+        isValidTimestamp: true,
+        damageSeverity: 0.8,
+        isAuthentic: false,
+        isMock: false,
+      } as never);
+      const transitionSpy = jest.spyOn(reportsService, 'transitionReportStatus');
+
+      const result = await processor.process(mockJob);
+
+      expect(result.status).toBe('MANUAL_REVIEW_REQUIRED');
+      expect(transitionSpy).not.toHaveBeenCalled();
+    });
+
+    it('MM-03: should route to manual review when needsManualReview is true or isValid is false from AI service', async () => {
+      jest.spyOn(aiService, 'verifyReport').mockResolvedValue({
+        confidence: 0.72,
+        category: 'Drainase',
+        isValidGps: true,
+        isValidTimestamp: true,
+        damageSeverity: 0.6,
+        isValid: false,
+        needsManualReview: true,
+        isMock: false,
+      } as never);
+      const transitionSpy = jest.spyOn(reportsService, 'transitionReportStatus');
+
+      const result = await processor.process(mockJob);
+
+      expect(result.status).toBe('MANUAL_REVIEW_REQUIRED');
+      expect(transitionSpy).not.toHaveBeenCalled();
+    });
   });
 });

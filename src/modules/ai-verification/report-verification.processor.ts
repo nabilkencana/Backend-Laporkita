@@ -57,18 +57,25 @@ export class ReportVerificationProcessor extends WorkerHost {
     const meetsConfidence = verification.confidence >= 0.6;
     const isSpatialValid = verification.isValidGps;
     const isTemporalValid = verification.isValidTimestamp;
+    const isFacilityCategory = verification.category !== 'bukan_fasilitas';
+    const isAuthentic = verification.isAuthentic !== false;
+    const aiRequiresManual =
+      verification.needsManualReview === true || verification.isValid === false;
 
-    // F5-1: Set flag eksplisit needs_manual_review sesuai Rules.md §1.2.
-    // true jika: confidence < 0.6 ATAU isValidGps=false ATAU isValidTimestamp=false.
-    // Operator bisa filter via GET /reports?needsManualReview=true.
-    const needsManualReview = !meetsConfidence || !isSpatialValid || !isTemporalValid;
+    // F5-1 & MM-03: Set flag eksplisit needs_manual_review sesuai Rules.md §1.2.
+    const needsManualReview =
+      !meetsConfidence ||
+      !isSpatialValid ||
+      !isTemporalValid ||
+      !isFacilityCategory ||
+      !isAuthentic ||
+      aiRequiresManual;
     await this.prisma.report.update({
       where: { id: reportId },
       data: { needs_manual_review: needsManualReview },
     });
 
-    if (meetsConfidence && isSpatialValid && isTemporalValid) {
-      // ── Lolos verifikasi otomatis (Confidence >= 0.6) ──────────────────────
+    if (!needsManualReview) {
       this.logger.log(
         `[BullMQ Worker] Laporan ${report.report_code} lolos verifikasi AI (Confidence: ${verification.confidence}). Mengubah status ke 'verified'.`,
       );
@@ -110,9 +117,11 @@ export class ReportVerificationProcessor extends WorkerHost {
       // Masuk ke antrian verifikasi manual operator (tetap pending_verification).
       const reasons: string[] = [];
       if (!meetsConfidence) reasons.push(`Confidence rendah (${verification.confidence} < 0.6)`);
+      if (!isFacilityCategory) reasons.push('Citra terklasifikasi bukan_fasilitas');
+      if (!isAuthentic) reasons.push('Terindikasi manipulasi digital (is_authentic=false)');
+      if (aiRequiresManual) reasons.push('AI Service menandai perlu review manual');
       if (!isSpatialValid) reasons.push('Koordinat GPS di luar jangkauan Kota Malang');
       if (!isTemporalValid) reasons.push('Waktu laporan tidak valid');
-
       this.logger.warn(
         `[BullMQ Worker] Laporan ${report.report_code} dialihkan ke antrian verifikasi manual operator (needs_manual_review=true). Alasan: ${reasons.join(', ')}`,
       );

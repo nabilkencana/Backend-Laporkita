@@ -63,6 +63,9 @@ export class AIVerificationService implements IAIVerificationService {
             is_valid_gps: boolean;
             is_valid_timestamp: boolean;
             damage_severity: number;
+            is_authentic?: boolean;
+            is_valid?: boolean;
+            needs_manual_review?: boolean;
             reason?: string;
           }>(
             `${aiServiceUrl}/api/v1/verify`,
@@ -92,6 +95,9 @@ export class AIVerificationService implements IAIVerificationService {
           isValidGps: Boolean(response.data.is_valid_gps && isValidGps),
           isValidTimestamp: Boolean(response.data.is_valid_timestamp && isValidTimestamp),
           damageSeverity: Number(response.data.damage_severity ?? 0.5),
+          isAuthentic: response.data.is_authentic ?? true,
+          isValid: response.data.is_valid,
+          needsManualReview: response.data.needs_manual_review,
           reason: response.data.reason,
           isMock: false,
         };
