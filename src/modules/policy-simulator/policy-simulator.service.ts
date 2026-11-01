@@ -68,6 +68,7 @@ export class PolicySimulatorService implements IPolicySimulatorService {
             result_narrative?: string;
             result_data?: Record<string, unknown>;
             key_recommendations?: string[];
+            model_used?: string;
           }>(
             `${aiServiceUrl}/v1/policy-simulate`,
             {
