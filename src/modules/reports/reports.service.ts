@@ -164,6 +164,7 @@ export class ReportsService {
     targetStatus: ReportStatus,
     actorId?: string | null,
     note?: string | null,
+    assignedAgencyId?: string | null,
   ): Promise<Report> {
     const report = await this.reportsRepository.findById(reportId);
     if (!report) {
@@ -278,6 +279,7 @@ export class ReportsService {
           ? 'Warga menyatakan pekerjaan belum sesuai (Disputed)'
           : null),
       urgency_score: newUrgencyScore,
+      ...(assignedAgencyId !== undefined ? { assigned_agency_id: assignedAgencyId } : {}),
     });
   }
 

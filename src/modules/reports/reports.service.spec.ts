@@ -248,6 +248,36 @@ describe('ReportsService (Critical Business Logic)', () => {
         }),
       );
     });
+
+    it('MM-05: should persist assigned_agency_id when transitioning verified -> assigned with assignedAgencyId', async () => {
+      const newAgencyId = 'a2000000-0000-4000-8000-000000000002';
+      jest.spyOn(repository, 'findById').mockResolvedValue({
+        ...mockReport,
+        status: ReportStatus.verified,
+      });
+      const updateSpy = jest.spyOn(repository, 'updateStatusInTransaction').mockResolvedValue({
+        ...mockReport,
+        status: ReportStatus.assigned,
+        assigned_agency_id: newAgencyId,
+      });
+
+      const result = await (service.transitionReportStatus as (...args: unknown[]) => Promise<typeof mockReport>)(
+        reportId,
+        ReportStatus.assigned,
+        otherUserId,
+        'Ditugaskan ke Dishub',
+        newAgencyId,
+      );
+
+      expect(updateSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          report_id: reportId,
+          target_status: ReportStatus.assigned,
+          assigned_agency_id: newAgencyId,
+        }),
+      );
+      expect(result.assigned_agency_id).toBe(newAgencyId);
+    });
   });
 
   // ── 2. Report Supports & Grace Period ──────────────────────────────────────
