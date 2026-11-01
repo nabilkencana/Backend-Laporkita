@@ -10,6 +10,7 @@ describe('ReportsController', () => {
 
   const mockReportsService = {
     findReportsAlongRoute: jest.fn(),
+    findAll: jest.fn(),
   };
 
   const mockStorageService = {};
@@ -91,6 +92,26 @@ describe('ReportsController', () => {
         .expect(400);
 
       expect(res.body.error).toBeDefined();
+    });
+  });
+
+  describe('GET /reports (MM-10 boolean query conversion)', () => {
+    it('MM-10: should parse ?needsManualReview=false and ?needs_manual_review=false as boolean false (not true)', async () => {
+      mockReportsService.findAll.mockResolvedValue({
+        data: [],
+        meta: { total: 0, limit: 20, nextCursor: null, hasPrevious: false },
+      });
+
+      await request(app.getHttpServer())
+        .get('/reports?needsManualReview=false&needs_manual_review=false')
+        .expect(200);
+
+      expect(mockReportsService.findAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          needsManualReview: false,
+          needs_manual_review: false,
+        }),
+      );
     });
   });
 });

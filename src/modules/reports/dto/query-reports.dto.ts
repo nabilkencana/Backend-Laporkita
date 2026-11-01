@@ -8,10 +8,18 @@ import {
   IsNumber,
   IsString,
   IsIn,
+  IsBoolean,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
 import { ReportStatus } from '@prisma/client';
+
+function parseOptionalQueryBoolean({ obj, key }: { obj: Record<string, unknown>; key: string }) {
+  const raw = obj?.[key];
+  if (raw === 'true' || raw === true || raw === '1') return true;
+  if (raw === 'false' || raw === false || raw === '0') return false;
+  return undefined;
+}
 
 export class QueryReportsDto {
   @ApiPropertyOptional({
@@ -126,7 +134,8 @@ export class QueryReportsDto {
     example: true,
   })
   @IsOptional()
-  @Type(() => Boolean)
+  @Transform(parseOptionalQueryBoolean)
+  @IsBoolean()
   needs_manual_review?: boolean;
 
   @ApiPropertyOptional({
@@ -134,6 +143,7 @@ export class QueryReportsDto {
     example: true,
   })
   @IsOptional()
-  @Type(() => Boolean)
+  @Transform(parseOptionalQueryBoolean)
+  @IsBoolean()
   needsManualReview?: boolean;
 }
