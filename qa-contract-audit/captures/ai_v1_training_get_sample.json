@@ -1,0 +1,27 @@
+{
+  "capturedAt": "2026-11-01T20:16:03.254Z",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:8000/v1/training/samples/Jalan%20Berlubang/20261101_201603_sample.jpg",
+    "headersMasked": {
+      "X-API-Key": "laporkit..."
+    }
+  },
+  "status": 200,
+  "latencyMs": 2,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:16:02 GMT",
+    "server": "uvicorn",
+    "content-type": "image/jpeg",
+    "accept-ranges": "bytes",
+    "content-length": "29848",
+    "last-modified": "Sun, 01 Nov 2026 20:16:03 GMT",
+    "etag": "\"95e40020f5dd21bb599e5f9179adb509\"",
+    "vary": "Origin"
+  },
+  "body": {
+    "_binary": true,
+    "contentType": "image/jpeg",
+    "byteLength": 29848
+  }
+}

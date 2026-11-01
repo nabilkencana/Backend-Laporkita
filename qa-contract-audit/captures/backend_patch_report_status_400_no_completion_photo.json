@@ -1,0 +1,38 @@
+{
+  "capturedAt": "2026-11-01T20:16:31.074Z",
+  "request": {
+    "method": "PATCH",
+    "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/status",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "status": "completed",
+      "note": "[QA] Coba selesai tanpa foto"
+    }
+  },
+  "status": 400,
+  "latencyMs": 9,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "96",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "208",
+    "etag": "W/\"d0-hiKF8WxTP/CTMJATm28aLThJLzo\"",
+    "date": "Sun, 01 Nov 2026 20:16:31 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": false,
+    "data": null,
+    "error": {
+      "code": "BAD_REQUEST",
+      "message": "COMPLETION_PHOTO_REQUIRED: Foto bukti penyelesaian (completion_photo) wajib diunggah sebelum menandai laporan selesai (Rules.md §1.1)."
+    }
+  }
+}

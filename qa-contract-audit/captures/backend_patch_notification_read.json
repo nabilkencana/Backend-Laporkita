@@ -1,0 +1,40 @@
+{
+  "capturedAt": "2026-11-01T20:17:39.346Z",
+  "request": {
+    "method": "PATCH",
+    "url": "http://127.0.0.1:3000/api/v1/notifications/db7fa271-a816-4c99-945f-a9a8420e877d/read",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci..."
+    }
+  },
+  "status": 200,
+  "latencyMs": 6,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "429",
+    "etag": "W/\"1ad-dEPy/DCG4ct5gAbOJiqmZ+IYxI0\"",
+    "date": "Sun, 01 Nov 2026 20:17:39 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "id": "db7fa271-a816-4c99-945f-a9a8420e877d",
+      "user_id": "00000000-0000-4000-8000-000000000002",
+      "type": "status_update",
+      "title": "Laporan Anda Terverifikasi",
+      "body": "Laporan #LP-2026-000004 telah diverifikasi oleh petugas operator dan diteruskan ke instansi terkait.",
+      "reference_report_id": "28490257-d18c-4af8-bb50-15437458abfe",
+      "is_read": true,
+      "created_at": "2026-11-01T20:16:33.680Z"
+    },
+    "meta": null,
+    "error": null
+  }
+}

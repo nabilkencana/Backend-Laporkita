@@ -1,0 +1,43 @@
+{
+  "capturedAt": "2026-11-01T20:16:33.807Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/agencies",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "name": "[QA] Dinas Audit 1793564193802",
+      "type": "lainnya",
+      "contact_email": "qa.agency@laporkita.test.go.id"
+    }
+  },
+  "status": 201,
+  "latencyMs": 4,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "240",
+    "etag": "W/\"f0-4dEJ91Pkhcg67jsLoeIAtfxNAb8\"",
+    "date": "Sun, 01 Nov 2026 20:16:33 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "id": "cab0ad80-bf9f-4384-8a07-eccc8ed721e5",
+      "name": "[QA] Dinas Audit 1793564193802",
+      "type": "lainnya",
+      "contact_email": "qa.agency@laporkita.test.go.id",
+      "created_at": "2026-11-01T20:16:33.804Z"
+    },
+    "meta": null,
+    "error": null
+  }
+}

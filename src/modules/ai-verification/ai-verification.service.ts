@@ -5,7 +5,7 @@ import { PrismaService } from '../../prisma/prisma.service.js';
 import { AIVerificationResult, IAIVerificationService } from './ai-verification.interface.js';
 import { firstValueFrom } from 'rxjs';
 import { isWithinMalangBounds } from '../reports/utils/geo.util.js';
-
+import { StorageService } from '../storage/storage.service.js';
 @Injectable()
 export class AIVerificationService implements IAIVerificationService {
   private readonly logger = new Logger(AIVerificationService.name);
@@ -63,12 +63,18 @@ export class AIVerificationService implements IAIVerificationService {
             is_valid_gps: boolean;
             is_valid_timestamp: boolean;
             damage_severity: number;
+            is_authentic?: boolean;
+            is_valid?: boolean;
+            needs_manual_review?: boolean;
             reason?: string;
           }>(
             `${aiServiceUrl}/api/v1/verify`,
             {
               report_id: report.id,
               photo_url: photoUrl,
+              ...(StorageService.getBufferByUrl(photoUrl)
+                ? { image_base64: StorageService.getBufferByUrl(photoUrl)!.toString('base64') }
+                : {}),
               latitude: lat,
               longitude: lng,
               reported_category: report.category.name,
@@ -92,6 +98,9 @@ export class AIVerificationService implements IAIVerificationService {
           isValidGps: Boolean(response.data.is_valid_gps && isValidGps),
           isValidTimestamp: Boolean(response.data.is_valid_timestamp && isValidTimestamp),
           damageSeverity: Number(response.data.damage_severity ?? 0.5),
+          isAuthentic: response.data.is_authentic ?? true,
+          isValid: response.data.is_valid,
+          needsManualReview: response.data.needs_manual_review,
           reason: response.data.reason,
           isMock: false,
         };

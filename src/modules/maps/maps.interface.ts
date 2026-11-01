@@ -19,5 +19,7 @@ export interface RouteResult {
   coordinates: number[][]; // [lng, lat][] format OSRM
   distance_meters: number;
   duration_seconds: number;
+  summary: string;
+  steps: Record<string, unknown>[];
   cached?: boolean;
 }

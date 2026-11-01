@@ -1,0 +1,51 @@
+{
+  "capturedAt": "2026-11-01T20:15:52.805Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:8000/v1/predict-risk",
+    "headersMasked": {
+      "X-API-Key": "laporkit...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "zone_id": "b1000000-0000-4000-8000-000000000001",
+      "report_density": 12,
+      "rainfall_mm": 64,
+      "temperature_c": 28,
+      "weather_context": {
+        "rainfall_mm": 64,
+        "temperature_c": 28,
+        "condition": "Hujan Deras",
+        "drainage_issue_ratio": 0.4
+      },
+      "traffic_density": 0.8,
+      "category": "Drainase"
+    }
+  },
+  "status": 200,
+  "latencyMs": 2,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:15:52 GMT",
+    "server": "uvicorn",
+    "content-length": "485",
+    "content-type": "application/json",
+    "vary": "Origin"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "flood_risk_probability": 0.8712,
+      "risk_level": "high",
+      "predicted_stress_level": "high",
+      "factors": {
+        "rainfall_impact": 0.64,
+        "report_density_impact": 0.3,
+        "traffic_congestion_impact": 0.8,
+        "drainage_vulnerability_impact": 0.6
+      },
+      "recommendation": "STATUS WASPADA: Probabilitas genangan tinggi terdeteksi (Curah hujan: 64.0 mm, 12 laporan aktif). Direkomendasikan pengerahan pompa bergerak DPUPR dan pengalihan rute lalu lintas oleh Dishub.",
+      "_placeholder": false
+    },
+    "error": null
+  }
+}

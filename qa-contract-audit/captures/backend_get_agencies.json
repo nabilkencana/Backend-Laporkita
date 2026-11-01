@@ -1,0 +1,66 @@
+{
+  "capturedAt": "2026-11-01T20:16:33.801Z",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:3000/api/v1/agencies",
+    "headersMasked": {}
+  },
+  "status": 200,
+  "latencyMs": 2,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "877",
+    "etag": "W/\"36d-X3BNHVjoB1hKyzYPb1AIEQFnyps\"",
+    "date": "Sun, 01 Nov 2026 20:16:33 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": [
+      {
+        "id": "a3000000-0000-4000-8000-000000000003",
+        "name": "Dinas Komunikasi dan Informatika (Diskominfo) Kota Malang",
+        "type": "diskominfo",
+        "contact_email": "diskominfo@malangkota.go.id",
+        "created_at": "2026-10-19T13:22:38.290Z",
+        "_count": {
+          "users": 2,
+          "categories": 0,
+          "assigned_reports": 0
+        }
+      },
+      {
+        "id": "a1000000-0000-4000-8000-000000000001",
+        "name": "Dinas Pekerjaan Umum, Penataan Ruang, Perumahan dan Kawasan Permukiman (DPUPRPKP) Kota Malang",
+        "type": "dpupr",
+        "contact_email": "dpupr@malangkota.go.id",
+        "created_at": "2026-10-19T13:22:38.181Z",
+        "_count": {
+          "users": 1,
+          "categories": 3,
+          "assigned_reports": 4
+        }
+      },
+      {
+        "id": "a2000000-0000-4000-8000-000000000002",
+        "name": "Dinas Perhubungan (Dishub) Kota Malang",
+        "type": "dishub",
+        "contact_email": "dishub@malangkota.go.id",
+        "created_at": "2026-10-19T13:22:38.285Z",
+        "_count": {
+          "users": 1,
+          "categories": 2,
+          "assigned_reports": 0
+        }
+      }
+    ],
+    "meta": null,
+    "error": null
+  }
+}

@@ -1,0 +1,435 @@
+{
+  "capturedAt": "2026-11-01T20:16:30.812Z",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:3000/api/v1/reports?limit=10&sort_by=newest",
+    "headersMasked": {}
+  },
+  "status": 200,
+  "latencyMs": 65,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "12001",
+    "etag": "W/\"2ee1-xuIYFGEvpGnQHdd73gRFYbist2M\"",
+    "date": "Sun, 01 Nov 2026 20:16:30 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": [
+      {
+        "id": "9ccc6a59-3789-45ce-8b61-a88bcdbf3e23",
+        "report_code": "#LP-2026-000003",
+        "idempotency_key": "qa_idem_1793564188168",
+        "reporter_id": "00000000-0000-4000-8000-000000000002",
+        "category_id": "c1000000-0000-4000-8000-000000000001",
+        "assigned_agency_id": "a1000000-0000-4000-8000-000000000001",
+        "assigned_officer_id": null,
+        "description": "[QA] Jalan berlubang parah di Alun-Alun Malang (Lifecycle #1)",
+        "latitude": "-7.9826",
+        "longitude": "112.6308",
+        "address_text": "Jl. Merdeka Selatan, Alun-Alun Kota Malang",
+        "status": "verified",
+        "ai_confidence_score": 0.9998,
+        "damage_severity": 0.9599,
+        "urgency_score": 2.43,
+        "support_count": 0,
+        "view_count": 0,
+        "estimated_completion_at": null,
+        "created_at": "2026-11-01T20:16:28.176Z",
+        "updated_at": "2026-11-01T20:16:28.357Z",
+        "needs_manual_review": false,
+        "category": {
+          "id": "c1000000-0000-4000-8000-000000000001",
+          "name": "Jalan Berlubang",
+          "icon_url": "https://assets.laporkita.malangkota.go.id/icons/pothole.svg"
+        },
+        "assigned_agency": {
+          "id": "a1000000-0000-4000-8000-000000000001",
+          "name": "Dinas Pekerjaan Umum, Penataan Ruang, Perumahan dan Kawasan Permukiman (DPUPRPKP) Kota Malang",
+          "type": "dpupr"
+        },
+        "assigned_officer": null,
+        "reporter": {
+          "id": "00000000-0000-4000-8000-000000000002",
+          "full_name": "Budi Santoso (Warga Kota Malang)",
+          "avatar_url": null
+        },
+        "media": [
+          {
+            "id": "d1976743-b33a-44d7-8cc2-3bffd8589de6",
+            "report_id": "9ccc6a59-3789-45ce-8b61-a88bcdbf3e23",
+            "type": "initial_photo",
+            "url": "https://storage.laporkita.malangkota.go.id/reports/1793564188169-459275ea-af83-435e-af54-5035444cc853.jpg",
+            "uploaded_by": "00000000-0000-4000-8000-000000000002",
+            "created_at": "2026-11-01T20:16:28.193Z"
+          }
+        ],
+        "status_history": [
+          {
+            "id": "1eb7899d-abdf-4c6b-b18d-a6256e96af59",
+            "report_id": "9ccc6a59-3789-45ce-8b61-a88bcdbf3e23",
+            "status": "verified",
+            "note": "Lolos verifikasi AI otomatis (Confidence: 100%, Keparahan: 96%)",
+            "changed_by": "00000000-0000-4000-8000-000000000001",
+            "created_at": "2026-11-01T20:16:28.369Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000001",
+              "full_name": "Admin LaporKita Kota Malang",
+              "role": "admin"
+            }
+          },
+          {
+            "id": "b41fe8c3-d575-4acb-9dd4-49dec3dd4cb4",
+            "report_id": "9ccc6a59-3789-45ce-8b61-a88bcdbf3e23",
+            "status": "pending_verification",
+            "note": null,
+            "changed_by": "00000000-0000-4000-8000-000000000002",
+            "created_at": "2026-11-01T20:16:28.194Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000002",
+              "full_name": "Budi Santoso (Warga Kota Malang)",
+              "role": "citizen"
+            }
+          }
+        ],
+        "_count": {
+          "supports": 0,
+          "comments": 0,
+          "validations": 0
+        }
+      },
+      {
+        "id": "44ef55a7-ce6b-452c-9211-777a5cf8c9d7",
+        "report_code": "#LP-2026-000002",
+        "idempotency_key": null,
+        "reporter_id": "00000000-0000-4000-8000-000000000002",
+        "category_id": "c1000000-0000-4000-8000-000000000001",
+        "assigned_agency_id": "a1000000-0000-4000-8000-000000000001",
+        "assigned_officer_id": null,
+        "description": "[QA] Laporan #2 foto buram untuk pengujian antrean manual & Dispute flow",
+        "latitude": "-8.15",
+        "longitude": "112.6",
+        "address_text": "Sukosari, Panggungrejo, Kabupaten Malang, Jawa Timur, 65174, Indonesia",
+        "status": "resolved",
+        "ai_confidence_score": 0.88,
+        "damage_severity": 0.75,
+        "urgency_score": 2.6780000000000004,
+        "support_count": 0,
+        "view_count": 0,
+        "estimated_completion_at": null,
+        "created_at": "2026-11-01T20:12:16.350Z",
+        "updated_at": "2026-11-01T20:12:18.988Z",
+        "needs_manual_review": false,
+        "category": {
+          "id": "c1000000-0000-4000-8000-000000000001",
+          "name": "Jalan Berlubang",
+          "icon_url": "https://assets.laporkita.malangkota.go.id/icons/pothole.svg"
+        },
+        "assigned_agency": {
+          "id": "a1000000-0000-4000-8000-000000000001",
+          "name": "Dinas Pekerjaan Umum, Penataan Ruang, Perumahan dan Kawasan Permukiman (DPUPRPKP) Kota Malang",
+          "type": "dpupr"
+        },
+        "assigned_officer": null,
+        "reporter": {
+          "id": "00000000-0000-4000-8000-000000000002",
+          "full_name": "Budi Santoso (Warga Kota Malang)",
+          "avatar_url": null
+        },
+        "media": [
+          {
+            "id": "7695e828-d3e6-477b-af0c-c147af203a4d",
+            "report_id": "44ef55a7-ce6b-452c-9211-777a5cf8c9d7",
+            "type": "initial_photo",
+            "url": "https://storage.laporkita.malangkota.go.id/reports/1793563936348-b4deeb5a-48c1-4555-9274-c16c733f9eff.jpg",
+            "uploaded_by": "00000000-0000-4000-8000-000000000002",
+            "created_at": "2026-11-01T20:12:16.351Z"
+          },
+          {
+            "id": "a4ab5f37-09bf-44a4-bf77-5bd750d88e62",
+            "report_id": "44ef55a7-ce6b-452c-9211-777a5cf8c9d7",
+            "type": "completion_photo",
+            "url": "https://storage.laporkita.malangkota.go.id/reports/1793563938952-5b108678-92af-40c0-9c21-019f0d9be51e.jpg",
+            "uploaded_by": "00000000-0000-4000-8000-000000000003",
+            "created_at": "2026-11-01T20:12:18.955Z"
+          }
+        ],
+        "status_history": [
+          {
+            "id": "5f44c4a9-a4dd-4eb6-9c1a-0247de62cc8c",
+            "report_id": "44ef55a7-ce6b-452c-9211-777a5cf8c9d7",
+            "status": "resolved",
+            "note": "[QA] Ditutup setelah perbaikan ulang",
+            "changed_by": "00000000-0000-4000-8000-000000000003",
+            "created_at": "2026-11-01T20:12:18.999Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "full_name": "Operator DPUPRPKP Kota Malang",
+              "role": "operator"
+            }
+          },
+          {
+            "id": "c20e488a-599e-4fcb-8895-79e16022917d",
+            "report_id": "44ef55a7-ce6b-452c-9211-777a5cf8c9d7",
+            "status": "completed",
+            "note": "[QA] Perbaikan ulang selesai",
+            "changed_by": "00000000-0000-4000-8000-000000000003",
+            "created_at": "2026-11-01T20:12:18.981Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "full_name": "Operator DPUPRPKP Kota Malang",
+              "role": "operator"
+            }
+          },
+          {
+            "id": "67b1ba5e-b370-47e3-8f71-6ac42e74a6d6",
+            "report_id": "44ef55a7-ce6b-452c-9211-777a5cf8c9d7",
+            "status": "in_progress",
+            "note": "[QA] Masih berlubang di sisi timur, mohon diperbaiki ulang.",
+            "changed_by": "00000000-0000-4000-8000-000000000002",
+            "created_at": "2026-11-01T20:12:18.974Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000002",
+              "full_name": "Budi Santoso (Warga Kota Malang)",
+              "role": "citizen"
+            }
+          },
+          {
+            "id": "5eb1696e-db49-483a-a9b2-0e42fbad8f84",
+            "report_id": "44ef55a7-ce6b-452c-9211-777a5cf8c9d7",
+            "status": "completed",
+            "note": "[QA] Completed #1",
+            "changed_by": "00000000-0000-4000-8000-000000000003",
+            "created_at": "2026-11-01T20:12:18.962Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "full_name": "Operator DPUPRPKP Kota Malang",
+              "role": "operator"
+            }
+          },
+          {
+            "id": "149061bb-9f0a-4673-a8fc-00c7edad7318",
+            "report_id": "44ef55a7-ce6b-452c-9211-777a5cf8c9d7",
+            "status": "in_progress",
+            "note": "[QA] In progress",
+            "changed_by": "00000000-0000-4000-8000-000000000003",
+            "created_at": "2026-11-01T20:12:18.948Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "full_name": "Operator DPUPRPKP Kota Malang",
+              "role": "operator"
+            }
+          },
+          {
+            "id": "363fc291-7d8c-4dc6-b6cc-40878c6aa9a5",
+            "report_id": "44ef55a7-ce6b-452c-9211-777a5cf8c9d7",
+            "status": "assigned",
+            "note": "[QA] Assigned",
+            "changed_by": "00000000-0000-4000-8000-000000000003",
+            "created_at": "2026-11-01T20:12:18.933Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "full_name": "Operator DPUPRPKP Kota Malang",
+              "role": "operator"
+            }
+          },
+          {
+            "id": "73cc6856-8e87-403a-8201-13c783a7726c",
+            "report_id": "44ef55a7-ce6b-452c-9211-777a5cf8c9d7",
+            "status": "verified",
+            "note": "Lolos verifikasi AI otomatis (Confidence: 88%, Keparahan: 75%)",
+            "changed_by": "00000000-0000-4000-8000-000000000001",
+            "created_at": "2026-11-01T20:12:16.374Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000001",
+              "full_name": "Admin LaporKita Kota Malang",
+              "role": "admin"
+            }
+          },
+          {
+            "id": "83d68e83-af9b-45f7-af62-0770574f6653",
+            "report_id": "44ef55a7-ce6b-452c-9211-777a5cf8c9d7",
+            "status": "pending_verification",
+            "note": null,
+            "changed_by": "00000000-0000-4000-8000-000000000002",
+            "created_at": "2026-11-01T20:12:16.352Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000002",
+              "full_name": "Budi Santoso (Warga Kota Malang)",
+              "role": "citizen"
+            }
+          }
+        ],
+        "_count": {
+          "supports": 0,
+          "comments": 0,
+          "validations": 1
+        }
+      },
+      {
+        "id": "1f775134-b377-4d3f-870a-c55197fb35c8",
+        "report_code": "#LP-2026-000001",
+        "idempotency_key": "qa_idem_1793563933468",
+        "reporter_id": "00000000-0000-4000-8000-000000000002",
+        "category_id": "c1000000-0000-4000-8000-000000000001",
+        "assigned_agency_id": "a1000000-0000-4000-8000-000000000001",
+        "assigned_officer_id": null,
+        "description": "[QA] Jalan berlubang parah di Alun-Alun Malang (Lifecycle #1)",
+        "latitude": "-7.9826",
+        "longitude": "112.6308",
+        "address_text": "Jl. Merdeka Selatan, Alun-Alun Kota Malang",
+        "status": "resolved",
+        "ai_confidence_score": 0.88,
+        "damage_severity": 0.75,
+        "urgency_score": 2.07,
+        "support_count": 1,
+        "view_count": 0,
+        "estimated_completion_at": null,
+        "created_at": "2026-11-01T20:12:13.475Z",
+        "updated_at": "2026-11-01T20:12:16.342Z",
+        "needs_manual_review": false,
+        "category": {
+          "id": "c1000000-0000-4000-8000-000000000001",
+          "name": "Jalan Berlubang",
+          "icon_url": "https://assets.laporkita.malangkota.go.id/icons/pothole.svg"
+        },
+        "assigned_agency": {
+          "id": "a1000000-0000-4000-8000-000000000001",
+          "name": "Dinas Pekerjaan Umum, Penataan Ruang, Perumahan dan Kawasan Permukiman (DPUPRPKP) Kota Malang",
+          "type": "dpupr"
+        },
+        "assigned_officer": null,
+        "reporter": {
+          "id": "00000000-0000-4000-8000-000000000002",
+          "full_name": "Budi Santoso (Warga Kota Malang)",
+          "avatar_url": null
+        },
+        "media": [
+          {
+            "id": "02a4465b-de94-4229-8be2-75dc1fc053b9",
+            "report_id": "1f775134-b377-4d3f-870a-c55197fb35c8",
+            "type": "initial_photo",
+            "url": "https://storage.laporkita.malangkota.go.id/reports/1793563933470-a96b8d45-cdf3-4845-92ac-38487553d8e8.jpg",
+            "uploaded_by": "00000000-0000-4000-8000-000000000002",
+            "created_at": "2026-11-01T20:12:13.498Z"
+          },
+          {
+            "id": "48ac7bdc-2a8d-40da-b3ba-859b5c8c2d9a",
+            "report_id": "1f775134-b377-4d3f-870a-c55197fb35c8",
+            "type": "progress_photo",
+            "url": "https://storage.laporkita.malangkota.go.id/reports/1793563936292-0a69b79b-2d8f-4b1e-8808-e69c4921cc80.jpg",
+            "uploaded_by": "00000000-0000-4000-8000-000000000003",
+            "created_at": "2026-11-01T20:12:16.294Z"
+          },
+          {
+            "id": "49bf55ac-2906-41bd-8344-492c48f36b26",
+            "report_id": "1f775134-b377-4d3f-870a-c55197fb35c8",
+            "type": "completion_photo",
+            "url": "https://storage.laporkita.malangkota.go.id/reports/1793563936298-5664b378-ea8e-4bcb-9c32-01304b0712d5.jpg",
+            "uploaded_by": "00000000-0000-4000-8000-000000000003",
+            "created_at": "2026-11-01T20:12:16.301Z"
+          }
+        ],
+        "status_history": [
+          {
+            "id": "9c82a71a-d062-4793-8448-5a20ddc70d8d",
+            "report_id": "1f775134-b377-4d3f-870a-c55197fb35c8",
+            "status": "resolved",
+            "note": "[QA] Perbaikan sudah sesuai dan rapi.",
+            "changed_by": "00000000-0000-4000-8000-000000000002",
+            "created_at": "2026-11-01T20:12:16.342Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000002",
+              "full_name": "Budi Santoso (Warga Kota Malang)",
+              "role": "citizen"
+            }
+          },
+          {
+            "id": "17082ac4-c4f9-4392-9a2d-06f05fc03b75",
+            "report_id": "1f775134-b377-4d3f-870a-c55197fb35c8",
+            "status": "completed",
+            "note": "[QA] Perbaikan selesai 100%",
+            "changed_by": "00000000-0000-4000-8000-000000000003",
+            "created_at": "2026-11-01T20:12:16.320Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "full_name": "Operator DPUPRPKP Kota Malang",
+              "role": "operator"
+            }
+          },
+          {
+            "id": "a3d6d6e3-b365-4640-8ef8-450ebaaed0c6",
+            "report_id": "1f775134-b377-4d3f-870a-c55197fb35c8",
+            "status": "in_progress",
+            "note": "[QA] Pengerjaan dimulai [PROGRESS: 50%]",
+            "changed_by": "00000000-0000-4000-8000-000000000003",
+            "created_at": "2026-11-01T20:12:16.278Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "full_name": "Operator DPUPRPKP Kota Malang",
+              "role": "operator"
+            }
+          },
+          {
+            "id": "42722392-9c29-4bd6-aacf-2ce612c49605",
+            "report_id": "1f775134-b377-4d3f-870a-c55197fb35c8",
+            "status": "assigned",
+            "note": "[QA] Ditugaskan ke DPUPR",
+            "changed_by": "00000000-0000-4000-8000-000000000003",
+            "created_at": "2026-11-01T20:12:16.261Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "full_name": "Operator DPUPRPKP Kota Malang",
+              "role": "operator"
+            }
+          },
+          {
+            "id": "2250a1b0-0520-4577-8764-99bee6921754",
+            "report_id": "1f775134-b377-4d3f-870a-c55197fb35c8",
+            "status": "verified",
+            "note": "Lolos verifikasi AI otomatis (Confidence: 88%, Keparahan: 75%)",
+            "changed_by": "00000000-0000-4000-8000-000000000001",
+            "created_at": "2026-11-01T20:12:16.002Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000001",
+              "full_name": "Admin LaporKita Kota Malang",
+              "role": "admin"
+            }
+          },
+          {
+            "id": "25da49c4-2af1-4083-8ec5-b761a2a0e892",
+            "report_id": "1f775134-b377-4d3f-870a-c55197fb35c8",
+            "status": "pending_verification",
+            "note": null,
+            "changed_by": "00000000-0000-4000-8000-000000000002",
+            "created_at": "2026-11-01T20:12:13.499Z",
+            "changer": {
+              "id": "00000000-0000-4000-8000-000000000002",
+              "full_name": "Budi Santoso (Warga Kota Malang)",
+              "role": "citizen"
+            }
+          }
+        ],
+        "_count": {
+          "supports": 1,
+          "comments": 2,
+          "validations": 1
+        }
+      }
+    ],
+    "meta": {
+      "total": 3,
+      "limit": 10,
+      "nextCursor": null,
+      "hasPrevious": false
+    },
+    "error": null
+  }
+}

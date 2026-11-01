@@ -1,0 +1,41 @@
+{
+  "capturedAt": "2026-11-01T20:16:33.754Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/reports/28490257-d18c-4af8-bb50-15437458abfe/validate",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "is_valid": false,
+      "note": "[QA] Masih berlubang di sisi timur, mohon diperbaiki ulang.",
+      "latitude": -8.15,
+      "longitude": 112.6
+    }
+  },
+  "status": 201,
+  "latencyMs": 13,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "97",
+    "x-ratelimit-reset": "58",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "162",
+    "etag": "W/\"a2-Pjl08JA1hCOfFGX0JdWSBx7Aidw\"",
+    "date": "Sun, 01 Nov 2026 20:16:33 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "message": "Laporan disengketakan (Disputed) dan dikembalikan ke penanganan petugas.",
+      "new_status": "in_progress"
+    },
+    "meta": null,
+    "error": null
+  }
+}

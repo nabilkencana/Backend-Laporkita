@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsEnum, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ReportStatus } from '@prisma/client';
 
@@ -25,4 +25,12 @@ export class TransitionStatusDto {
   @IsString({ message: 'Catatan harus berupa string.' })
   @MaxLength(1000, { message: 'Catatan maksimal 1000 karakter.' })
   note?: string;
+
+  @ApiPropertyOptional({
+    description: 'ID instansi tujuan penugasan laporan (UUID v4)',
+    example: 'a1000000-0000-4000-8000-000000000001',
+  })
+  @IsOptional()
+  @IsUUID('4', { message: 'assigned_agency_id harus berupa UUID v4 yang valid.' })
+  assigned_agency_id?: string;
 }

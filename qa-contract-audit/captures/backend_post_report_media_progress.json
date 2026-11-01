@@ -1,0 +1,43 @@
+{
+  "capturedAt": "2026-11-01T20:16:31.091Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/media",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci..."
+    },
+    "bodySummary": {
+      "type": "progress_photo",
+      "photo": {
+        "name": "progress.jpg",
+        "mimeType": "image/jpeg",
+        "sizeBytes": 50164
+      }
+    }
+  },
+  "status": 201,
+  "latencyMs": 7,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "98",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "232",
+    "etag": "W/\"e8-R4YPP5fk3PNG7bdzozmrs02v/bA\"",
+    "date": "Sun, 01 Nov 2026 20:16:31 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "id": "32be50dd-8c5b-4a96-ac3f-1b51873220af",
+      "url": "https://storage.laporkita.malangkota.go.id/reports/1793564191086-bdc6730a-6add-4619-8960-0059771ff34c.jpg",
+      "type": "progress_photo"
+    },
+    "meta": null,
+    "error": null
+  }
+}

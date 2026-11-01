@@ -1,0 +1,39 @@
+{
+  "capturedAt": "2026-11-01T20:16:33.786Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/categories",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "name": "[QA] Kategori Audit 1793564193773",
+      "default_agency_id": "a1000000-0000-4000-8000-000000000001",
+      "urgency_weight": 1.5
+    }
+  },
+  "status": 409,
+  "latencyMs": 2,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "97",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "137",
+    "etag": "W/\"89-M88ZVKWIxH5oJAuNYV3ukz0CI+Q\"",
+    "date": "Sun, 01 Nov 2026 20:16:33 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": false,
+    "data": null,
+    "error": {
+      "code": "CONFLICT",
+      "message": "Kategori dengan nama '[QA] Kategori Audit 1793564193773' sudah ada."
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "capturedAt": "2026-11-01T20:16:27.975Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/auth/register",
+    "headersMasked": {
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "full_name": "[QA] Contract Audit Citizen",
+      "email": "qa.contract.1793564187856@laporkita.test.go.id",
+      "phone_number": "081364187856",
+      "password": "QaContra..."
+    }
+  },
+  "status": 202,
+  "latencyMs": 119,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "284",
+    "etag": "W/\"11c-pG7oU1l7NEbsQMH6S2sGuIM3s4Y\"",
+    "date": "Sun, 01 Nov 2026 20:16:27 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "user_id": "4f8bc88f-ac97-44eb-86c0-10c61feb9d6a",
+      "phone_number": "081364187856",
+      "email": "qa.contract.1793564187856@laporkita.test.go.id",
+      "message": "Registrasi berhasil. Kode OTP verifikasi 4-digit telah dikirim ke nomor telepon Anda."
+    },
+    "meta": null,
+    "error": null
+  }
+}

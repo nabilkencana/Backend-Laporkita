@@ -1,0 +1,40 @@
+{
+  "capturedAt": "2026-11-01T20:16:31.110Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/validate",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "is_valid": true,
+      "note": "[QA] Non-reporter >100m validation test",
+      "latitude": -7.2575,
+      "longitude": 112.7521
+    }
+  },
+  "status": 403,
+  "latencyMs": 4,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "217",
+    "etag": "W/\"d9-GEuGoHT0hPt7FypsqmhWMjqWNKs\"",
+    "date": "Sun, 01 Nov 2026 20:16:31 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": false,
+    "data": null,
+    "error": {
+      "code": "FORBIDDEN",
+      "message": "NOT_ELIGIBLE_FOR_VALIDATION: Hanya pelapor asli atau warga dalam radius 100m dari lokasi kerusakan yang dapat melakukan validasi (Rules.md §1.5)."
+    }
+  }
+}

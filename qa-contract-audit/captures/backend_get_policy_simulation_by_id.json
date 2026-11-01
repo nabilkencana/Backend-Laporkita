@@ -1,0 +1,79 @@
+{
+  "capturedAt": "2026-11-01T20:17:39.332Z",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:3000/api/v1/policy-simulations/23ac77f6-9e8a-4d7a-80d5-b68ed4e618e5",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci..."
+    }
+  },
+  "status": 200,
+  "latencyMs": 6,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "2414",
+    "etag": "W/\"96e-VUqUAJjXdp5EXGE9zAjNtZVm43k\"",
+    "date": "Sun, 01 Nov 2026 20:17:39 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "id": "23ac77f6-9e8a-4d7a-80d5-b68ed4e618e5",
+      "requested_by": "00000000-0000-4000-8000-000000000006",
+      "prompt_text": "[QA] Analisis dampak normalisasi drainase di wilayah Klojen Kota Malang terhadap pengurangan risiko banjir dan kebutuhan anggaran.",
+      "zone_id": "b1000000-0000-4000-8000-000000000001",
+      "result_narrative": "Analisis komprehensif terhadap usulan kebijakan di Kota Malang (Klojen (Pusat Kota) (b1000000-0000-4000-8000-000000000001)) dengan horizon 6 bulan menunjukkan proyeksi penurunan keluhan masyarakat sebesar 41.5% dan estimasi kebutuhan anggaran Rp 1,730,000,000. Intervensi ini dirancang untuk meningkatkan keandalan infrastruktur publik secara terukur melalui koordinasi Dinas Pekerjaan Umum, Penataan Ruang, Perumahan dan Kawasan Permukiman (DPUPRPKP) Kota Malang.",
+      "result_data": {
+        "target_zone": "Klojen (Pusat Kota)",
+        "source_model": "gemini-2.5-flash",
+        "confidence_index": 0.9,
+        "risk_mitigations": [
+          "Sosialisasi jadwal pengerjaan kepada warga dan pelaku usaha terdampak",
+          "Pengaturan rekayasa lalu lintas pada jam tidak sibuk (22.00 - 05.00 WIB)"
+        ],
+        "target_department": "Dinas Pekerjaan Umum, Penataan Ruang, Perumahan dan Kawasan Permukiman (DPUPRPKP) Kota Malang",
+        "risk_reduction_pct": 41.5,
+        "budget_estimate_idr": 1730000000,
+        "key_recommendations": [
+          "Pengerukan sedimen dan normalisasi saluran drainase primer secara terjadwal",
+          "Pemasangan saringan sampah mekanis dan sensor muka air pada titik rawan genangan",
+          "Koordinasi lintas OPD (DPUPRPKP & DLH) untuk pemeliharaan saluran pasca-intervensi"
+        ],
+        "recommended_actions": [
+          "Pengerukan sedimen dan normalisasi saluran drainase primer secara terjadwal",
+          "Pemasangan saringan sampah mekanis dan sensor muka air pada titik rawan genangan",
+          "Koordinasi lintas OPD (DPUPRPKP & DLH) untuk pemeliharaan saluran pasca-intervensi"
+        ],
+        "time_horizon_months": 3,
+        "estimated_budget_idr": 1730000000,
+        "simulated_risk_score": 2.92,
+        "time_to_impact_weeks": 12,
+        "implementation_months": 3,
+        "estimated_incident_reduction_pct": 41.5,
+        "public_satisfaction_increase_pct": 29.9,
+        "estimated_complaint_reduction_percent": 41.5
+      },
+      "created_at": "2026-11-01T20:17:33.581Z",
+      "requester": {
+        "id": "00000000-0000-4000-8000-000000000006",
+        "full_name": "Dr. Hendra Wijaya (Bappeda / Policy Maker)",
+        "email": "policymaker@laporkita.malangkota.go.id",
+        "role": "policy_maker"
+      },
+      "zone": {
+        "id": "b1000000-0000-4000-8000-000000000001",
+        "name": "Klojen (Pusat Kota)",
+        "stress_level": "low"
+      }
+    },
+    "meta": null,
+    "error": null
+  }
+}

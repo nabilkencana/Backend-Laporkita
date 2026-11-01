@@ -1,0 +1,33 @@
+{
+  "capturedAt": "2026-11-01T20:16:33.793Z",
+  "request": {
+    "method": "DELETE",
+    "url": "http://127.0.0.1:3000/api/v1/categories/c1000000-0000-4000-8000-000000000001",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci..."
+    }
+  },
+  "status": 400,
+  "latencyMs": 2,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "160",
+    "etag": "W/\"a0-68oUdl3l4/lg/cSK7cQtuGZ2/BY\"",
+    "date": "Sun, 01 Nov 2026 20:16:33 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": false,
+    "data": null,
+    "error": {
+      "code": "BAD_REQUEST",
+      "message": "Kategori 'Jalan Berlubang' tidak dapat dihapus karena sudah memiliki 4 laporan terkait."
+    }
+  }
+}

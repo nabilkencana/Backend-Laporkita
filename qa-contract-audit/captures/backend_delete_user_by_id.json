@@ -1,0 +1,33 @@
+{
+  "capturedAt": "2026-11-01T20:16:28.144Z",
+  "request": {
+    "method": "DELETE",
+    "url": "http://127.0.0.1:3000/api/v1/users/4f8bc88f-ac97-44eb-86c0-10c61feb9d6a",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci..."
+    }
+  },
+  "status": 200,
+  "latencyMs": 10,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "98",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "162",
+    "etag": "W/\"a2-pQPGxic3deoxfh4zONuow9NE3Yo\"",
+    "date": "Sun, 01 Nov 2026 20:16:28 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "message": "User '[QA] Contract Audit Citizen Updated' (4f8bc88f-ac97-44eb-86c0-10c61feb9d6a) berhasil dihapus."
+    },
+    "meta": null,
+    "error": null
+  }
+}

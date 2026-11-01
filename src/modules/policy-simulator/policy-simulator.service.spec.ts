@@ -155,6 +155,89 @@ describe('PolicySimulatorService (Gemini LLM & Policy Simulation)', () => {
     });
   });
 
+    it('MM-04: should call AI Service POST /v1/policy-simulate when AI_SERVICE_URL is configured and persist structured recommendations & dynamic metrics', async () => {
+      jest.spyOn(configService, 'get').mockImplementation((key: string) => {
+        if (key === 'AI_SERVICE_URL') return 'http://ai-service.internal:8000';
+        if (key === 'INTERNAL_API_KEY') return 'test-internal-key';
+        return null;
+      });
+
+      const mockAiServiceResponse: AxiosResponse = {
+        data: {
+          success: true,
+          data: {
+            result_narrative: 'Normalisasi drainase Klojen menurunkan genangan signifikan.',
+            result_data: {
+              estimated_incident_reduction_pct: 44.5,
+              budget_estimate_idr: 1850000000,
+              time_to_impact_weeks: 12,
+              target_department: 'DPUPRPKP Kota Malang',
+              public_satisfaction_increase_pct: 31.0,
+              risk_mitigations: ['Sosialisasi warga sekitar saluran'],
+            },
+            key_recommendations: [
+              'Pengerukan sedimen saluran primer Klojen',
+              'Pemasangan saringan sampah otomatis',
+            ],
+            model_used: 'gemini-2.5-flash',
+          },
+          error: null,
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: { headers: {} as never },
+      };
+
+      const postSpy = jest.spyOn(httpService, 'post').mockReturnValue(of(mockAiServiceResponse));
+
+      const result = await service.simulatePolicy(
+        mockUser.id,
+        'Normalisasi drainase primer di Kecamatan Klojen',
+        mockZone.id,
+      );
+
+      expect(postSpy).toHaveBeenCalledWith(
+        'http://ai-service.internal:8000/v1/policy-simulate',
+        expect.objectContaining({
+          prompt_text: 'Normalisasi drainase primer di Kecamatan Klojen',
+        }),
+        expect.objectContaining({
+          headers: { 'X-API-Key': 'test-internal-key' },
+        }),
+      );
+      expect(result.isMock).toBe(false);
+      expect(result.resultData.estimated_complaint_reduction_percent).toBe(44.5);
+      expect(result.resultData.risk_reduction_pct).toBe(44.5);
+      expect(result.resultData.estimated_budget_idr).toBe(1850000000);
+      expect(result.resultData.budget_estimate_idr).toBe(1850000000);
+      expect(result.resultData.recommended_actions).toEqual([
+        'Pengerukan sedimen saluran primer Klojen',
+        'Pemasangan saringan sampah otomatis',
+      ]);
+      expect(typeof result.resultData.simulated_risk_score).toBe('number');
+    });
+
+    it('Known Gap #1: should produce distinct dynamic outputs for two different prompts/zones in fallback mode', async () => {
+      const res1 = await service.simulatePolicy(
+        mockUser.id,
+        'Pembangunan drainase besar dan pompa banjir di Klojen',
+        mockZone.id,
+      );
+      const res2 = await service.simulatePolicy(
+        mockUser.id,
+        'Penggantian bola lampu jalan LED hemat energi di gang pemukiman',
+        undefined,
+      );
+
+      expect(res1.resultData.estimated_budget_idr).not.toBe(res2.resultData.estimated_budget_idr);
+      expect(res1.resultData.estimated_complaint_reduction_percent).not.toBe(
+        res2.resultData.estimated_complaint_reduction_percent,
+      );
+      expect(Array.isArray(res1.resultData.recommended_actions)).toBe(true);
+      expect((res1.resultData.recommended_actions as string[]).length).toBeGreaterThan(0);
+    });
+
   describe('findAll & findById', () => {
     it('should return paginated list of simulations', async () => {
       const res = await service.findAll(10);

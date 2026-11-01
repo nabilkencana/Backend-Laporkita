@@ -1,0 +1,39 @@
+{
+  "capturedAt": "2026-11-01T20:16:34.566Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/route-alerts/check",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "latitude": -7.9826,
+      "longitude": 112.6308
+    }
+  },
+  "status": 200,
+  "latencyMs": 8,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "93",
+    "etag": "W/\"5d-xMo4jgt8S9cnKQ8VFjkLRZhmHi8\"",
+    "date": "Sun, 01 Nov 2026 20:16:34 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "checkedSubscribers": 1,
+      "alertsTriggered": 0
+    },
+    "meta": null,
+    "error": null
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "capturedAt": "2026-11-01T20:15:52.786Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:8000/api/v1/verify",
+    "headersMasked": {
+      "X-API-Key": "laporkit...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "image_base64": "/9j/2wBDAAIBAQEBAQIBAQECAgICAgQDAgICAgUEBAMEBgUGBgYFBgYGBwkIBgcJ...[base64 len=108420]",
+      "reported_category": "Jalan Berlubang",
+      "latitude": -7.9826,
+      "longitude": 112.6308,
+      "created_at": "2026-11-01T20:15:52.773Z"
+    }
+  },
+  "status": 200,
+  "latencyMs": 13,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:15:52 GMT",
+    "server": "uvicorn",
+    "content-length": "418",
+    "content-type": "application/json",
+    "vary": "Origin"
+  },
+  "body": {
+    "confidence": 0.8452,
+    "category": "Jalan Berlubang",
+    "is_valid": false,
+    "needs_manual_review": true,
+    "is_valid_gps": true,
+    "is_valid_timestamp": true,
+    "damage_severity": 0.8671,
+    "reason": "Perlu review manual: Peringatan: Citra terindikasi mengalami manipulasi digital atau hasil generate AI (Inpainting).",
+    "is_authentic": false,
+    "verified_address": "Jl. Merdeka / Jl. Ijen / Jl. Semeru, Kecamatan Klojen, Kota Malang",
+    "is_mock": false
+  }
+}

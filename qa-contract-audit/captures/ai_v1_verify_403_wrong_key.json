@@ -1,0 +1,33 @@
+{
+  "capturedAt": "2026-11-01T20:15:52.643Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:8000/v1/verify",
+    "headersMasked": {
+      "X-API-Key": "***",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "latitude": -7.9826,
+      "longitude": 112.6308
+    }
+  },
+  "status": 403,
+  "latencyMs": 0,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:15:52 GMT",
+    "server": "uvicorn",
+    "content-length": "135",
+    "content-type": "application/json",
+    "vary": "Origin"
+  },
+  "body": {
+    "success": false,
+    "data": null,
+    "error": {
+      "code": "HTTP_403",
+      "message": "Akses ditolak: API Key yang diberikan tidak valid.",
+      "details": null
+    }
+  }
+}

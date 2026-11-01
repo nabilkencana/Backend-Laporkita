@@ -1,0 +1,39 @@
+{
+  "capturedAt": "2026-11-01T20:16:34.525Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/maps/route",
+    "headersMasked": {
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "origin_lat": -7.9826,
+      "origin_lng": 112.6308,
+      "destination_lat": -8.4095,
+      "destination_lng": 115.1889
+    }
+  },
+  "status": 400,
+  "latencyMs": 3,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "98",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "153",
+    "etag": "W/\"99-+DNf55FTgLgNQvF7tPVssPywtM4\"",
+    "date": "Sun, 01 Nov 2026 20:16:34 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": false,
+    "data": null,
+    "error": {
+      "code": "BAD_REQUEST",
+      "message": "Koordinat tujuan berada di luar wilayah Jawa. Rute hanya tersedia di Pulau Jawa."
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "capturedAt": "2026-11-01T20:16:03.236Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:8000/api/v1/training/ingest-sample",
+    "headersMasked": {
+      "X-API-Key": "laporkit...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "image_base64": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8L...[base64 len=33340]",
+      "verified_category": "Jalan Berlubang",
+      "original_prediction": "Jalan Berlubang",
+      "confidence_score": 0.94,
+      "source": "qa_contract_audit",
+      "operator_notes": "[QA] Contract audit ingest sample"
+    }
+  },
+  "status": 201,
+  "latencyMs": 6,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:16:02 GMT",
+    "server": "uvicorn",
+    "content-length": "166",
+    "content-type": "application/json",
+    "vary": "Origin"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "saved_file": "20261101_201603_sample.jpg",
+      "target_category": "Jalan Berlubang",
+      "is_correction": false,
+      "total_samples_in_class": 66
+    },
+    "error": null
+  }
+}

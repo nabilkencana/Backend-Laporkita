@@ -1,0 +1,73 @@
+{
+  "capturedAt": "2026-11-01T20:15:52.794Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:8000/v1/verify",
+    "headersMasked": {
+      "X-API-Key": "laporkit...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "image_base64": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8L...[base64 len=33340]",
+      "claimed_category": "Jalan Berlubang",
+      "latitude": -6.2088,
+      "longitude": 106.8456,
+      "timestamp": "2026-11-01T20:15:52.786Z"
+    }
+  },
+  "status": 200,
+  "latencyMs": 8,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:15:52 GMT",
+    "server": "uvicorn",
+    "content-length": "1266",
+    "content-type": "application/json",
+    "vary": "Origin"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "ai_confidence_score": 1,
+      "predicted_category": "Jalan Berlubang",
+      "is_valid": false,
+      "needs_manual_review": true,
+      "damage_severity": 0.96,
+      "description_auto": "Lokasi tidak konsisten pada koordinat (-6.2088, 106.8456).",
+      "reason": "Perlu review manual: Koordinat GPS berada di luar batas yurisdiksi administratif 5 Kecamatan Kota Malang.",
+      "gps_valid": false,
+      "timestamp_valid": true,
+      "class_probabilities": {
+        "Drainase": 0,
+        "Jalan Berlubang": 1,
+        "Lampu Jalan": 0,
+        "Rambu Lalu Lintas": 0,
+        "Trotoar": 0,
+        "bukan_fasilitas": 0
+      },
+      "smart_priority_score": 55.6,
+      "scoring_details": {
+        "severity_component": 33.6,
+        "support_component": 0,
+        "density_component": 2,
+        "urgency_component": 20
+      },
+      "authenticity": {
+        "is_authentic": true,
+        "authenticity_score": 0.844,
+        "tampering_detected": false,
+        "tampering_indicators": [],
+        "assessment_summary": "Citra terverifikasi otentik: Tidak ditemukan anomali kompresi atau manipulasi digital AI."
+      },
+      "location_verification": {
+        "is_location_consistent": false,
+        "location_match_confidence": 0.05,
+        "verified_address": "Lokasi di Luar Wilayah Kota Malang",
+        "district_name": "Luar Kota Malang",
+        "street_view_available": false,
+        "location_audit_notes": "Koordinat GPS berada di luar batas yurisdiksi administratif 5 Kecamatan Kota Malang."
+      },
+      "_placeholder": false
+    },
+    "error": null
+  }
+}

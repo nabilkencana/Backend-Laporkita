@@ -1,0 +1,625 @@
+{
+  "executedAt": "2026-11-01T08:23:06.953Z",
+  "summary": {
+    "total": 85,
+    "passed": 85,
+    "failed": 0,
+    "successRate": "100.0%",
+    "avgLatencyMs": 500,
+    "p95LatencyMs": 2655
+  },
+  "aiReadiness": {
+    "yoloV11": true,
+    "xgboost": true,
+    "gemini": true,
+    "llmStatus": "connected"
+  },
+  "results": [
+    {
+      "suite": "Suite 1: AI Service",
+      "name": "GET /health",
+      "status": "PASS",
+      "ms": 474,
+      "detail": "YOLO=true XGB=true LLM=connected"
+    },
+    {
+      "suite": "Suite 1: AI Service",
+      "name": "GET /demo (Browser)",
+      "status": "PASS",
+      "ms": 2655,
+      "detail": "title=\"LaporKita AI Console — Live Testing Sandbox\", screenshot saved"
+    },
+    {
+      "suite": "Suite 1: AI Service",
+      "name": "GET /sample_images.json",
+      "status": "PASS",
+      "ms": 125,
+      "detail": "5 classes"
+    },
+    {
+      "suite": "Suite 1: AI Service",
+      "name": "POST /v1/verify (YOLOv11)",
+      "status": "PASS",
+      "ms": 186,
+      "detail": "cat=Jalan Berlubang conf=1.00 auth=undefined sev=0.96"
+    },
+    {
+      "suite": "Suite 1: AI Service",
+      "name": "POST /v1/predict-risk (XGBoost)",
+      "status": "PASS",
+      "ms": 98,
+      "detail": "prob=0.871 level=high"
+    },
+    {
+      "suite": "Suite 1: AI Service",
+      "name": "POST /v1/predict/zone-metrics",
+      "status": "PASS",
+      "ms": 94,
+      "detail": "flood=0.828 stress=high"
+    },
+    {
+      "suite": "Suite 1: AI Service",
+      "name": "POST /v1/policy-simulate (Gemini)",
+      "status": "PASS",
+      "ms": 10761,
+      "detail": "Gemini OK — {\"result_narrative\":\"Analisis kebijakan normalisasi drainase di wilayah Klojen K"
+    },
+    {
+      "suite": "Suite 1: AI Service",
+      "name": "GET /v1/training/dataset-stats",
+      "status": "PASS",
+      "ms": 78,
+      "detail": "total=1 classes={\"Lampu_Jalan\":0,\"Jalan_Berlubang\":1,\"Drainase\":0,\"Rambu_Lalu_Lintas\":0,\"bukan_f"
+    },
+    {
+      "suite": "Suite 1: AI Service",
+      "name": "POST /v1/training/ingest-sample",
+      "status": "PASS",
+      "ms": 107,
+      "detail": "saved=20261101_082238_sample.jpg correction=false"
+    },
+    {
+      "suite": "Suite 1: AI Service",
+      "name": "GET /v1/training/download-dataset",
+      "status": "PASS",
+      "ms": 106,
+      "detail": "Content-Type: application/zip"
+    },
+    {
+      "suite": "Suite 1: AI Service",
+      "name": "POST /v1/verify without X-API-Key → 401/403",
+      "status": "PASS",
+      "ms": 66,
+      "detail": "401"
+    },
+    {
+      "suite": "Suite 1: AI Service",
+      "name": "POST /v1/verify wrong key → 401/403",
+      "status": "PASS",
+      "ms": 83,
+      "detail": "403"
+    },
+    {
+      "suite": "Suite 1: AI Service",
+      "name": "POST /api/v1/predict-risk (prefix compat)",
+      "status": "PASS",
+      "ms": 96,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 2: Auth",
+      "name": "POST /auth/login (admin)",
+      "status": "PASS",
+      "ms": 2936,
+      "detail": "role=admin token=eyJhbGci..."
+    },
+    {
+      "suite": "Suite 2: Auth",
+      "name": "POST /auth/login (citizen)",
+      "status": "PASS",
+      "ms": 281,
+      "detail": "role=citizen token=eyJhbGci..."
+    },
+    {
+      "suite": "Suite 2: Auth",
+      "name": "POST /auth/login (operator)",
+      "status": "PASS",
+      "ms": 301,
+      "detail": "role=operator token=eyJhbGci..."
+    },
+    {
+      "suite": "Suite 2: Auth",
+      "name": "POST /auth/login (policyMaker)",
+      "status": "PASS",
+      "ms": 288,
+      "detail": "role=policyMaker token=eyJhbGci..."
+    },
+    {
+      "suite": "Suite 2: Auth",
+      "name": "POST /auth/login wrong password → 401",
+      "status": "PASS",
+      "ms": 216,
+      "detail": "401"
+    },
+    {
+      "suite": "Suite 2: Auth",
+      "name": "POST /auth/refresh → new token",
+      "status": "PASS",
+      "ms": 270,
+      "detail": "new token=eyJhbGci..."
+    },
+    {
+      "suite": "Suite 2: Auth",
+      "name": "POST /auth/register → 202",
+      "status": "PASS",
+      "ms": 3212,
+      "detail": "202 userId=be5eda27-78ac-49fc-b614-6ca1b33feab4"
+    },
+    {
+      "suite": "Suite 2: Auth",
+      "name": "POST /auth/resend-otp",
+      "status": "PASS",
+      "ms": 160,
+      "detail": "400"
+    },
+    {
+      "suite": "Suite 2: Auth",
+      "name": "POST /auth/verify-otp wrong code → 400",
+      "status": "PASS",
+      "ms": 289,
+      "detail": "400"
+    },
+    {
+      "suite": "Suite 3: Master Data",
+      "name": "GET /categories (public)",
+      "status": "PASS",
+      "ms": 167,
+      "detail": "5 categories"
+    },
+    {
+      "suite": "Suite 3: Master Data",
+      "name": "GET /categories/c1000000-0000-4000-8000-000000000001",
+      "status": "PASS",
+      "ms": 134,
+      "detail": "name=Jalan Berlubang"
+    },
+    {
+      "suite": "Suite 3: Master Data",
+      "name": "POST /categories as citizen → 403",
+      "status": "PASS",
+      "ms": 139,
+      "detail": "403"
+    },
+    {
+      "suite": "Suite 3: Master Data",
+      "name": "POST /categories (admin create)",
+      "status": "PASS",
+      "ms": 216,
+      "detail": "id=cf630090-12dc-41bd-b513-b391d5858bc6"
+    },
+    {
+      "suite": "Suite 3: Master Data",
+      "name": "PATCH /categories/cf630090-12dc-41bd-b513-b391d5858bc6 (admin update)",
+      "status": "PASS",
+      "ms": 167,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 3: Master Data",
+      "name": "DELETE /categories/cf630090-12dc-41bd-b513-b391d5858bc6 (admin delete)",
+      "status": "PASS",
+      "ms": 141,
+      "detail": "Deleted"
+    },
+    {
+      "suite": "Suite 3: Master Data",
+      "name": "GET /agencies (public)",
+      "status": "PASS",
+      "ms": 134,
+      "detail": "3 agencies"
+    },
+    {
+      "suite": "Suite 3: Master Data",
+      "name": "GET /agencies/{id}",
+      "status": "PASS",
+      "ms": 144,
+      "detail": "name=Dinas Komunikasi dan Informatika (Diskominfo) Kota Malang"
+    },
+    {
+      "suite": "Suite 3: Master Data",
+      "name": "POST /agencies as citizen → 403",
+      "status": "PASS",
+      "ms": 195,
+      "detail": "403"
+    },
+    {
+      "suite": "Suite 3: Master Data",
+      "name": "POST /agencies (admin create)",
+      "status": "PASS",
+      "ms": 144,
+      "detail": "id=276471c3-d98c-4cd4-b734-7561ed6c1e27"
+    },
+    {
+      "suite": "Suite 3: Master Data",
+      "name": "PATCH /agencies/{id} (admin update)",
+      "status": "PASS",
+      "ms": 146,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 3: Master Data",
+      "name": "DELETE /agencies/{id} (admin delete)",
+      "status": "PASS",
+      "ms": 159,
+      "detail": "Deleted"
+    },
+    {
+      "suite": "Suite 4: Users",
+      "name": "GET /users/me (citizen)",
+      "status": "PASS",
+      "ms": 137,
+      "detail": "id=00000000-0000-4000-8000-000000000002 name=Warga Peduli Malang QA role=citizen"
+    },
+    {
+      "suite": "Suite 4: Users",
+      "name": "PATCH /users/me (update full_name)",
+      "status": "PASS",
+      "ms": 147,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 4: Users",
+      "name": "GET /users/me (verify update)",
+      "status": "PASS",
+      "ms": 136,
+      "detail": "name=[QA] Warga Peduli Malang"
+    },
+    {
+      "suite": "Suite 4: Users",
+      "name": "PATCH /users/me (restore name)",
+      "status": "PASS",
+      "ms": 144,
+      "detail": "Restored"
+    },
+    {
+      "suite": "Suite 4: Users",
+      "name": "GET /users/me/points (citizen)",
+      "status": "PASS",
+      "ms": 141,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 4: Users",
+      "name": "GET /users as citizen → 403",
+      "status": "PASS",
+      "ms": 135,
+      "detail": "403"
+    },
+    {
+      "suite": "Suite 4: Users",
+      "name": "GET /users (admin)",
+      "status": "PASS",
+      "ms": 143,
+      "detail": "5 users"
+    },
+    {
+      "suite": "Suite 4: Users",
+      "name": "GET /users/me (admin → get ID)",
+      "status": "PASS",
+      "ms": 133,
+      "detail": "adminId=00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "suite": "Suite 4: Users",
+      "name": "GET /users/{id} (admin)",
+      "status": "PASS",
+      "ms": 150,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 4: Users",
+      "name": "PATCH /users/{id} (admin update citizen)",
+      "status": "PASS",
+      "ms": 143,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 4: Users",
+      "name": "DELETE /users/{adminId} (admin self-delete) → 400",
+      "status": "PASS",
+      "ms": 133,
+      "detail": "400"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "POST /reports (citizen create)",
+      "status": "PASS",
+      "ms": 769,
+      "detail": "id=42fe1be1-64dc-42e1-b2c8-57a736c4340b code=#LP-2026-000010"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "GET /reports/{id} (detail)",
+      "status": "PASS",
+      "ms": 206,
+      "detail": "status=pending_verification code=#LP-2026-000010"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "GET /reports (public list)",
+      "status": "PASS",
+      "ms": 155,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "POST /reports/{id}/support (upvote)",
+      "status": "PASS",
+      "ms": 156,
+      "detail": "201"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "POST /reports/{id}/support duplicate → 409",
+      "status": "PASS",
+      "ms": 134,
+      "detail": "409"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "DELETE /reports/{id}/support (cancel)",
+      "status": "PASS",
+      "ms": 142,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "POST /reports/{id}/support (re-upvote)",
+      "status": "PASS",
+      "ms": 152,
+      "detail": "201"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "POST /reports/{id}/comments (normal)",
+      "status": "PASS",
+      "ms": 139,
+      "detail": "flagged=false"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "POST /reports/{id}/comments (profanity)",
+      "status": "PASS",
+      "ms": 148,
+      "detail": "flagged=true content=[QA] Anjing bangsat! Jalan ini sudah lama rusak ta"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "GET /reports/{id}/comments",
+      "status": "PASS",
+      "ms": 160,
+      "detail": "2 comments"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "GET /reports/comments/flagged (operator)",
+      "status": "PASS",
+      "ms": 155,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "PATCH /reports/{id}/status (invalid skip) → 400/409",
+      "status": "PASS",
+      "ms": 157,
+      "detail": "409"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "GET /reports/{id} (check current status)",
+      "status": "PASS",
+      "ms": 146,
+      "detail": "current=verified"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "PATCH /reports/{id}/status → assigned",
+      "status": "PASS",
+      "ms": 164,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "PATCH /reports/{id}/status → in_progress",
+      "status": "PASS",
+      "ms": 150,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "POST /reports/{id}/media (completion)",
+      "status": "PASS",
+      "ms": 294,
+      "detail": "201"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "PATCH /reports/{id}/status → completed",
+      "status": "PASS",
+      "ms": 177,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "POST /reports/{id}/validate (far location)",
+      "status": "PASS",
+      "ms": 226,
+      "detail": "201 — pelapor asli exempt"
+    },
+    {
+      "suite": "Suite 5: Reports",
+      "name": "GET /reports/{id} → verify final status",
+      "status": "PASS",
+      "ms": 146,
+      "detail": "final status=resolved ✓"
+    },
+    {
+      "suite": "Suite 6: GIS",
+      "name": "POST /maps/route (OSRM)",
+      "status": "PASS",
+      "ms": 131,
+      "detail": "dist=6162m dur=435.7s"
+    },
+    {
+      "suite": "Suite 6: GIS",
+      "name": "POST /reports/along-route",
+      "status": "PASS",
+      "ms": 136,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 6: GIS",
+      "name": "POST /route-alerts/subscribe",
+      "status": "PASS",
+      "ms": 153,
+      "detail": "200"
+    },
+    {
+      "suite": "Suite 6: GIS",
+      "name": "POST /route-alerts/check",
+      "status": "PASS",
+      "ms": 140,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 6: GIS",
+      "name": "DELETE /route-alerts/unsubscribe",
+      "status": "PASS",
+      "ms": 157,
+      "detail": "200"
+    },
+    {
+      "suite": "Suite 7: Predictions",
+      "name": "GET /predictions/zones",
+      "status": "PASS",
+      "ms": 138,
+      "detail": "5 zones: Klojen (Pusat Kota), Blimbing (Malang Utara), Kedungkandang (Malang Timur), Sukun (Malang Selatan), Lowokwaru (Malang Barat Laut)"
+    },
+    {
+      "suite": "Suite 7: Predictions",
+      "name": "GET /predictions/zones/{zoneId}/metrics (Klojen)",
+      "status": "PASS",
+      "ms": 164,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 7: Predictions",
+      "name": "POST /predictions/metrics/refresh (operator)",
+      "status": "PASS",
+      "ms": 179,
+      "detail": "200"
+    },
+    {
+      "suite": "Suite 7: Predictions",
+      "name": "POST /policy-simulations as citizen → 403",
+      "status": "PASS",
+      "ms": 133,
+      "detail": "403"
+    },
+    {
+      "suite": "Suite 7: Predictions",
+      "name": "POST /policy-simulations (policyMaker)",
+      "status": "PASS",
+      "ms": 9317,
+      "detail": "id=285b5175-888d-4299-938a-0d3c797c4700 status=created"
+    },
+    {
+      "suite": "Suite 7: Predictions",
+      "name": "GET /policy-simulations (policyMaker list)",
+      "status": "PASS",
+      "ms": 227,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 7: Predictions",
+      "name": "GET /policy-simulations/{id}",
+      "status": "PASS",
+      "ms": 142,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 8: Notifications",
+      "name": "GET /notifications (citizen)",
+      "status": "PASS",
+      "ms": 141,
+      "detail": "15 notifications, unread=?"
+    },
+    {
+      "suite": "Suite 8: Notifications",
+      "name": "PATCH /notifications/{id}/read",
+      "status": "PASS",
+      "ms": 144,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 8: Notifications",
+      "name": "PATCH /notifications/read-all",
+      "status": "PASS",
+      "ms": 132,
+      "detail": "OK"
+    },
+    {
+      "suite": "Suite 9: Negative",
+      "name": "GET /users/me no-token → 401",
+      "status": "PASS",
+      "ms": 128,
+      "detail": "401"
+    },
+    {
+      "suite": "Suite 9: Negative",
+      "name": "GET /notifications no-token → 401",
+      "status": "PASS",
+      "ms": 133,
+      "detail": "401"
+    },
+    {
+      "suite": "Suite 9: Negative",
+      "name": "POST /reports no-token → 401",
+      "status": "PASS",
+      "ms": 131,
+      "detail": "401"
+    },
+    {
+      "suite": "Suite 9: Negative",
+      "name": "GET /reports/invalid-uuid → 400",
+      "status": "PASS",
+      "ms": 213,
+      "detail": "400"
+    },
+    {
+      "suite": "Suite 9: Negative",
+      "name": "GET /reports/00000000-... → 404",
+      "status": "PASS",
+      "ms": 205,
+      "detail": "404"
+    },
+    {
+      "suite": "Suite 9: Negative",
+      "name": "GET /health (backend)",
+      "status": "PASS",
+      "ms": 144,
+      "detail": "OK"
+    }
+  ],
+  "cleanup": [
+    {
+      "type": "user",
+      "id": "be5eda27-78ac-49fc-b614-6ca1b33feab4",
+      "email": "qa.test.1793521363543@laporkita.test.go.id"
+    },
+    {
+      "type": "report",
+      "id": "42fe1be1-64dc-42e1-b2c8-57a736c4340b"
+    }
+  ]
+}

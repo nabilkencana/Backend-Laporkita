@@ -1,0 +1,40 @@
+{
+  "capturedAt": "2026-11-01T20:16:30.986Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/comments",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "content": "[QA] Semoga cepat diperbaiki oleh dinas terkait."
+    }
+  },
+  "status": 201,
+  "latencyMs": 11,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "20",
+    "x-ratelimit-remaining": "19",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "214",
+    "etag": "W/\"d6-yvx4cyG7DApJm9TIbKQwm5Ab1FM\"",
+    "date": "Sun, 01 Nov 2026 20:16:30 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "id": "d6a6f367-7c7f-456f-926c-1d30e2c90374",
+      "content": "[QA] Semoga cepat diperbaiki oleh dinas terkait.",
+      "is_flagged": false,
+      "created_at": "2026-11-01T20:16:30.983Z"
+    },
+    "meta": null,
+    "error": null
+  }
+}

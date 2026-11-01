@@ -186,11 +186,14 @@ export class ReportsRepository {
   }> {
     const where: Prisma.ReportWhereInput = {};
 
-    if (query.needs_manual_review || query.needsManualReview) {
-      // F5-1: Filter berdasarkan flag eksplisit di DB (bukan derivasi confidence).
-      // Mencakup: confidence rendah, GPS invalid, timestamp invalid — sesuai Rules.md §1.2.
-      where.needs_manual_review = true;
-    } else if (query.status) {
+    const manualReviewFilter =
+      query.needs_manual_review !== undefined
+        ? query.needs_manual_review
+        : query.needsManualReview;
+    if (manualReviewFilter !== undefined) {
+      where.needs_manual_review = manualReviewFilter;
+    }
+    if (query.status) {
       where.status = query.status;
     }
 

@@ -1,0 +1,41 @@
+{
+  "capturedAt": "2026-11-01T20:16:28.105Z",
+  "request": {
+    "method": "PATCH",
+    "url": "http://127.0.0.1:3000/api/v1/users/me",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "full_name": "Budi Santoso (Warga Kota Malang)",
+      "extra_field": "x"
+    }
+  },
+  "status": 400,
+  "latencyMs": 2,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "98",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "176",
+    "etag": "W/\"b0-BD3Vj7epvE3AMm4SH9uBzRaoNNc\"",
+    "date": "Sun, 01 Nov 2026 20:16:28 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": false,
+    "data": null,
+    "error": {
+      "code": "VALIDATION_ERROR",
+      "message": "Input tidak valid. Periksa field yang dikirim.",
+      "details": [
+        "property extra_field should not exist"
+      ]
+    }
+  }
+}

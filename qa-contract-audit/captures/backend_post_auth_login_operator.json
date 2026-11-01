@@ -1,0 +1,50 @@
+{
+  "capturedAt": "2026-11-01T20:16:27.526Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/auth/login",
+    "headersMasked": {
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "identifier": "operator.dpupr@laporkita.malangkota.go.id",
+      "password": "Password..."
+    }
+  },
+  "status": 200,
+  "latencyMs": 107,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "97",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "1178",
+    "etag": "W/\"49a-t7W32Apzm6td2uF66eHKisqizoY\"",
+    "date": "Sun, 01 Nov 2026 20:16:27 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "access_token": "eyJhbGci...",
+      "refresh_token": "eyJhbGci...",
+      "expires_in": "15m",
+      "token_type": "Bearer",
+      "user": {
+        "id": "00000000-0000-4000-8000-000000000003",
+        "full_name": "Operator DPUPRPKP Kota Malang",
+        "email": "operator.dpupr@laporkita.malangkota.go.id",
+        "phone_number": "+6281234567891",
+        "role": "operator",
+        "agency_id": "a1000000-0000-4000-8000-000000000001",
+        "contribution_points": 0,
+        "avatar_url": null
+      }
+    },
+    "meta": null,
+    "error": null
+  }
+}

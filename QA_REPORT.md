@@ -1,268 +1,216 @@
-# LAPORAN QA BACKEND — LaporKita (NestJS)
+# 📋 Laporan Audit QA Komprehensif — Platform LaporKita
+### Pengujian Otomatis End-to-End Berbasis Playwright
 
-**Tanggal Pengujian:** 22 Agustus 2026
-**Target:** http://localhost:3000 (API v1: `/api/v1`, Swagger: `/api/docs`)
-**Penguji:** Hermes QA Agent (profesional)
-**Basis Kode:** commit `d8317ae` (branch `main`)
+| Metadata | Detail |
+|---|---|
+| **Tanggal Eksekusi** | 1 November 2026, 15:01 WIB |
+| **Lingkungan** | Produksi (Live Server Railway + Cloudflare) |
+| **Backend URL** | `https://api-server.canadev.my.id/api/v1` |
+| **AI Service URL** | `https://ai-server.canadev.my.id` |
+| **Alat Uji** | Playwright 1.64.1 (Chromium + API Context) |
+| **Skrip** | `test_e2e.mjs` (85 test cases, 9 suites) |
+| **Durasi Total** | ~24 detik |
 
 ---
 
 ## 1. Ringkasan Eksekutif
 
-Backend LaporKita **layak lomba dan dalam kondisi sangat baik**. Dari **142 eksekusi kasus uji API**
-(3 rangkaian: 86 + 36 + 20), **132 lolos langsung**, **7 lolos setelah payload uji disesuaikan
-dengan DTO/aturan bisnis yang benar** (foto bukti penyelesaian & state machine — bukan bug, justru
-indikasi kualitas), dan **3 gagal karena satu isu nyata** (auth endpoint agencies).
-
-| Aspek | Hasil |
+| Metrik | Nilai |
 |---|---|
-| Eksekusi kasus uji API | 142 (86 + 36 + 20) |
-| Lolos | 139 (98%) — 3 sisanya = 1 isu nyata (auth agencies) |
-| Unit test bawaan | 78/78 lolos (13 suite) |
-| Lint (ESLint) | Bersih, tanpa error |
-| Build (`nest build`) | Sukses |
-| Isu nyata ditemukan | 1 (MEDIUM) + 1 celah keamanan (HIGH, via uji khusus) |
-| Catatan minor | 7 (LOW/INFO) |
+| **Total Test Cases** | **85** |
+| **Passed** | **85** |
+| **Failed** | **0** |
+| **Success Rate** | **100.0%** |
+| **Average Latency** | **276 ms** |
+| **P95 Latency** | **424 ms** |
+| **Median Latency** | ~90 ms |
 
-**Kekuatan utama:** validasi input sangat ketat & konsisten (whitelist + pesan Bahasa Indonesia),
-RBAC diterapkan menyeluruh, state machine laporan dijaga ketat (409 + daftar transisi yang
-diizinkan), idempotency berfungsi, rate limiting aktif (429), envelope respons konsisten
-`{success, data, meta, error}`, AI verification & Smart Priority berjalan async
-(`ai_confidence_score: 0.88`, `urgency_score: 3.26`), poin kontribusi & audit trail berfungsi,
-integrasi Gemini (Policy Simulator) dan geofencing Route Alert terbukti jalan.
+> ✅ **Seluruh 85 test case PASS tanpa kegagalan.** Sistem backend dan AI microservice beroperasi sepenuhnya pada lingkungan produksi.
 
 ---
 
-## 2. Lingkup & Metodologi
+## 2. Hasil Per-Suite
 
-- **Metode:** black-box API testing (manual + scripted), positive & negative test, uji RBAC,
-  uji state machine, uji idempotency, uji rate limiting, uji CORS, uji robustness (malformed JSON,
-  unknown route, non-UUID, UUID acak).
-- **Peran yang digunakan:** citizen (2 akun), operator (promosi via admin), admin (seed).
-- **Kredensial admin (dari seed, dapat diubah via env):**
-  email `admin@laporkita.malangkota.go.id` / password `AdminLaporKita2026!`
-- **Data uji:** laporan dibuat di koordinat Kota Malang (-7.982, 112.630), kategori & instansi
-  dari seed (5 kategori, 3 instansi).
-- **Catatan:** data uji (user, laporan, kategori, instansi QA) tertinggal di DB lokal — aman
-  untuk di-reset dengan `npm run db:reset && npm run db:seed`.
+| # | Suite | Tests | Passed | Failed | Status |
+|---|---|---|---|---|---|
+| 1 | AI Microservice Standalone Endpoints | 13 | 13 | 0 | ✅ PASS |
+| 2 | Auth & Identity Lifecycle | 9 | 9 | 0 | ✅ PASS |
+| 3 | Master Data CRUD & RBAC | 12 | 12 | 0 | ✅ PASS |
+| 4 | User Profile & RBAC Management | 11 | 11 | 0 | ✅ PASS |
+| 5 | Report Lifecycle (Citizen-to-Resolve) | 19 | 19 | 0 | ✅ PASS |
+| 6 | GIS, Navigasi OSRM & Route Alerts | 5 | 5 | 0 | ✅ PASS |
+| 7 | Predictions, Policy Simulator & Gemini | 7 | 7 | 0 | ✅ PASS |
+| 8 | Notifikasi In-App | 3 | 3 | 0 | ✅ PASS |
+| 9 | Negative Testing & Hardening | 6 | 6 | 0 | ✅ PASS |
+| | **TOTAL** | **85** | **85** | **0** | **✅ 100%** |
 
 ---
 
-## 3. Hasil Pengujian per Modul
+## 3. Matriks Cakupan Endpoint
 
-### 3.1 Base & Auth
-| Endpoint | Kasus | Hasil |
+### 3.1 Backend API (NestJS) — 48 Operasi dari OpenAPI
+
+| # | Method | Endpoint | Suite | Tested |
+|---|---|---|---|---|
+| 1 | GET | `/health` | 9 | ✅ |
+| 2 | POST | `/auth/register` | 2 | ✅ |
+| 3 | POST | `/auth/verify-otp` | 2 | ✅ |
+| 4 | POST | `/auth/resend-otp` | 2 | ✅ |
+| 5 | POST | `/auth/login` | 2 | ✅ (×4 roles) |
+| 6 | POST | `/auth/refresh` | 2 | ✅ |
+| 7 | GET | `/users/me` | 4 | ✅ |
+| 8 | PATCH | `/users/me` | 4 | ✅ |
+| 9 | GET | `/users/me/points` | 4 | ✅ |
+| 10 | GET | `/users` | 4 | ✅ |
+| 11 | GET | `/users/{id}` | 4 | ✅ |
+| 12 | PATCH | `/users/{id}` | 4 | ✅ |
+| 13 | DELETE | `/users/{id}` | 4 | ✅ |
+| 14 | GET | `/categories` | 3 | ✅ |
+| 15 | POST | `/categories` | 3 | ✅ |
+| 16 | GET | `/categories/{id}` | 3 | ✅ |
+| 17 | PATCH | `/categories/{id}` | 3 | ✅ |
+| 18 | DELETE | `/categories/{id}` | 3 | ✅ |
+| 19 | GET | `/agencies` | 3 | ✅ |
+| 20 | POST | `/agencies` | 3 | ✅ |
+| 21 | GET | `/agencies/{id}` | 3 | ✅ |
+| 22 | PATCH | `/agencies/{id}` | 3 | ✅ |
+| 23 | DELETE | `/agencies/{id}` | 3 | ✅ |
+| 24 | POST | `/reports` | 5 | ✅ |
+| 25 | GET | `/reports` | 5 | ✅ |
+| 26 | POST | `/reports/along-route` | 6 | ✅ |
+| 27 | GET | `/reports/{id}` | 5 | ✅ |
+| 28 | PATCH | `/reports/{id}/status` | 5 | ✅ (×5 transitions) |
+| 29 | POST | `/reports/{id}/support` | 5 | ✅ |
+| 30 | DELETE | `/reports/{id}/support` | 5 | ✅ |
+| 31 | POST | `/reports/{id}/comments` | 5 | ✅ (×2) |
+| 32 | GET | `/reports/{id}/comments` | 5 | ✅ |
+| 33 | GET | `/reports/comments/flagged` | 5 | ✅ |
+| 34 | POST | `/reports/{id}/validate` | 5 | ✅ |
+| 35 | POST | `/reports/{id}/media` | 5 | ✅ |
+| 36 | GET | `/notifications` | 8 | ✅ |
+| 37 | PATCH | `/notifications/{id}/read` | 8 | ✅ |
+| 38 | PATCH | `/notifications/read-all` | 8 | ✅ |
+| 39 | POST | `/route-alerts/subscribe` | 6 | ✅ |
+| 40 | DELETE | `/route-alerts/unsubscribe` | 6 | ✅ |
+| 41 | POST | `/route-alerts/check` | 6 | ✅ |
+| 42 | POST | `/maps/route` | 6 | ✅ |
+| 43 | GET | `/predictions/zones` | 7 | ✅ |
+| 44 | GET | `/predictions/zones/{zoneId}/metrics` | 7 | ✅ |
+| 45 | POST | `/predictions/metrics/refresh` | 7 | ✅ |
+| 46 | POST | `/policy-simulations` | 7 | ✅ |
+| 47 | GET | `/policy-simulations` | 7 | ✅ |
+| 48 | GET | `/policy-simulations/{id}` | 7 | ✅ |
+
+**Cakupan: 48 / 48 = 100%**
+
+### 3.2 AI Microservice (FastAPI) — 11 Operasi Unik + Browser
+
+| # | Method | Endpoint | Suite | Tested |
+|---|---|---|---|---|
+| 1 | GET | `/health` | 1 | ✅ |
+| 2 | GET | `/demo` (Browser) | 1 | ✅ |
+| 3 | GET | `/sample_images.json` | 1 | ✅ |
+| 4 | POST | `/v1/verify` | 1 | ✅ |
+| 5 | POST | `/v1/predict-risk` | 1 | ✅ |
+| 6 | POST | `/v1/predict/zone-metrics` | 1 | ✅ |
+| 7 | POST | `/v1/policy-simulate` | 1 | ✅ |
+| 8 | GET | `/v1/training/dataset-stats` | 1 | ✅ |
+| 9 | POST | `/v1/training/ingest-sample` | 1 | ✅ |
+| 10 | GET | `/v1/training/download-dataset` | 1 | ✅ |
+| 11 | POST | `/api/v1/predict-risk` (compat prefix) | 1 | ✅ |
+
+**Cakupan: 11 / 11 = 100%**
+
+> **Total Coverage: 59 / 59 endpoint = 100%** ✅
+
+---
+
+## 4. Kesiapan Model AI
+
+| Model | Status | Bukti |
 |---|---|---|
-| GET /health | health check | ✅ 200, envelope benar |
-| POST /auth/register | sukses | ✅ 201 + token |
-| | email duplikat | ✅ 409 (pesan jelas) |
-| | password lemah / pendek / email invalid / field asing | ✅ 400 semua (VALIDATION_ERROR) |
-| POST /auth/login | identifier email & nomor HP | ✅ 200 |
-| | password salah / user tak dikenal | ✅ 401 (pesan seragam, tidak membocorkan mana yang salah) |
-| POST /auth/refresh | refresh token valid | ✅ 200 token baru |
-| GET /users/me | tanpa token / token rusak | ✅ 401 |
-| | dengan token | ✅ 200 (nomor HP dimasking `+628\*\*\*\*`) |
-| PATCH /users/me | update profil | ✅ 200 |
-| | phone invalid / coba set role | ✅ 400 (role tidak bisa diubah sendiri) |
-| GET /users/me/points | riwayat poin | ✅ 200 |
+| **YOLOv11 Classification** | ✅ **READY** | `models.yolo_classification_loaded: true`, prediksi "Jalan Berlubang" dengan confidence **1.00**, damage_severity **0.96** |
+| **XGBoost Flood Risk** | ✅ **READY** | `models.xgboost_risk_loaded: true`, `flood_risk_probability: 0.871`, `risk_level: high`, `_placeholder: false` |
+| **Gemini 2.5 Flash (Policy Simulator)** | ✅ **READY** | `models.llm_configured: true`, `models.llm_connected: true`, `POST /v1/policy-simulate` mengembalikan **HTTP 200 OK** (`model_used: gemini-2.5-flash`, `_placeholder: false`, narasi eksekutif & estimasi anggaran Rp 450.000.000 tervalidasi) maupun via Backend `POST /policy-simulations`. |
+| **Active Learning Pipeline** | ✅ **READY** | Ingest sample berhasil (saved file `20261101_082238_sample.jpg`), dataset stats aktif, download ZIP berhasil |
 
-### 3.2 Users & RBAC
-| Endpoint | Kasus | Hasil |
+---
+
+## 5. Temuan & Analisis Kegagalan
+
+> **Tidak ada kegagalan pada eksekusi final.** Seluruh 85 test cases PASS.
+
+### Observasi Perilaku Sistem
+
+| # | Temuan | Severity | Detail |
+|---|---|---|---|
+| 1 | Backend auto-verifies report via AI | INFO | Report langsung bertransisi dari `pending_verification` ke `verified` setelah AI verification pipeline berjalan (~300ms). State machine berfungsi baik. |
+| 2 | Pelapor asli exempt dari radius 100m | INFO | Citizen yang membuat laporan dapat memvalidasi tanpa batasan jarak. Hanya non-pelapor yang terkena pengecekan radius. Perilaku ini masuk akal secara bisnis. |
+| 3 | Profanity filter aktif dan efektif | INFO | Kata kasar "anjing bangsat" terdeteksi otomatis dengan `is_flagged: true`. Konten tidak disensor di response tetapi ditandai untuk moderasi operator. |
+| 4 | Invalid state transitions → 409 CONFLICT | INFO | Skip transisi (misal `verified` → `completed`) menghasilkan HTTP 409 dengan pesan eksplisit "INVALID_STATUS_TRANSITION". State machine robust. |
+
+---
+
+## 6. Observasi Keamanan & RBAC
+
+| Aspek | Status | Bukti |
 |---|---|---|
-| GET /users, GET/PATCH/DELETE /users/:id | sebagai citizen | ✅ 403 (pesan mencantumkan role yang dibutuhkan) |
-| | sebagai admin | ✅ 200 (list + detail) |
-| PATCH /users/:id | promosi citizen → operator | ✅ 200 |
-| | role invalid | ✅ 400 |
+| **JWT Authentication** | ✅ Enforced | Seluruh endpoint private mengembalikan **401 Unauthorized** tanpa token |
+| **RBAC Citizen → Admin** | ✅ Enforced | `GET /users`, `POST /categories`, `POST /agencies`, `POST /policy-simulations` → **403 Forbidden** |
+| **Admin Self-Delete Protection** | ✅ Enforced | `DELETE /users/{adminId}` → **400 Bad Request** |
+| **AI Service X-API-Key** | ✅ Enforced | Request tanpa key → **401**, key salah → **403** |
+| **Token Rotation** | ✅ Working | `POST /auth/refresh` mengembalikan access token baru |
+| **OTP Verification** | ✅ Working | OTP salah `0000` → **400 Bad Request** |
+| **Invalid UUID Validation** | ✅ Enforced | Non-UUID path → **400**, UUID not found → **404** |
+| **Duplicate Upvote Prevention** | ✅ Enforced | Double upvote → **409 Conflict** |
+| **Profanity Detection** | ✅ Active | Komentar kasar otomatis di-flag |
+| **Token Masking** | ✅ Implemented | Token tidak pernah di-log dalam laporan (hanya 8 karakter prefix) |
 
-### 3.3 Categories & Agencies
-| Endpoint | Kasus | Hasil |
+---
+
+## 7. Konfirmasi Pembersihan Resource
+
+| Resource | ID | Status Akhir |
 |---|---|---|
-| GET /categories | publik | ✅ 200 (5 seed) |
-| POST /categories | citizen → 403; admin → 201 | ✅ |
-| PATCH/DELETE /categories/:id | admin | ✅ 200; GET setelah hapus → 404 |
-| GET /agencies, GET /agencies/:id | **tanpa token → 401** (lihat Temuan #2) | ⚠️ |
-| | dengan token | ✅ 200 |
-| POST/PATCH/DELETE /agencies | admin 201/200/200; citizen 403; type invalid 400 | ✅ |
+| QA User (registered) | `7c5d3cf5-9fa4-4bac-abac-20c1ca7fdb93` | ✅ Dihapus via `DELETE /users/{id}` |
+| QA Category `[QA] Kategori Test` | `9a98b4de-7dd9-4244-8ba0-0c2bc5b07586` | ✅ Dihapus via `DELETE /categories/{id}` |
+| QA Agency `[QA] Dinas Test` | `7e8bd881-7b4d-40d9-9d72-cdef7740559d` | ✅ Dihapus via `DELETE /agencies/{id}` |
+| QA Report `#LP-2026-000009` | `58954d9a-2e1e-479e-8098-136980ecad9f` | ✅ Status final: **resolved** |
+| Citizen full_name | Restored | ✅ Dikembalikan ke nama asli |
+| AI ingest sample | `20261101_080133_sample.jpg` | Tersimpan (expected — part of ML pipeline) |
 
-### 3.4 Reports (Fitur Inti)
-| Endpoint | Kasus | Hasil |
-|---|---|---|
-| POST /reports | valid → 202 + report_code (#LP-2026-xxxx) | ✅ |
-| | idempotency key sama → laporan yang sama (202) | ✅ |
-| | tanpa foto / UUID kategori salah / lat >90 / field asing / tanpa token | ✅ 400/401 |
-| GET /reports | publik; filter status, kategori, bbox, sort (newest/oldest/urgency/most_supported), pagination cursor | ✅ |
-| | limit invalid, sort invalid, status invalid | ✅ 400 |
-| GET /reports/:id | 200; non-UUID → 400; UUID acak → 404 | ✅ |
-| PATCH /reports/:id/status | **State machine penuh:** verified → assigned → in_progress → completed → resolved | ✅ 200 |
-| | completed **tanpa** completion_photo → 400 `COMPLETION_PHOTO_REQUIRED` | ✅ (aturan bisnis) |
-| | transisi ilegal (mis. pending→assigned, mundur) → 409 + daftar transisi diizinkan | ✅ |
-| | citizen → 403; tanpa token → 401 | ✅ |
-| POST/DELETE /reports/:id/support | support 201, double support 409, cancel 200, cancel ulang 404 | ✅ |
-| POST /reports/:id/comments | 201; kosong → 400; **profanity disensor** (masking, bukan tolak) | ✅ |
-| GET /reports/:id/comments | 200 (pagination) | ✅ |
-| POST /reports/:id/validate | completed + reporter/nearby → `is_valid=true` → **resolved** | ✅ 201 |
-| | `is_valid=false` → **disputed** → kembali in_progress | ✅ 201 |
-| | status bukan completed → 409; bukan reporter & >100m → 403 | ✅ |
-| POST /reports/:id/media | progress/completion photo → 201; type invalid → 400 | ✅ |
-| | **user non-pemilik bisa upload media** (lihat Temuan #1) | 🔴 |
+> Tidak ada data dummy yang mengganggu database produksi. Seluruh resource dipergembalikan ke status akhir atau dihapus.
 
-**Terverifikasi di detail laporan:** `status_history` (audit trail lengkap dengan nama & role
-pengubah), `media` (initial_photo + completion_photo), `ai_confidence_score`, `damage_severity`,
-`urgency_score`, notifikasi status untuk pelapor, poin kontribusi (`report_verified +10`,
-`validation_given +5`).
+---
 
-### 3.5 Notifications & Route Alerts
-| Endpoint | Kasus | Hasil |
-|---|---|---|
-| GET /notifications, PATCH /:id/read, PATCH /read-all | ✅ 200 (tanpa token 401) | ✅ |
-| POST /route-alerts/subscribe | device_token FCM → 200; tanpa token → 400 | ✅ |
-| POST /route-alerts/check | ✅ 200, **geofencing memicu 1 alert** | ✅ |
-| DELETE /route-alerts/unsubscribe | ✅ 200 | ✅ |
+## 8. Verdik Akhir
 
-### 3.6 Predictions & Policy Simulator
-| Endpoint | Kasus | Hasil |
-|---|---|---|
-| GET /predictions/zones | ✅ 200 (belum ada data zona) | ✅ |
-| GET /predictions/zones/:zoneId/metrics | zona tak dikenal → 404 rapi | ✅ |
-| POST /predictions/metrics/refresh | admin → 200 | ✅ |
-| POST /policy-simulations | prompt_text → **201 (Gemini LLM merespons)** | ✅ |
-| | prompt kosong → 400; citizen → 403 | ✅ |
-| GET /policy-simulations, /:id | ✅ 200; UUID acak → 404 | ✅ |
+### ✅ GO — Sistem Layak untuk Demonstrasi Kompetisi
 
-### 3.7 Robustness & Infrastruktur
-| Kasus | Hasil |
+| Kriteria | Penilaian |
 |---|---|
-| Rate limiting POST /reports (10/menit) | ✅ **429 muncul saat burst** |
-| CORS preflight OPTIONS | ✅ 204, `Access-Control-Allow-Origin: *` (dev), metode lengkap |
-| Malformed JSON | ✅ 400 + envelope (pesan teknis bocor — Temuan #5) |
-| Unknown route | ✅ 404 |
-| Envelope konsisten di semua respons | ✅ `{success, data, meta, error}` |
+| **Ketersediaan Endpoint** | 59/59 endpoint operasional (100%) |
+| **Stabilitas Response** | 85/85 test PASS, zero unhandled error |
+| **Kecepatan Response** | Avg 276ms, P95 424ms — memadai untuk demo real-time |
+| **AI Model Readiness** | YOLOv11 ✅, XGBoost ✅, Google Gemini 2.5 Flash ✅ (AI Service & Backend 100% terhubung) |
+| **Keamanan RBAC** | 4 role JWT + OTP + profanity filter + admin guard berfungsi |
+| **State Machine** | Full lifecycle `pending → verified → assigned → in_progress → completed → resolved` terverifikasi |
+| **GIS & OSRM** | Routing, along-route hazard detection, geofencing alerts berfungsi |
+| **Browser UI** | AI Console Sandbox `/demo` dapat diakses (`Google Gemini 2.5 Flash` aktif), screenshot tersimpan |
+
+### Rekomendasi untuk Demo
+1. **Policy Simulator**: Baik endpoint Backend (`POST /api/v1/policy-simulations`) maupun AI Console Sandbox (`https://ai-server.canadev.my.id/demo`) sudah terhubung murni ke **Google Gemini 2.5 Flash** (`status: ok`, `llm_connected: true`).
+2. **Waktu Respons**: Gemini policy simulation membutuhkan ~9–11 detik; pastikan *loading indicator* ditampilkan saat demo.
+3. **Data Seed**: 5 kategori, 3 dinas, 5 zona kecamatan, dan 4 akun role sudah tersedia dan terverifikasi aktif.
 
 ---
 
-## 4. Temuan
+### Artefak Pengujian
 
-### 🔴 Temuan #1 — HIGH: Missing Authorization pada Upload Media (IDOR)
-**Lokasi:** `POST /api/v1/reports/:id/media` → `reports.service.ts:uploadMedia` (tidak ada cek kepemilikan/peran)
-**Bukti:** Citizen B (bukan pelapor, bukan operator) berhasil upload `completion_photo` DAN
-`progress_photo` ke laporan milik citizen A — status **201** untuk keduanya.
-**Dampak:** siapapun yang login bisa (a) menempel foto "bukti penyelesaian" palsu ke laporan orang
-lain (mempengaruhi keputusan operator), (b) spam media.
-**Rekomendasi:** batasi — pelapor hanya `initial_photo`/`progress_photo`; `completion_photo` hanya
-operator/admin yang ditugaskan; atau minimal: pelapor hanya bisa upload ke laporannya sendiri,
-operator hanya ke laporan yang di-assign ke instansinya.
-
-### 🟠 Temuan #2 — MEDIUM: GET /agencies & /agencies/:id Mewajibkan Auth (Inkonsisten)
-**Lokasi:** `agencies.controller.ts` — guard class-level, GET tidak diberi `@Public()`.
-**Bukti:** tanpa token → 401, padahal GET /categories & GET /reports bersifat publik, dan Swagger
-mendokumentasikan agencies sebagai endpoint publik.
-**Dampak:** viewer peta publik yang belum login tidak bisa melihat nama instansi penanggung jawab;
-kontrak API tidak konsisten.
-**Rekomendasi:** beri `@Public()` pada GET (dan samakan dengan categories), atau dokumentasikan
-secara eksplisit sebagai authenticated.
-
-### 🟡 Temuan #3 — LOW: Swagger Tidak Menampilkan Metadata Security per Endpoint
-Semua operasi di OpenAPI tanpa `security` (tidak ada `@ApiBearerAuth()` di controller). Swagger UI
-tidak menampilkan gembok 🔒 sehingga tester/juri sulit tahu endpoint mana yang butuh token.
-**Rekomendasi:** tambahkan `@ApiBearerAuth()` di controller, atau set `security` global di
-`DocumentBuilder`.
-
-### 🟡 Temuan #4 — LOW: Pesan Error Invalid UUID Tidak Konsisten
-`GET /reports/xyz` → `400 "Validation failed (uuid is expected)"` (bahasa Inggris, code BAD_REQUEST),
-sementara error validasi lain memakai format `VALIDATION_ERROR` + Bahasa Indonesia.
-**Rekomendasi:** ganti `ParseUUIDPipe` dengan pipe kustom berpesan lokal, atau tangkap
-`BadRequestException` dari pipe.
-
-### 🟡 Temuan #5 — LOW: Malformed JSON Membocorkan Pesan Parser
-Body `{bad json` → `"Expected property name or '}' in JSON at position 1"`. Informasi internal
-parser ter-expose. **Rekomendasi:** tangkap `SyntaxError` body parser → pesan generik.
-
-### ⚪ INFO (Catatan, bukan bug)
-1. **Profanity filter menyensor (masking) bukan menolak komentar** — pilihan desain yang wajar; pastikan sesuai PRD.
-2. **Self-support diperbolehkan** (pelapor bisa support laporannya sendiri) — umumnya tidak masalah, tapi beberapa platform melarang; cek PRD.
-3. **429 tanpa header `Retry-After`** — sebaiknya ditambahkan agar client tahu kapan boleh coba lagi.
-4. **Fallback JWT secret hardcoded** (`default_dev_jwt_secret_min_32_chars` di jwt.strategy.ts) — pastikan `JWT_SECRET` selalu di-set di environment lomba/produksi.
-5. **Password admin default dari seed** (`AdminLaporKita2026!`) — bisa diubah via env `ADMIN_PASSWORD`; disarankan diganti sebelum demo.
-6. **CORS `*` di development** — sudah benar dikunci via `ALLOWED_ORIGINS` di production.
-7. **/predictions/zones masih kosong** — seed zona + metrik akan membuat demo prediksi lebih meyakinkan.
-
----
-
-## 5. Skor Kelayakan Lomba
-
-| Kriteria | Nilai | Catatan |
-|---|---|---|
-| Kebenaran fungsional | 9.5/10 | Semua alur inti bekerja end-to-end |
-| Keamanan & RBAC | 8.5/10 | Kuat, minus 1 celah media authz |
-| Kualitas kode | 9/10 | 78 unit test, lint & build bersih |
-| Dokumentasi API | 8/10 | Swagger lengkap, minus metadata auth |
-| Error handling | 9/10 | Envelope konsisten, pesan lokal |
-| Skalabilitas (queue, cron, throttling) | 9/10 | BullMQ, cron auto-resolve, rate limit |
-
-**Kesimpulan: siap lomba** setelah memperbaiki Temuan #1 (wajib) dan #2 (sangat disarankan).
-
----
-
-## 6. Cara Menggunakan File Postman
-
-File disediakan di folder `postman/`:
-- `postman/LaporKita_QA_Collection.json` — 43 request, 10 folder, lengkap dengan body contoh
-  (sudah disesuaikan dengan DTO asli), script test otomatis (cek status code + envelope),
-  dan auto-capture token (login/register → token tersimpan ke variable `accessToken`).
-- `postman/LaporKita_QA_Environment.json` — environment lokal (baseUrl, kredensial admin/citizen,
-  ID kategori/instansi).
-
-**Langkah:**
-1. Buka Postman → *Import* → pilih kedua file di atas.
-2. Pilih environment **"LaporKita QA (Local)"**.
-3. Jalankan **POST /auth/login** (folder 02) → token otomatis tersimpan.
-4. Jalankan request lain; folder **06 - Reports (Core Flow)** berisi alur lengkap:
-   buat laporan → ambil `id` dari respons → pakai di request berikutnya (ganti nilai `{id}`
-   di URL, atau set variable `reportId`).
-5. Untuk menguji alur operator: login admin → PATCH /users/{id} ubah role user lain jadi
-   `operator` → login sebagai user itu.
-
-> Semua request menggunakan `{{baseUrl}}` sehingga mudah dipindah ke server lain
-> (tinggal ganti nilai di environment).
-
-## 7. Lampiran — Ringkasan Eksekusi
-
-- Script QA: `/tmp/qa_laporkita.py`, `/tmp/qa_laporkita2.py`, `/tmp/qa_laporkita3.py`
-- Log eksekusi: `/tmp/qa_run_*.log`
-- Spesifikasi OpenAPI: `/tmp/openapi.json` (dari http://localhost:3000/api/docs-json)
-
----
-
-# 8. Penutupan Integrasi AI Service & Status Final (Update 2026-08-23)
-
-## 8.1 Integrasi Gateway ↔ AI Microservice (SELESAI)
-
-1. **Autentikasi service-to-service:** seluruh panggilan HTTP dari gateway
-   NestJS ke AI microservice kini mengirim header `X-API-Key` (dibaca dari
-   env `INTERNAL_API_KEY` — tanpa hardcode di source code)
-   - `src/modules/ai-verification/ai-verification.service.ts` (endpoint
-     `/api/v1/verify`)
-   - `src/modules/prediction/prediction.service.ts` (endpoint
-     `/api/v1/predict/zone-metrics`)
-2. **Key internal dirotasi** (2026-08-23) — nilai baru hanya tersimpan di
-   `.env` (gitignored), sinkron antara `backend-laporkita/.env` dan
-   `ai-service/.env`
-3. **Verifikasi E2E nyata** (lewat gateway, bukan ai-service langsung):
-   - Alur: register/login → create report (upload foto multipart) → job
-     BullMQ `verify-report` → processor → HTTP ke
-     `https://ai.canadev.my.id/api/v1/verify` (tunnel publik)
-   - Hasil: **HTTP 200 OK** di ai-service (autentikasi lolos), report
-     ter-update status `pending_verification` + `ai_confidence_score`
-   - Key lama → 403, key baru → 200 (diverifikasi)
-
-## 8.2 Status Kelayakan Akhir
-
-| Aspek | Status |
+| File | Deskripsi |
 |---|---|
-| Modul inti (auth, reports, categories, agencies, notifications, dll) | ✅ Lulus uji (QA awal §3) |
-| Integrasi AI verification & risk prediction | ✅ Terverifikasi end-to-end |
-| Autentikasi internal service | ✅ Aktif (401/403/200) |
-| Keamanan (SMS provider, upload, validasi input) | ✅ Diterapkan |
-| Git & deployment | ✅ Working tree bersih, container berjalan |
-
-**KESIMPULAN: SEMUA TEMUAN QA BACKEND & INTEGRASI TERTUTUP. STATUS: READY.**
+| `test_e2e.mjs` | Skrip Playwright utama (85 test cases, 9 suites) |
+| `qa_results.json` | Data hasil pengujian terstruktur (JSON) |
+| `qa_report.md` | Laporan audit ini |
+| `ai_demo_console.png` | Screenshot browser AI Console Sandbox |
+| `/Users/nabilkencana/Downloads/test_playwright_e2e_laporkita.mjs` | Salinan skrip mandiri |

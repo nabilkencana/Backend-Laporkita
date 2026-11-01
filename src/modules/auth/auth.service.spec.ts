@@ -11,7 +11,8 @@ import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { RegisterDto } from './dto/register.dto.js';
 import { OTP_SMS_SERVICE, OTPSmsService } from './sms/otp-sms.interface.js';
-
+import { HttpExceptionFilter } from '../../common/filters/http-exception.filter.js';
+import { ArgumentsHost } from '@nestjs/common';
 describe('AuthService (with Phone OTP Verification)', () => {
   let service: AuthService;
   let repository: AuthRepository;
@@ -503,6 +504,65 @@ describe('AuthService (with Phone OTP Verification)', () => {
 
       await expect(service.refresh({ refresh_token: 'expired_token' })).rejects.toThrow(
         UnauthorizedException,
+      );
+    });
+  });
+
+  describe('6. MM-17: HttpExceptionFilter preserves OTP_* error codes & remainingSeconds', () => {
+    it('should preserve OTP_INVALID and OTP_RESEND_COOLDOWN with remainingSeconds through HttpExceptionFilter instead of overwriting with VALIDATION_ERROR', async () => {
+      const filter = new HttpExceptionFilter();
+      const capturedResponses: unknown[] = [];
+      const mockRes = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn((body: unknown) => {
+          capturedResponses.push(body);
+        }),
+        setHeader: jest.fn(),
+      };
+      const mockHost = {
+        switchToHttp: () => ({
+          getResponse: () => mockRes,
+          getRequest: () => ({ method: 'POST', url: '/api/v1/auth/resend-otp' }),
+        }),
+      } as unknown as ArgumentsHost;
+
+      // 1. Trigger OTP_RESEND_COOLDOWN from service.resendOtp
+      jest.spyOn(repository, 'findLatestOtpAnyState').mockResolvedValue({
+        ...mockOtpRecord,
+        last_sent_at: new Date(Date.now() - 10 * 1000),
+      });
+      try {
+        await service.resendOtp({ phone_number: '+6281234567890' });
+      } catch (err) {
+        filter.catch(err, mockHost);
+      }
+
+      // 2. Trigger OTP_INVALID from service.verifyOtp
+      jest.spyOn(repository, 'findLatestActiveOtp').mockResolvedValue(mockOtpRecord);
+      try {
+        await service.verifyOtp({ phone_number: '+6281234567890', otp_code: '0000' });
+      } catch (err) {
+        filter.catch(err, mockHost);
+      }
+
+      expect(capturedResponses[0]).toEqual(
+        expect.objectContaining({
+          success: false,
+          error: expect.objectContaining({
+            code: 'OTP_RESEND_COOLDOWN',
+            details: expect.objectContaining({
+              remainingSeconds: expect.any(Number),
+            }),
+          }),
+        }),
+      );
+      expect(capturedResponses[1]).toEqual(
+        expect.objectContaining({
+          success: false,
+          error: expect.objectContaining({
+            code: 'OTP_INVALID',
+          }),
+        }),
       );
     });
   });

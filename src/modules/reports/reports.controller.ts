@@ -333,7 +333,13 @@ export class ReportsController {
     @Body() dto: TransitionStatusDto,
     @CurrentUser('id') actorId: string,
   ): Promise<Report> {
-    return this.reportsService.transitionReportStatus(id, dto.status, actorId, dto.note);
+    return this.reportsService.transitionReportStatus(
+      id,
+      dto.status,
+      actorId,
+      dto.note,
+      dto.assigned_agency_id,
+    );
   }
 
   /**

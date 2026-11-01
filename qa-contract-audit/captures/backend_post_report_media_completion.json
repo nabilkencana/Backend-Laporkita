@@ -1,0 +1,43 @@
+{
+  "capturedAt": "2026-11-01T20:16:31.098Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/media",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci..."
+    },
+    "bodySummary": {
+      "type": "completion_photo",
+      "photo": {
+        "name": "completion.jpg",
+        "mimeType": "image/jpeg",
+        "sizeBytes": 50164
+      }
+    }
+  },
+  "status": 201,
+  "latencyMs": 7,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "97",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "234",
+    "etag": "W/\"ea-0L9l/MNCjQCqvKvrdGH/701Tz+4\"",
+    "date": "Sun, 01 Nov 2026 20:16:31 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "id": "c915fefb-1f42-43ca-8d45-6839b201e872",
+      "url": "https://storage.laporkita.malangkota.go.id/reports/1793564191093-a55fde8b-b34a-4be1-bcde-0f9a8b9cd2b5.jpg",
+      "type": "completion_photo"
+    },
+    "meta": null,
+    "error": null
+  }
+}

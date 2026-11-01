@@ -1,0 +1,20 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.16, pytest-8.4.2, pluggy-1.7.0
+rootdir: /Users/nabilkencana/Project /Lomba MAGEITS/ai-service
+configfile: pytest.ini
+testpaths: tests
+plugins: asyncio-0.26.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 42 items
+
+tests/test_active_learning.py ..                                         [  4%]
+tests/test_authenticity.py ..                                            [  9%]
+tests/test_health.py .                                                   [ 11%]
+tests/test_policy_simulator.py ......                                    [ 26%]
+tests/test_prediction.py ....                                            [ 35%]
+tests/test_security.py .......                                           [ 52%]
+tests/test_streetview.py ..                                              [ 57%]
+tests/test_utils.py .......                                              [ 73%]
+tests/test_verification.py ...........                                   [100%]
+
+============================== 42 passed in 1.92s ==============================

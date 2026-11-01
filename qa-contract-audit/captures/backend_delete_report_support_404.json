@@ -1,0 +1,33 @@
+{
+  "capturedAt": "2026-11-01T20:16:30.951Z",
+  "request": {
+    "method": "DELETE",
+    "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/support",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci..."
+    }
+  },
+  "status": 404,
+  "latencyMs": 43,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "98",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "120",
+    "etag": "W/\"78-jSGrMtRmahx2cgmXwi0GAE1RWKI\"",
+    "date": "Sun, 01 Nov 2026 20:16:30 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": false,
+    "data": null,
+    "error": {
+      "code": "NOT_FOUND",
+      "message": "Anda belum memberikan dukungan untuk laporan ini."
+    }
+  }
+}

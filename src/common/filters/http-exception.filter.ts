@@ -98,15 +98,32 @@ export class HttpExceptionFilter implements ExceptionFilter {
         }
       }
 
-      // ValidationPipe menghasilkan BadRequestException dengan array pesan
+      const responseObj =
+        typeof exceptionResponse === 'object' && exceptionResponse !== null
+          ? (exceptionResponse as Record<string, unknown>)
+          : null;
+
+      const hasCustomDomainCode =
+        typeof responseObj?.code === 'string' ||
+        (typeof responseObj?.error === 'string' &&
+          ![
+            'Bad Request',
+            'Unauthorized',
+            'Forbidden',
+            'Not Found',
+            'Conflict',
+            'Unprocessable Entity',
+            'Too Many Requests',
+          ].includes(responseObj.error));
+
+      // ValidationPipe menghasilkan BadRequestException dengan array pesan (tanpa custom domain code)
       if (
         status === Number(HttpStatus.BAD_REQUEST) &&
-        typeof exceptionResponse === 'object' &&
-        exceptionResponse !== null &&
-        'message' in exceptionResponse &&
-        Array.isArray(exceptionResponse.message)
+        !hasCustomDomainCode &&
+        responseObj !== null &&
+        Array.isArray(responseObj.message)
       ) {
-        const validationMessages = (exceptionResponse as { message: string[] }).message;
+        const validationMessages = responseObj.message as string[];
         return {
           status,
           errorResponse: {
@@ -120,13 +137,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
           },
         };
       }
-
-      // HttpException generik — map ke error code yang readable
-      const responseObj =
-        typeof exceptionResponse === 'object' && exceptionResponse !== null
-          ? (exceptionResponse as Record<string, unknown>)
-          : null;
-
       const code =
         typeof responseObj?.code === 'string'
           ? responseObj.code
