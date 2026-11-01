@@ -1,0 +1,40 @@
+{
+  "capturedAt": "2026-11-01T20:15:52.696Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:8000/api/v1/verify",
+    "headersMasked": {
+      "X-API-Key": "laporkit...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "image_base64": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8L...[base64 len=18240]",
+      "reported_category": "Lampu Jalan",
+      "latitude": -7.9826,
+      "longitude": 112.6308,
+      "created_at": "2026-11-01T20:15:52.689Z"
+    }
+  },
+  "status": 200,
+  "latencyMs": 7,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:15:52 GMT",
+    "server": "uvicorn",
+    "content-length": "390",
+    "content-type": "application/json",
+    "vary": "Origin"
+  },
+  "body": {
+    "confidence": 1,
+    "category": "Lampu Jalan",
+    "is_valid": true,
+    "needs_manual_review": false,
+    "is_valid_gps": true,
+    "is_valid_timestamp": true,
+    "damage_severity": 0.88,
+    "reason": "Lolos verifikasi otomatis (AI confidence >= 0.85, Citra Otentik, GPS dan Street View Terkalibrasi)",
+    "is_authentic": true,
+    "verified_address": "Jl. Merdeka / Jl. Ijen / Jl. Semeru, Kecamatan Klojen, Kota Malang",
+    "is_mock": false
+  }
+}

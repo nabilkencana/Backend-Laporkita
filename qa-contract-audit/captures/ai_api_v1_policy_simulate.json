@@ -1,0 +1,50 @@
+{
+  "capturedAt": "2026-11-01T20:16:03.220Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:8000/api/v1/policy-simulate",
+    "headersMasked": {
+      "X-API-Key": "laporkit...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "prompt_text": "[QA] Evaluasi program penggantian lampu jalan PJU LED hemat energi di Lowokwaru Kota Malang.",
+      "zone_id": "b5000000-0000-4000-8000-000000000005",
+      "time_horizon_months": 6
+    }
+  },
+  "status": 200,
+  "latencyMs": 5780,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:15:56 GMT",
+    "server": "uvicorn",
+    "content-length": "1135",
+    "content-type": "application/json",
+    "vary": "Origin"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "result_narrative": "Analisis komprehensif terhadap usulan kebijakan di Kota Malang (b5000000-0000-4000-8000-000000000005) dengan horizon 6 bulan menunjukkan proyeksi penurunan keluhan masyarakat sebesar 54.5% dan estimasi kebutuhan anggaran Rp 200,000,000. Intervensi ini dirancang untuk meningkatkan keandalan infrastruktur publik secara terukur melalui koordinasi Dinas Perhubungan (Dishub) Kota Malang.",
+      "result_data": {
+        "estimated_incident_reduction_pct": 54.5,
+        "budget_estimate_idr": 200000000,
+        "time_to_impact_weeks": 6,
+        "target_department": "Dinas Perhubungan (Dishub) Kota Malang",
+        "public_satisfaction_increase_pct": 39.2,
+        "risk_mitigations": [
+          "Sosialisasi jadwal pengerjaan kepada warga dan pelaku usaha terdampak",
+          "Pengaturan rekayasa lalu lintas pada jam tidak sibuk (22.00 - 05.00 WIB)"
+        ]
+      },
+      "key_recommendations": [
+        "Penggantian bertahap lampu jalan ke unit PJU LED pintar hemat energi",
+        "Pemasangan sensor photocell otomatis dan panel pemantauan arus listrik",
+        "Prioritaskan koridor jalan protokol dan gang pemukiman rawan kecelakaan malam hari"
+      ],
+      "model_used": "gemini-2.5-flash",
+      "_placeholder": false
+    },
+    "error": null
+  }
+}

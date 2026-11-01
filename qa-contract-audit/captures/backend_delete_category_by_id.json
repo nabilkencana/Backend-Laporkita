@@ -1,0 +1,33 @@
+{
+  "capturedAt": "2026-11-01T20:16:33.798Z",
+  "request": {
+    "method": "DELETE",
+    "url": "http://127.0.0.1:3000/api/v1/categories/c7780684-6cb3-48d6-adcc-e285d3ffb7a7",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci..."
+    }
+  },
+  "status": 200,
+  "latencyMs": 5,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "98",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "172",
+    "etag": "W/\"ac-E90KpWk5Yf17YyZUh4SEQsJ+/nU\"",
+    "date": "Sun, 01 Nov 2026 20:16:33 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "message": "Kategori '[QA] Kategori Audit 1793564193773 Updated' (c7780684-6cb3-48d6-adcc-e285d3ffb7a7) berhasil dihapus."
+    },
+    "meta": null,
+    "error": null
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "capturedAt": "2026-11-01T20:17:27.750Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/predictions/metrics/refresh",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci..."
+    }
+  },
+  "status": 200,
+  "latencyMs": 59,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "98",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "1669",
+    "etag": "W/\"685-L/PYNa3Kc8MKe+uGuCPB7T5FVck\"",
+    "date": "Sun, 01 Nov 2026 20:17:27 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "updatedCount": 5,
+      "results": [
+        {
+          "zoneId": "b1000000-0000-4000-8000-000000000001",
+          "reportDensity": 0,
+          "trafficDensity": 0.3,
+          "floodRiskProbability": 0.1047,
+          "weatherContext": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "temperature_celsius": 24.5,
+            "humidity_percentage": 82,
+            "rainfall_mm": 10,
+            "condition": "Hujan Ringan / Berawan"
+          },
+          "stressLevel": "low",
+          "isMock": false
+        },
+        {
+          "zoneId": "b2000000-0000-4000-8000-000000000002",
+          "reportDensity": 0,
+          "trafficDensity": 0.3,
+          "floodRiskProbability": 0.1047,
+          "weatherContext": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "temperature_celsius": 24.5,
+            "humidity_percentage": 82,
+            "rainfall_mm": 10,
+            "condition": "Hujan Ringan / Berawan"
+          },
+          "stressLevel": "low",
+          "isMock": false
+        },
+        {
+          "zoneId": "b3000000-0000-4000-8000-000000000003",
+          "reportDensity": 0,
+          "trafficDensity": 0.3,
+          "floodRiskProbability": 0.1047,
+          "weatherContext": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "temperature_celsius": 24.5,
+            "humidity_percentage": 82,
+            "rainfall_mm": 10,
+            "condition": "Hujan Ringan / Berawan"
+          },
+          "stressLevel": "low",
+          "isMock": false
+        },
+        {
+          "zoneId": "b4000000-0000-4000-8000-000000000004",
+          "reportDensity": 0,
+          "trafficDensity": 0.3,
+          "floodRiskProbability": 0.1047,
+          "weatherContext": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "temperature_celsius": 24.5,
+            "humidity_percentage": 82,
+            "rainfall_mm": 10,
+            "condition": "Hujan Ringan / Berawan"
+          },
+          "stressLevel": "low",
+          "isMock": false
+        },
+        {
+          "zoneId": "b5000000-0000-4000-8000-000000000005",
+          "reportDensity": 0,
+          "trafficDensity": 0.3,
+          "floodRiskProbability": 0.1047,
+          "weatherContext": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "temperature_celsius": 24.5,
+            "humidity_percentage": 82,
+            "rainfall_mm": 10,
+            "condition": "Hujan Ringan / Berawan"
+          },
+          "stressLevel": "low",
+          "isMock": false
+        }
+      ]
+    },
+    "meta": null,
+    "error": null
+  }
+}

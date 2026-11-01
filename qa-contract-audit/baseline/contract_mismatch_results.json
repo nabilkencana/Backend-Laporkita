@@ -1,0 +1,540 @@
+{
+  "executedAt": "2026-11-01T09:08:13.424Z",
+  "summary": {
+    "totalChecks": 18,
+    "passedChecks": 0,
+    "mismatchesReproduced": 18,
+    "bySeverity": {
+      "CRITICAL": 3,
+      "HIGH": 5,
+      "MEDIUM": 6,
+      "LOW": 4
+    }
+  },
+  "checks": [
+    {
+      "id": "MM-01",
+      "suite": "Phase2D-Config",
+      "severity": "CRITICAL",
+      "title": "Mobile default AppConfig.baseUrl & aiServiceUrl point to unrouted hosts (api.canadev.my.id / ai.canadev.my.id)",
+      "methodPath": "GET https://api.canadev.my.id/api/v1/health & https://ai.canadev.my.id/health",
+      "locations": {
+        "mobile": "laporkita/lib/core/config/app_config.dart:12-21",
+        "backend": "backend-laporkita/.env.example (api-server.canadev.my.id)",
+        "ai": "ai-service (ai-server.canadev.my.id)"
+      },
+      "outcome": "FAIL",
+      "status": "404/404",
+      "latencyMs": 1739,
+      "summary": "Default URLs returned api=404, ai=404 instead of 200 OK on api-server / ai-server",
+      "expectedContract": {
+        "baseUrl": "https://api-server.canadev.my.id/api/v1 (200 OK)",
+        "aiServiceUrl": "https://ai-server.canadev.my.id (200 OK)"
+      },
+      "actualObserved": {
+        "mobileDefaultBaseUrl": "https://api.canadev.my.id/api/v1",
+        "mobileDefaultBaseUrlResult": "404",
+        "mobileDefaultAiServiceUrl": "https://ai.canadev.my.id",
+        "mobileDefaultAiServiceUrlResult": "404"
+      },
+      "userImpact": "Every standard APK build (`flutter build apk` / `flutter run` without `--dart-define`) fails to connect to Backend or AI Service."
+    },
+    {
+      "id": "MM-02",
+      "suite": "Phase2D-Config",
+      "severity": "CRITICAL",
+      "title": "Mobile default AppConfig.aiApiKey rejected by AI Service POST /v1/verify & /v1/predict-risk",
+      "methodPath": "POST /v1/verify",
+      "locations": {
+        "mobile": "laporkita/lib/core/config/app_config.dart:24-27 & test/core/config/app_config_test.dart:11",
+        "ai": "ai-service/app/core/security.py:22-53"
+      },
+      "outcome": "FAIL",
+      "status": 403,
+      "latencyMs": 1024,
+      "summary": "AI Service rejected Mobile default X-API-Key (laporkita_sec_e6...) with HTTP 403",
+      "expectedContract": "HTTP 200 OK (matching INTERNAL_API_KEY between Mobile AppConfig and AI Service)",
+      "actualObserved": {
+        "status": 403,
+        "body": {
+          "success": false,
+          "data": null,
+          "error": {
+            "code": "HTTP_403",
+            "message": "Akses ditolak: API Key yang diberikan tidak valid.",
+            "details": null
+          }
+        }
+      },
+      "userImpact": "Citizen camera AI verification (AiVerificationScreen) and dashboard flood risk prediction (CitizenDashboardTab) always fail with 403 Forbidden unless overridden at compile time."
+    },
+    {
+      "id": "MM-03",
+      "suite": "Phase2C-BackendAI",
+      "severity": "CRITICAL",
+      "title": "Backend auto-transitions blurry/OOD (bukan_fasilitas) and tampered reports to status=\"verified\" instead of manual review",
+      "methodPath": "POST /api/v1/reports -> POST /api/v1/verify -> GET /api/v1/reports/{id}",
+      "locations": {
+        "backend": "src/modules/ai-verification/report-verification.processor.ts:58-72 & ai-verification.service.ts:68-100",
+        "ai": "ai-service/app/routers/verification.py:265-307 & app/services/yolo_service.py:124-127"
+      },
+      "outcome": "FAIL",
+      "status": 200,
+      "latencyMs": 3706,
+      "summary": "Blurry/OOD image (AI /v1/verify predicted_category=\"bukan_fasilitas\", is_valid=false, needs_manual_review=true) was auto-approved by Backend to status=\"verified\", needs_manual_review=false, ai_confidence_score=0.9999",
+      "expectedContract": {
+        "status": "pending_verification",
+        "needs_manual_review": true
+      },
+      "actualObserved": {
+        "reportId": "a8d28892-3101-4a02-881b-2813908950c5",
+        "backendStatus": "verified",
+        "backendNeedsManualReview": false,
+        "backendAiConfidenceScore": 0.9999,
+        "aiV1VerifyData": {
+          "predicted_category": "bukan_fasilitas",
+          "ai_confidence_score": 0.9999,
+          "is_valid": false,
+          "needs_manual_review": true
+        },
+        "aiCompatVerifyData": {
+          "confidence": 0.9999,
+          "category": "bukan_fasilitas",
+          "is_valid_gps": true,
+          "is_valid_timestamp": true,
+          "damage_severity": 0,
+          "reason": "Perlu review manual: Citra terklasifikasi sebagai bukan fasilitas publik.",
+          "is_authentic": false,
+          "verified_address": "Jl. Merdeka / Jl. Ijen / Jl. Semeru, Kecamatan Klojen, Kota Malang",
+          "is_mock": false
+        }
+      },
+      "userImpact": "Junk, blurry, non-facility (bukan_fasilitas), and digitally tampered photos submitted to Backend bypass human moderation, automatically transition to verified, and award +10 citizen contribution points."
+    },
+    {
+      "id": "MM-04",
+      "suite": "Phase2C-BackendAI",
+      "severity": "HIGH",
+      "title": "Backend PolicySimulatorService bypasses AI Service POST /v1/policy-simulate and returns hardcoded static resultData without recommendations",
+      "methodPath": "POST /api/v1/policy-simulations vs POST /v1/policy-simulate",
+      "locations": {
+        "backend": "src/modules/policy-simulator/policy-simulator.service.ts:50-115",
+        "ai": "ai-service/app/routers/policy_simulator.py:11-70",
+        "mobile": "laporkita/lib/data/models/policy_simulation_model.dart:31-106"
+      },
+      "outcome": "FAIL",
+      "status": "201/200",
+      "latencyMs": 451,
+      "summary": "Backend hardcodes resultData={reduction:35, budget:450000000, months:6} and omits recommendations, while AI /v1/policy-simulate computes dynamic reduction=55%, budget=4800000000, key_recommendations[3]",
+      "expectedContract": "Backend calls AI Service POST /v1/policy-simulate (or /api/v1/policy-simulate) and persists structured recommendations, dynamic budget, and simulated risk score matching PolicySimulationModel.fromJson.",
+      "actualObserved": {
+        "backendResultData": {
+          "target_zone": "Klojen (Pusat Kota)",
+          "estimated_complaint_reduction_percent": 35,
+          "estimated_budget_idr": 450000000,
+          "implementation_months": 5,
+          "projected_satisfaction_increase": 1.8,
+          "risk_factors": [
+            "Curah hujan tinggi pada musim penghujan",
+            "Disrupsi arus lalu lintas lokal"
+          ],
+          "is_mock": true
+        },
+        "aiServiceResultData": {
+          "estimated_incident_reduction_pct": 55,
+          "budget_estimate_idr": 4800000000,
+          "time_to_impact_weeks": 20,
+          "target_department": "Dinas Pekerjaan Umum, Penataan Ruang, Perumahan dan Kawasan Permukiman (DPUPRPKP) Kota Malang",
+          "public_satisfaction_increase_pct": 38,
+          "risk_mitigations": [
+            "Sosialisasi jadwal dan dampak proyek secara berkala kepada masyarakat terdampak",
+            "Manajemen lalu lintas dan penyediaan jalur alternatif selama masa konstruksi",
+            "Koordinasi dengan Dinas Lingkungan Hidup untuk pengelolaan sampah dan sedimen hasil pengerukan"
+          ]
+        },
+        "aiServiceKeyRecommendationsCount": 3
+      },
+      "userImpact": "Command Center Policy Simulator always shows static 35% reduction, Rp 450M budget, 3.2 risk score, and 0 recommended actions regardless of policy prompt or zone."
+    },
+    {
+      "id": "MM-05",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "HIGH",
+      "title": "AdminAssignReportScreen agency assignment: Mobile drops assignedAgencyId and Backend rejects assigned_agency_id on PATCH /reports/{id}/status",
+      "methodPath": "PATCH /api/v1/reports/{id}/status",
+      "locations": {
+        "mobile": "laporkita/lib/presentation/command_center/report_management/admin_assign_report_screen.dart:125-133 & lib/data/datasources/remote/report_remote_datasource.dart:250-271",
+        "backend": "src/modules/reports/dto/transition-status.dto.ts:1-25 & reports.service.ts:163-295"
+      },
+      "outcome": "FAIL",
+      "status": 400,
+      "latencyMs": 92,
+      "summary": "Sending assigned_agency_id to PATCH /reports/{id}/status failed with 400 VALIDATION_ERROR: [\"property assigned_agency_id should not exist\"]",
+      "expectedContract": "TransitionStatusDto accepts optional assigned_agency_id UUID and updates report.assigned_agency_id",
+      "actualObserved": {
+        "success": false,
+        "data": null,
+        "error": {
+          "code": "VALIDATION_ERROR",
+          "message": "Input tidak valid. Periksa field yang dikirim.",
+          "details": [
+            "property assigned_agency_id should not exist"
+          ]
+        }
+      },
+      "userImpact": "Admin OPD reassignment in AdminAssignReportScreen never updates report.assigned_agency_id in the database; only free-text note is saved."
+    },
+    {
+      "id": "MM-06",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "MEDIUM",
+      "title": "AdminVerificationActionScreen \"Meminta Revisi\" sends status=\"pending_verification\" -> rejected with 409 CONFLICT by Backend",
+      "methodPath": "PATCH /api/v1/reports/{id}/status",
+      "locations": {
+        "mobile": "laporkita/lib/presentation/command_center/report_management/admin_verification_action_screen.dart:1957 & lib/data/repositories/report_repository.dart:978-986",
+        "backend": "src/modules/reports/reports.service.ts:278-294"
+      },
+      "outcome": "FAIL",
+      "status": 409,
+      "latencyMs": 93,
+      "summary": "PATCH status=\"pending_verification\" returned 409 (INVALID_STATUS_TRANSITION: Tidak dapat mengubah status dari 'verified' ke 'pending_verification'. Alur yang diperbolehkan dari 'verified' adalah: [assigned] (Rules.md §1.1).)",
+      "expectedContract": "Dedicated revision action/comment or valid transition saving the admin revision note",
+      "actualObserved": {
+        "success": false,
+        "data": null,
+        "error": {
+          "code": "CONFLICT",
+          "message": "INVALID_STATUS_TRANSITION: Tidak dapat mengubah status dari 'verified' ke 'pending_verification'. Alur yang diperbolehkan dari 'verified' adalah: [assigned] (Rules.md §1.1)."
+        }
+      },
+      "userImpact": "Backend rejects the revision request with 409 CONFLICT, while Mobile ReportRepository swallows the error and shows a fake success SnackBar without saving the revision note."
+    },
+    {
+      "id": "MM-07",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "HIGH",
+      "title": "NewReportFormScreen fallback categories (\"cat-sampah\" / \"Sampah & Kebersihan\") rejected by Backend (400) and AI Service (422)",
+      "methodPath": "POST /api/v1/reports & POST /v1/verify",
+      "locations": {
+        "mobile": "laporkita/lib/presentation/citizen/camera/new_report_form_screen.dart:22-71",
+        "backend": "src/modules/reports/dto/create-report.dto.ts:11 (@IsUUID)",
+        "ai": "ai-service/app/schemas/verification.py:55-61 (VALID_CATEGORIES)"
+      },
+      "outcome": "FAIL",
+      "status": "400/422",
+      "latencyMs": 293,
+      "summary": "Backend rejected category_id=\"cat-sampah\" with 400 (category_id harus berupa UUID yang valid.), AI rejected claimed_category=\"Sampah & Kebersihan\" with 422",
+      "expectedContract": "Fallback categories in NewReportFormScreen use valid seed UUIDs (c1000000-...-0001..5) and canonical 5 category names",
+      "actualObserved": {
+        "backendStatus": 400,
+        "backendError": {
+          "code": "VALIDATION_ERROR",
+          "message": "Input tidak valid. Periksa field yang dikirim.",
+          "details": [
+            "category_id harus berupa UUID yang valid."
+          ]
+        },
+        "aiStatus": 422,
+        "aiError": {
+          "code": "VALIDATION_ERROR",
+          "message": "body: Value error, Kategori 'Sampah & Kebersihan' tidak valid. Harus salah satu dari: Jalan Berlubang, Lampu Jalan, Rambu Lalu Lintas, Trotoar, Drainase, bukan_fasilitas",
+          "details": [
+            {
+              "type": "value_error",
+              "loc": [
+                "body"
+              ],
+              "msg": "Value error, Kategori 'Sampah & Kebersihan' tidak valid. Harus salah satu dari: Jalan Berlubang, Lampu Jalan, Rambu Lalu Lintas, Trotoar, Drainase, bukan_fasilitas",
+              "input": {
+                "image_base64": "/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAHgAoADASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAT/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCTATLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH//2Q==",
+                "claimed_category": "Sampah & Kebersihan",
+                "latitude": -7.9826,
+                "longitude": 112.6308
+              },
+              "ctx": {
+                "error": {}
+              }
+            }
+          ]
+        }
+      },
+      "userImpact": "If GET /categories fails or User picks a non-matching fallback category in NewReportFormScreen, report submission fails with 400 VALIDATION_ERROR."
+    },
+    {
+      "id": "MM-08",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "MEDIUM",
+      "title": "ImageUtils.compressIfNeeded skips files < 900KB without transcoding WebP, causing Backend FileValidationPipe 400 rejection",
+      "methodPath": "POST /api/v1/reports",
+      "locations": {
+        "mobile": "laporkita/lib/core/utils/image_utils.dart:24-27 & report_remote_datasource.dart:116-119",
+        "backend": "src/common/pipes/file-validation.pipe.ts:19-31, 55-61 & reports.controller.ts:93"
+      },
+      "outcome": "FAIL",
+      "status": 400,
+      "latencyMs": 68,
+      "summary": "<900KB WebP (620 bytes) named report_photo.jpg rejected with 400: Tipe file tidak diizinkan. Hanya JPEG dan PNG yang diterima (Rules.md §2.1). Periksa bahwa file bukan WebP, GIF, atau file berekstensi berbeda dari isinya.",
+      "expectedContract": "ImageUtils transcodes non-JPEG/PNG files even if <900KB, OR Backend FileValidationPipe accepts WebP as documented in Swagger",
+      "actualObserved": {
+        "sizeBytes": 620,
+        "status": 400,
+        "error": {
+          "code": "BAD_REQUEST",
+          "message": "Tipe file tidak diizinkan. Hanya JPEG dan PNG yang diterima (Rules.md §2.1). Periksa bahwa file bukan WebP, GIF, atau file berekstensi berbeda dari isinya."
+        }
+      },
+      "userImpact": "Gallery uploads of WebP/HEIC images under 900 KB bypass FlutterImageCompress, get labeled report_photo.jpg, and are rejected by Backend magic-byte check."
+    },
+    {
+      "id": "MM-09",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "HIGH",
+      "title": "Malang BBox divergence: Ring-Zone coordinate (-8.15, 112.60) fails AI /v1/verify (gps_valid=false) but passes Backend POST /reports (202)",
+      "methodPath": "POST /v1/verify vs POST /api/v1/reports",
+      "locations": {
+        "ai": "ai-service/app/core/config.py:24-27 ([-8.05,-7.90] x [112.55,112.70])",
+        "backend": "src/modules/reports/utils/geo.util.ts:7-12 ([-8.25,-7.85] x [112.50,112.80])",
+        "mobile": "laporkita/lib/presentation/citizen/camera/ai_verification_screen.dart:170-174"
+      },
+      "outcome": "FAIL",
+      "status": "200/202",
+      "latencyMs": 103,
+      "summary": "Coordinate (-8.15, 112.60) returned gps_valid=false on AI /v1/verify (blocking Mobile \"Lanjut\" button) while Backend POST /reports accepted it with 202",
+      "expectedContract": "Identical Malang bounding box across AI Service and Backend",
+      "actualObserved": {
+        "coordinate": {
+          "lat": -8.15,
+          "lng": 112.6
+        },
+        "aiGpsValid": false,
+        "aiDescriptionAuto": "Lokasi tidak konsisten pada koordinat (-8.15, 112.6).",
+        "backendPostReportsStatus": 202
+      },
+      "userImpact": "Citizens in outer Malang ring areas ([-8.25,-8.05] or [-7.90,-7.85]) are blocked by Mobile AiVerificationScreen even though Backend considers their coordinates valid."
+    },
+    {
+      "id": "MM-10",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "MEDIUM",
+      "title": "QueryReportsDto boolean implicit conversion trap: GET /reports?needsManualReview=false filters for needs_manual_review=true",
+      "methodPath": "GET /api/v1/reports?needsManualReview=false",
+      "locations": {
+        "backend": "src/modules/reports/dto/query-reports.dto.ts:138-146 & src/main.ts:46 (enableImplicitConversion: true)",
+        "mobile": "laporkita/lib/data/datasources/remote/report_remote_datasource.dart:36"
+      },
+      "outcome": "FAIL",
+      "status": 200,
+      "latencyMs": 215,
+      "summary": "GET /reports?needsManualReview=false returned 2 reports where 100% have needs_manual_review=true (identical to ?needsManualReview=true)",
+      "expectedContract": "?needsManualReview=false returns reports with needs_manual_review === false",
+      "actualObserved": {
+        "needsManualReviewFalseCount": 2,
+        "allReturnedHaveNeedsManualReviewTrue": true,
+        "identicalToNeedsManualReviewTrue": true
+      },
+      "userImpact": "Passing needsManualReview=false (or needs_manual_review=false) returns only manual-review reports because @Type(() => Boolean) runs Boolean(\"false\") === true."
+    },
+    {
+      "id": "MM-11",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "LOW",
+      "title": "ReportDetailScreen._handleSupport calls repo.supportReport AND ReportSupportRequested -> duplicate POST /support 409",
+      "methodPath": "POST /api/v1/reports/{id}/support",
+      "locations": {
+        "mobile": "laporkita/lib/presentation/citizen/report_detail/report_detail_screen.dart:911-913",
+        "backend": "src/modules/reports/reports.service.ts:310-314"
+      },
+      "outcome": "FAIL",
+      "status": "201->409",
+      "latencyMs": 206,
+      "summary": "First support call returned 201, immediate second call from ReportBloc returned 409 (CONFLICT)",
+      "expectedContract": "Single POST /reports/{id}/support dispatch per user tap (and ReportConfirmationScreen option 0 actually calling supportReport)",
+      "actualObserved": {
+        "firstCallStatus": 201,
+        "secondCallStatus": 409,
+        "secondCallError": {
+          "code": "CONFLICT",
+          "message": "ALREADY_SUPPORTED: Anda sudah memberikan dukungan untuk laporan ini (Rules.md §1.4)."
+        }
+      },
+      "userImpact": "Every support tap in ReportDetailScreen fires a redundant 409 request (and ReportDetailScreen._handleAdminStatusChange at lines 1273 & 1285 similarly fires duplicate PATCH /status)."
+    },
+    {
+      "id": "MM-12",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "LOW",
+      "title": "FcmService.initialize calls POST /route-alerts/subscribe on cold boot before authentication -> 401 UNAUTHORIZED",
+      "methodPath": "POST /api/v1/route-alerts/subscribe",
+      "locations": {
+        "mobile": "laporkita/lib/core/services/fcm_service.dart:84 & main.dart:37",
+        "backend": "src/modules/notifications/route-alert.controller.ts:13 (@UseGuards(JwtAuthGuard))"
+      },
+      "outcome": "FAIL",
+      "status": 401,
+      "latencyMs": 84,
+      "summary": "Unauthenticated startup POST /route-alerts/subscribe returned 401 UNAUTHORIZED",
+      "expectedContract": "FcmService only registers route-alert token after AuthAuthenticated state is established",
+      "actualObserved": {
+        "success": false,
+        "data": null,
+        "error": {
+          "code": "UNAUTHORIZED",
+          "message": "Unauthorized"
+        }
+      },
+      "userImpact": "Unauthenticated cold starts always fail FCM token registration with 401 Unauthorized."
+    },
+    {
+      "id": "MM-13",
+      "suite": "Phase2B-Models",
+      "severity": "HIGH",
+      "title": "PredictionRemoteDatasource.getZoneMetrics returns empty [] because Backend wraps metrics in {zone, metrics} Map",
+      "methodPath": "GET /api/v1/predictions/zones/{zoneId}/metrics",
+      "locations": {
+        "mobile": "laporkita/lib/data/datasources/remote/prediction_remote_datasource.dart:41-50",
+        "backend": "src/modules/prediction/prediction.service.ts:242-265"
+      },
+      "outcome": "FAIL",
+      "status": 200,
+      "latencyMs": 74,
+      "summary": "Backend returned 20 metrics inside data={zone, metrics}, but PredictionRemoteDatasource.getZoneMetrics parsed 0 items",
+      "expectedContract": "List of 20 ZoneMetricsModel items unwrapped from json['metrics']",
+      "actualObserved": {
+        "backendDataKeys": [
+          "zone",
+          "metrics"
+        ],
+        "backendMetricsCount": 20,
+        "mobileParsedCount": 0
+      },
+      "userImpact": "Zone historical risk metrics are 100% dropped by Mobile PredictionRemoteDatasource."
+    },
+    {
+      "id": "MM-14",
+      "suite": "Phase2B-Models",
+      "severity": "MEDIUM",
+      "title": "Backend POST /maps/route & RouteModel.fromBackendMapsJson drop OSRM steps[] and summary, breaking turn-by-turn TTS",
+      "methodPath": "POST /api/v1/maps/route",
+      "locations": {
+        "backend": "src/modules/maps/maps.service.ts:144-179",
+        "mobile": "laporkita/lib/data/models/route_model.dart:206-232 & presentation/citizen/navigation/route_picker_screen.dart:516-528"
+      },
+      "outcome": "FAIL",
+      "status": 200,
+      "latencyMs": 68,
+      "summary": "Parsed RouteModel has polylinePoints=213, steps=0, summary=\"\"",
+      "expectedContract": "Non-empty steps[] (RouteStep maneuver instructions) and street summary from OSRM",
+      "actualObserved": {
+        "distanceMeters": 6162,
+        "durationSeconds": 435.7,
+        "stepsCount": 0,
+        "summary": ""
+      },
+      "userImpact": "Active navigation banner and TtsService cannot announce street-level turn maneuvers because steps is always empty []."
+    },
+    {
+      "id": "MM-15",
+      "suite": "Phase2B-Models",
+      "severity": "MEDIUM",
+      "title": "AiVerificationResult.fromJson reads json[\"reason\"] which is absent on POST /v1/verify (text is in description_auto)",
+      "methodPath": "POST /v1/verify",
+      "locations": {
+        "ai": "ai-service/app/routers/verification.py:239-256 (VerifyReportData)",
+        "mobile": "laporkita/lib/data/models/ai_verification_model.dart:61-62"
+      },
+      "outcome": "FAIL",
+      "status": 200,
+      "latencyMs": 102,
+      "summary": "On OOD & out-of-Malang responses, AiVerificationResult.rejectionReason is null while autoDescription=\"Citra teridentifikasi bukan merupakan kerusakan fasilitas publik (bukan_fasilitas).\"",
+      "expectedContract": "rejectionReason populated on invalid/manual-review verification responses",
+      "actualObserved": {
+        "oodAutoDescription": "Citra teridentifikasi bukan merupakan kerusakan fasilitas publik (bukan_fasilitas).",
+        "oodRejectionReason": null,
+        "outOfMalangAutoDescription": "Lokasi tidak konsisten pada koordinat (-6.2088, 106.8456).",
+        "outOfMalangRejectionReason": null
+      },
+      "userImpact": "Consumers reading AiVerificationResult.rejectionReason always receive null."
+    },
+    {
+      "id": "MM-16",
+      "suite": "Phase2B-Models",
+      "severity": "LOW",
+      "title": "ReportRemoteDatasource.submitReport manual ReportModel reconstruction drops rawAiConfidenceScore, damageSeverity, estimatedCompletionAt",
+      "methodPath": "POST /api/v1/reports",
+      "locations": {
+        "mobile": "laporkita/lib/data/datasources/remote/report_remote_datasource.dart:150-175"
+      },
+      "outcome": "FAIL",
+      "status": 200,
+      "latencyMs": 75,
+      "summary": "ReportModel.fromJson parsed rawAiConfidenceScore=0.9998, damageSeverity=0.9599, but submitReport reconstruction resets them to null",
+      "expectedContract": "submitReport preserves all ReportModel fields via copyWith(localPhotoPath: filePath)",
+      "actualObserved": {
+        "fromJsonFields": {
+          "rawAiConfidenceScore": 0.9998,
+          "damageSeverity": 0.9599
+        },
+        "reconstructedFields": {
+          "rawAiConfidenceScore": null,
+          "damageSeverity": null
+        }
+      },
+      "userImpact": "Locally cached submitted reports lose server-returned AI confidence, severity, and SLA fields until re-fetched."
+    },
+    {
+      "id": "MM-17",
+      "suite": "Phase2B-Models",
+      "severity": "MEDIUM",
+      "title": "Backend AuthService passes array messages on OTP errors, causing HttpExceptionFilter to overwrite OTP_* codes with VALIDATION_ERROR",
+      "methodPath": "POST /api/v1/auth/verify-otp & POST /api/v1/auth/resend-otp",
+      "locations": {
+        "backend": "src/modules/auth/auth.service.ts:147-191, 228-235 & src/common/filters/http-exception.filter.ts:99-119",
+        "mobile": "laporkita/lib/core/network/api_exception.dart:51-59"
+      },
+      "outcome": "FAIL",
+      "status": "400/400",
+      "latencyMs": 143,
+      "summary": "verify-otp wrong code returned error.code=\"VALIDATION_ERROR\" (expected OTP_INVALID) and resend-otp cooldown returned error.code=\"VALIDATION_ERROR\" (expected OTP_RESEND_COOLDOWN with remainingSeconds)",
+      "expectedContract": "error.code = \"OTP_INVALID\" / \"OTP_RESEND_COOLDOWN\" with remainingSeconds preserved",
+      "actualObserved": {
+        "verifyOtpError": {
+          "code": "VALIDATION_ERROR",
+          "message": "Input tidak valid. Periksa field yang dikirim.",
+          "details": [
+            "Kode OTP yang Anda masukkan salah."
+          ]
+        },
+        "resendOtpError": {
+          "code": "VALIDATION_ERROR",
+          "message": "Input tidak valid. Periksa field yang dikirim.",
+          "details": [
+            "Kirim ulang kode OTP sedang dalam cooldown. Tunggu 43 detik lagi."
+          ]
+        }
+      },
+      "userImpact": "Mobile ApiException cannot distinguish OTP_EXPIRED / OTP_MAX_ATTEMPTS / OTP_RESEND_COOLDOWN by error.code and loses remainingSeconds countdown metadata."
+    },
+    {
+      "id": "MM-18",
+      "suite": "Phase2C-BackendAI",
+      "severity": "LOW",
+      "title": "AI Service POST /v1/training/ingest-sample returns un-sanitized target_category (\"Jalan Berlubang\"), which 404s on GET /v1/training/samples/{class_name}/{filename}",
+      "methodPath": "POST /v1/training/ingest-sample -> GET /v1/training/samples/{class_name}/{filename}",
+      "locations": {
+        "ai": "ai-service/app/services/active_learning_service.py:105, 141 & app/routers/active_learning.py:118"
+      },
+      "outcome": "FAIL",
+      "status": "404 vs 200",
+      "latencyMs": 239,
+      "summary": "GET /v1/training/samples/Jalan%20Berlubang/20261101_090432_sample.jpg returned 404, while underscored Jalan_Berlubang returned 200",
+      "expectedContract": "get_training_sample_image sanitizes class_name (or ingest-sample returns sanitized_class)",
+      "actualObserved": {
+        "ingestTargetCategory": "Jalan Berlubang",
+        "savedFile": "20261101_090432_sample.jpg",
+        "statusWithTargetCategory": 404,
+        "statusWithSanitizedClass": 200
+      },
+      "userImpact": "Callers using target_category from ingest-sample response to fetch the sample image get 404 Not Found."
+    }
+  ]
+}

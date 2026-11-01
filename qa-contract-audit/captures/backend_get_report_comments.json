@@ -1,0 +1,63 @@
+{
+  "capturedAt": "2026-11-01T20:16:30.997Z",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/comments?limit=20",
+    "headersMasked": {}
+  },
+  "status": 200,
+  "latencyMs": 3,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "897",
+    "etag": "W/\"381-ePSF04oRIXzLQgE0Y6xiwsk3g4g\"",
+    "date": "Sun, 01 Nov 2026 20:16:30 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": [
+      {
+        "id": "3cf52eb9-07fa-491f-988b-8c23f08132b1",
+        "report_id": "9ccc6a59-3789-45ce-8b61-a88bcdbf3e23",
+        "user_id": "00000000-0000-4000-8000-000000000002",
+        "content": "[QA] Anjing bangsat jalan rusak parah!",
+        "is_flagged": true,
+        "created_at": "2026-11-01T20:16:30.991Z",
+        "user": {
+          "id": "00000000-0000-4000-8000-000000000002",
+          "full_name": "Budi Santoso (Warga Kota Malang)",
+          "avatar_url": null,
+          "role": "citizen"
+        }
+      },
+      {
+        "id": "d6a6f367-7c7f-456f-926c-1d30e2c90374",
+        "report_id": "9ccc6a59-3789-45ce-8b61-a88bcdbf3e23",
+        "user_id": "00000000-0000-4000-8000-000000000002",
+        "content": "[QA] Semoga cepat diperbaiki oleh dinas terkait.",
+        "is_flagged": false,
+        "created_at": "2026-11-01T20:16:30.983Z",
+        "user": {
+          "id": "00000000-0000-4000-8000-000000000002",
+          "full_name": "Budi Santoso (Warga Kota Malang)",
+          "avatar_url": null,
+          "role": "citizen"
+        }
+      }
+    ],
+    "meta": {
+      "total": 2,
+      "limit": 20,
+      "nextCursor": null,
+      "hasPrevious": false
+    },
+    "error": null
+  }
+}

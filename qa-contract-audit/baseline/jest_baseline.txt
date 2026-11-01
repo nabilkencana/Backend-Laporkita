@@ -1,0 +1,10 @@
+
+> backend-laporkita@0.0.1 test
+> jest
+
+
+Test Suites: 16 passed, 16 total
+Tests:       123 passed, 123 total
+Snapshots:   0 total
+Time:        2.422 s, estimated 5 s
+Ran all test suites.

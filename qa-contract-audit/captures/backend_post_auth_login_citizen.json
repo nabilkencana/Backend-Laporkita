@@ -1,0 +1,50 @@
+{
+  "capturedAt": "2026-11-01T20:16:27.418Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/auth/login",
+    "headersMasked": {
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "identifier": "warga@laporkita.malangkota.go.id",
+      "password": "Password..."
+    }
+  },
+  "status": 200,
+  "latencyMs": 107,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "98",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "1023",
+    "etag": "W/\"3ff-WVOR55WLmSAF7znAEHQZMBa7ndw\"",
+    "date": "Sun, 01 Nov 2026 20:16:27 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "access_token": "eyJhbGci...",
+      "refresh_token": "eyJhbGci...",
+      "expires_in": "15m",
+      "token_type": "Bearer",
+      "user": {
+        "id": "00000000-0000-4000-8000-000000000002",
+        "full_name": "Budi Santoso (Warga Kota Malang)",
+        "email": "warga@laporkita.malangkota.go.id",
+        "phone_number": "+6281234567890",
+        "role": "citizen",
+        "agency_id": null,
+        "contribution_points": 281,
+        "avatar_url": null
+      }
+    },
+    "meta": null,
+    "error": null
+  }
+}

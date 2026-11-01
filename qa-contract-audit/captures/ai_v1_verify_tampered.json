@@ -1,0 +1,76 @@
+{
+  "capturedAt": "2026-11-01T20:15:52.772Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:8000/v1/verify",
+    "headersMasked": {
+      "X-API-Key": "laporkit...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "image_base64": "/9j/2wBDAAIBAQEBAQIBAQECAgICAgQDAgICAgUEBAMEBgUGBgYFBgYGBwkIBgcJ...[base64 len=108420]",
+      "claimed_category": "Jalan Berlubang",
+      "latitude": -7.9826,
+      "longitude": 112.6308,
+      "timestamp": "2026-11-01T20:15:52.759Z"
+    }
+  },
+  "status": 200,
+  "latencyMs": 13,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:15:52 GMT",
+    "server": "uvicorn",
+    "content-length": "1537",
+    "content-type": "application/json",
+    "vary": "Origin"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "ai_confidence_score": 0.8452,
+      "predicted_category": "Jalan Berlubang",
+      "is_valid": false,
+      "needs_manual_review": true,
+      "damage_severity": 0.8671,
+      "description_auto": "Terindikasi manipulasi citra digital pada kategori 'Jalan Berlubang'.",
+      "reason": "Perlu review manual: Peringatan: Citra terindikasi mengalami manipulasi digital atau hasil generate AI (Inpainting).",
+      "gps_valid": true,
+      "timestamp_valid": true,
+      "class_probabilities": {
+        "Drainase": 0.0006,
+        "Jalan Berlubang": 0.8452,
+        "Lampu Jalan": 0.0147,
+        "Rambu Lalu Lintas": 0.0011,
+        "Trotoar": 0.0022,
+        "bukan_fasilitas": 0.1362
+      },
+      "smart_priority_score": 52.4,
+      "scoring_details": {
+        "severity_component": 30.35,
+        "support_component": 0,
+        "density_component": 2,
+        "urgency_component": 20
+      },
+      "authenticity": {
+        "is_authentic": false,
+        "authenticity_score": 0.418,
+        "tampering_detected": true,
+        "tampering_indicators": [
+          "Inkonsistensi derau sensor kamera (noise pattern) mengindikasikan area editan/inpainting AI.",
+          "Ditemukan batas transisi piksel tidak alami di sekitar objek kerusakan."
+        ],
+        "assessment_summary": "Peringatan: Citra terindikasi mengalami manipulasi digital atau hasil generate AI (Inpainting)."
+      },
+      "location_verification": {
+        "is_location_consistent": true,
+        "location_match_confidence": 0.9,
+        "verified_address": "Jl. Merdeka / Jl. Ijen / Jl. Semeru, Kecamatan Klojen, Kota Malang",
+        "district_name": "Klojen (Pusat Kota & Alun-Alun)",
+        "street_view_available": true,
+        "location_audit_notes": "Titik koordinat terverifikasi berada di koridor Klojen (Pusat Kota & Alun-Alun) Kota Malang."
+      },
+      "_placeholder": false
+    },
+    "error": null
+  }
+}

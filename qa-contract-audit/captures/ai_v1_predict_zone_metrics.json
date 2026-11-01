@@ -1,0 +1,42 @@
+{
+  "capturedAt": "2026-11-01T20:15:52.808Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:8000/v1/predict/zone-metrics",
+    "headersMasked": {
+      "X-API-Key": "laporkit...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "zone_id": "b1000000-0000-4000-8000-000000000001",
+      "zone_name": "Klojen",
+      "active_reports": 13,
+      "rainfall_mm": 82,
+      "temperature_c": 27,
+      "traffic_density": 0.65,
+      "condition": "Hujan Ringan"
+    }
+  },
+  "status": 200,
+  "latencyMs": 1,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:15:52 GMT",
+    "server": "uvicorn",
+    "content-length": "256",
+    "content-type": "application/json",
+    "vary": "Origin"
+  },
+  "body": {
+    "report_density": 13,
+    "traffic_density": 0.95,
+    "flood_risk_probability": 0.8277,
+    "weather_context": {
+      "source": "BMKG Kota Malang (Simulasi)",
+      "temperature_celsius": 24.5,
+      "humidity_percentage": 82,
+      "rainfall_mm": 68.5,
+      "condition": "Hujan Deras"
+    },
+    "stress_level": "high"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "capturedAt": "2026-11-01T20:15:52.642Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:8000/v1/verify",
+    "headersMasked": {
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "latitude": -7.9826,
+      "longitude": 112.6308
+    }
+  },
+  "status": 401,
+  "latencyMs": 1,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:15:52 GMT",
+    "server": "uvicorn",
+    "content-length": "175",
+    "content-type": "application/json",
+    "vary": "Origin"
+  },
+  "body": {
+    "success": false,
+    "data": null,
+    "error": {
+      "code": "HTTP_401",
+      "message": "Autentikasi gagal: Header 'X-API-Key' atau 'Authorization: Bearer <key>' wajib disertakan.",
+      "details": null
+    }
+  }
+}

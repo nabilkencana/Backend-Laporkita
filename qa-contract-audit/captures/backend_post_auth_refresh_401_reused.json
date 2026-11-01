@@ -1,0 +1,36 @@
+{
+  "capturedAt": "2026-11-01T20:16:27.856Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/auth/refresh",
+    "headersMasked": {
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "refresh_token": "eyJhbGci..."
+    }
+  },
+  "status": 401,
+  "latencyMs": 54,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "98",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "165",
+    "etag": "W/\"a5-NOEPFojLj3fJPBRQR2hXjZ4ngmE\"",
+    "date": "Sun, 01 Nov 2026 20:16:27 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": false,
+    "data": null,
+    "error": {
+      "code": "REFRESH_TOKEN_INVALID",
+      "message": "Refresh token sudah tidak valid (sudah dipakai atau diganti). Silakan login ulang."
+    }
+  }
+}

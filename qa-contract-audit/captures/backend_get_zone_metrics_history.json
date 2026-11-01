@@ -1,0 +1,337 @@
+{
+  "capturedAt": "2026-11-01T20:16:34.587Z",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:3000/api/v1/predictions/zones/b1000000-0000-4000-8000-000000000001/metrics?limit=20",
+    "headersMasked": {}
+  },
+  "status": 200,
+  "latencyMs": 3,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "913",
+    "etag": "W/\"391-wYqKEri9ObFAEQ3y8ev+I39DNps\"",
+    "date": "Sun, 01 Nov 2026 20:16:34 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "zone": {
+        "id": "b1000000-0000-4000-8000-000000000001",
+        "name": "Klojen (Pusat Kota)",
+        "stress_level": "low"
+      },
+      "metrics": [
+        {
+          "id": "819c49b6-854a-4586-a5e5-a0357cd94dbb",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.870Z"
+        },
+        {
+          "id": "6cc17523-e574-47ba-b360-d4e9ccd2fbbc",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.850Z"
+        },
+        {
+          "id": "46cc14e9-276f-410c-a96b-aeee9f747a51",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.825Z"
+        },
+        {
+          "id": "9a18d47e-32ae-4fc6-9adc-bfa064bfc8fd",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.809Z"
+        },
+        {
+          "id": "f4beaac9-1cc0-45bb-bf72-19c37db11304",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.789Z"
+        },
+        {
+          "id": "cc92910c-12ee-456b-b185-7d0639a58f28",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.769Z"
+        },
+        {
+          "id": "f0022a62-c0c7-4756-a65a-f6bc00d690d6",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.748Z"
+        },
+        {
+          "id": "e7974992-59a1-4157-9808-07abb0050fe9",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.726Z"
+        },
+        {
+          "id": "45850cb9-56e7-4112-bccf-f36d952f77de",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.706Z"
+        },
+        {
+          "id": "63dd2a88-96fb-4bca-926e-7b2283b16093",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.684Z"
+        },
+        {
+          "id": "34b8fac1-69cf-4f65-943c-a3c9e05112b5",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.659Z"
+        },
+        {
+          "id": "dac6ccf3-d6f2-46e1-9642-2161be7c8642",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.638Z"
+        },
+        {
+          "id": "627cfccd-ecc5-4cbc-b6f5-a04bfbde8be1",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.618Z"
+        },
+        {
+          "id": "4a474eec-bf22-4c28-886d-819ea5ef7738",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.598Z"
+        },
+        {
+          "id": "4440301f-003f-4f60-bbc2-5fc05f8048f9",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.576Z"
+        },
+        {
+          "id": "8a64f604-d49e-4945-bab8-7d7b5aad2c27",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.553Z"
+        },
+        {
+          "id": "cac5fe78-b8ca-495a-adbd-a2b44f310ddf",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.515Z"
+        },
+        {
+          "id": "56231be0-6835-45a1-890d-6c7cb80cd25c",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:18:53.484Z"
+        },
+        {
+          "id": "6f3d5662-8d69-4e93-9d5f-a9c1ea6a84fa",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:17:27.709Z"
+        },
+        {
+          "id": "b341bcb3-a940-454b-b293-b33b6e1625ca",
+          "zone_id": "b1000000-0000-4000-8000-000000000001",
+          "report_density": 0,
+          "weather_context": {
+            "source": "BMKG Kota Malang (Simulasi)",
+            "condition": "Hujan Ringan / Berawan",
+            "rainfall_mm": 10,
+            "humidity_percentage": 82,
+            "temperature_celsius": 24.5
+          },
+          "traffic_density": 0.3,
+          "flood_risk_probability": 0.1047,
+          "recorded_at": "2026-11-01T20:13:13.053Z"
+        }
+      ]
+    },
+    "meta": null,
+    "error": null
+  }
+}

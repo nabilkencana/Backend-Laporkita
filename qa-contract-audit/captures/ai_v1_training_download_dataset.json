@@ -1,0 +1,25 @@
+{
+  "capturedAt": "2026-11-01T20:16:15.263Z",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:8000/v1/training/download-dataset",
+    "headersMasked": {
+      "X-API-Key": "laporkit..."
+    }
+  },
+  "status": 200,
+  "latencyMs": 12006,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:16:02 GMT",
+    "server": "uvicorn",
+    "content-disposition": "attachment; filename=laporkita_active_learning_dataset.zip",
+    "content-type": "application/zip",
+    "vary": "Origin",
+    "transfer-encoding": "chunked"
+  },
+  "body": {
+    "_binary": true,
+    "contentType": "application/zip",
+    "byteLength": 49695576
+  }
+}

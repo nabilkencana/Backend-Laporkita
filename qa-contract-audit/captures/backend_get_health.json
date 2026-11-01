@@ -1,0 +1,33 @@
+{
+  "capturedAt": "2026-11-01T20:16:27.116Z",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:3000/api/v1/health",
+    "headersMasked": {}
+  },
+  "status": 200,
+  "latencyMs": 4,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "121",
+    "etag": "W/\"79-eshLZ8JF0IJ2VgOE3qbDRW100XE\"",
+    "date": "Sun, 01 Nov 2026 20:16:27 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "status": "ok",
+      "timestamp": "2026-11-01T20:16:27.115Z",
+      "version": "1.0.0"
+    },
+    "meta": null,
+    "error": null
+  }
+}

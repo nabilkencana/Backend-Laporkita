@@ -1,0 +1,73 @@
+{
+  "capturedAt": "2026-11-01T20:16:31.001Z",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:3000/api/v1/reports/comments/flagged",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci..."
+    }
+  },
+  "status": 200,
+  "latencyMs": 2,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "98",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "1060",
+    "etag": "W/\"424-gF79mdewmZdr+KP71SbccZWpllE\"",
+    "date": "Sun, 01 Nov 2026 20:16:31 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": [
+      {
+        "id": "3cf52eb9-07fa-491f-988b-8c23f08132b1",
+        "report_id": "9ccc6a59-3789-45ce-8b61-a88bcdbf3e23",
+        "user_id": "00000000-0000-4000-8000-000000000002",
+        "content": "[QA] Anjing bangsat jalan rusak parah!",
+        "is_flagged": true,
+        "created_at": "2026-11-01T20:16:30.991Z",
+        "user": {
+          "id": "00000000-0000-4000-8000-000000000002",
+          "full_name": "Budi Santoso (Warga Kota Malang)",
+          "avatar_url": null,
+          "role": "citizen"
+        },
+        "report": {
+          "id": "9ccc6a59-3789-45ce-8b61-a88bcdbf3e23",
+          "report_code": "#LP-2026-000003"
+        }
+      },
+      {
+        "id": "a1ce8baf-c07a-45f7-84ef-4efca18b6248",
+        "report_id": "1f775134-b377-4d3f-870a-c55197fb35c8",
+        "user_id": "00000000-0000-4000-8000-000000000002",
+        "content": "[QA] Anjing bangsat jalan rusak parah!",
+        "is_flagged": true,
+        "created_at": "2026-11-01T20:12:16.230Z",
+        "user": {
+          "id": "00000000-0000-4000-8000-000000000002",
+          "full_name": "Budi Santoso (Warga Kota Malang)",
+          "avatar_url": null,
+          "role": "citizen"
+        },
+        "report": {
+          "id": "1f775134-b377-4d3f-870a-c55197fb35c8",
+          "report_code": "#LP-2026-000001"
+        }
+      }
+    ],
+    "meta": {
+      "total": 2,
+      "limit": 20,
+      "nextCursor": null,
+      "hasPrevious": false
+    },
+    "error": null
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "capturedAt": "2026-11-01T20:16:28.037Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/auth/resend-otp",
+    "headersMasked": {
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "user_id": "4f8bc88f-ac97-44eb-86c0-10c61feb9d6a",
+      "phone_number": "081364187856"
+    }
+  },
+  "status": 400,
+  "latencyMs": 8,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "180",
+    "etag": "W/\"b4-PbbKm9XZpJFVpY+mnNuaKZilcfA\"",
+    "date": "Sun, 01 Nov 2026 20:16:28 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": false,
+    "data": null,
+    "error": {
+      "code": "OTP_RESEND_COOLDOWN",
+      "message": "Kirim ulang kode OTP sedang dalam cooldown. Tunggu 45 detik lagi.",
+      "details": {
+        "remainingSeconds": 45
+      }
+    }
+  }
+}

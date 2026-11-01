@@ -1,0 +1,44 @@
+{
+  "capturedAt": "2026-11-01T20:16:34.541Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/reports/along-route",
+    "headersMasked": {
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "route_points": [
+        {
+          "lat": -7.9826,
+          "lng": 112.6308
+        },
+        {
+          "lat": -7.9454,
+          "lng": 112.6137
+        }
+      ],
+      "radius_meters": 500
+    }
+  },
+  "status": 200,
+  "latencyMs": 15,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "51",
+    "etag": "W/\"33-yZC2FhYDd0OJC2vUCLmdeHC6SrY\"",
+    "date": "Sun, 01 Nov 2026 20:16:34 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": [],
+    "meta": null,
+    "error": null
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "capturedAt": "2026-11-01T20:16:34.557Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/route-alerts/subscribe",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "device_token": "qa-fcm-token-1793564194542",
+      "last_lat": -7.9826,
+      "last_long": 112.6308
+    }
+  },
+  "status": 200,
+  "latencyMs": 15,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "271",
+    "etag": "W/\"10f-mm2BE7ZPCW7420nV+5BM2Yw6alk\"",
+    "date": "Sun, 01 Nov 2026 20:16:34 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "id": "5e520a5c-101f-4615-a5d4-252ddf151076",
+      "user_id": "00000000-0000-4000-8000-000000000002",
+      "device_token": "qa-fcm-token-1793564194542",
+      "last_lat": "-7.9826",
+      "last_long": "112.6308",
+      "updated_at": "2026-11-01T20:16:34.550Z"
+    },
+    "meta": null,
+    "error": null
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "capturedAt": "2026-11-01T20:15:57.439Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:8000/v1/policy-simulate",
+    "headersMasked": {
+      "X-API-Key": "laporkit...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "prompt_text": "[QA] Analisis dampak kebijakan normalisasi drainase di wilayah Klojen Kota Malang. Berikan proyeksi penurunan risiko banjir dan estimasi anggaran.",
+      "zone_id": "b1000000-0000-4000-8000-000000000001",
+      "time_horizon_months": 12,
+      "parameters": {
+        "drainage_coverage_pct": 80,
+        "budget_idr": 5000000000
+      }
+    }
+  },
+  "status": 200,
+  "latencyMs": 4629,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:15:52 GMT",
+    "server": "uvicorn",
+    "content-length": "2971",
+    "content-type": "application/json",
+    "vary": "Origin"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "result_narrative": "Analisis dampak kebijakan normalisasi drainase di wilayah Klojen Kota Malang menunjukkan potensi signifikan dalam mitigasi risiko banjir, terutama mengingat karakteristik geografis dan kepadatan permukiman di area tersebut. Normalisasi drainase mencakup pengerukan sedimen, perbaikan struktur saluran, dan penyesuaian dimensi saluran agar mampu menampung debit air hujan yang lebih besar. Intervensi ini diharapkan dapat mempercepat aliran air, mengurangi genangan, dan meminimalisir dampak negatif banjir terhadap aktivitas ekonomi dan sosial warga.\n\nSecara operasional, implementasi kebijakan ini akan melibatkan koordinasi erat antara Dinas Pekerjaan Umum, Penataan Ruang, Perumahan dan Kawasan Permukiman (DPUPRPKP) Kota Malang dengan masyarakat setempat. Tahapan awal akan fokus pada survei detail kondisi drainase eksisting, identifikasi titik-titik rawan genangan, dan perencanaan teknis yang komprehensif. Dampak langsung yang diharapkan adalah penurunan frekuensi dan durasi genangan air di jalan-jalan utama serta permukiman warga di Klojen, yang secara historis sering terdampak banjir saat intensitas hujan tinggi.\n\nEfektivitas intervensi ini sangat bergantung pada kualitas pelaksanaan dan partisipasi aktif masyarakat dalam menjaga kebersihan drainase pasca-normalisasi. Proyeksi jangka menengah menunjukkan peningkatan kualitas lingkungan hidup, penurunan kerusakan infrastruktur akibat banjir, dan peningkatan rasa aman serta kenyamanan warga. Mitigasi risiko sosial akan difokuskan pada sosialisasi rencana kerja, penanganan dampak sementara selama konstruksi, dan penyediaan jalur alternatif jika ada penutupan jalan. Proyeksi jangka panjang mengindikasikan peningkatan nilai properti di area yang sebelumnya rawan banjir dan dukungan terhadap pertumbuhan ekonomi lokal yang lebih stabil.",
+      "result_data": {
+        "estimated_incident_reduction_pct": 45,
+        "budget_estimate_idr": 3800000000,
+        "time_to_impact_weeks": 20,
+        "target_department": "Dinas Pekerjaan Umum, Penataan Ruang, Perumahan dan Kawasan Permukiman (DPUPRPKP) Kota Malang",
+        "public_satisfaction_increase_pct": 35,
+        "risk_mitigations": [
+          "Sosialisasi jadwal dan area pengerjaan kepada warga terdampak",
+          "Penyediaan rambu peringatan dan pengalihan lalu lintas selama pekerjaan",
+          "Koordinasi dengan PDAM dan PLN terkait utilitas bawah tanah",
+          "Edukasi masyarakat tentang pentingnya menjaga kebersihan drainase"
+        ]
+      },
+      "key_recommendations": [
+        "Melakukan survei hidrologi dan topografi mendalam untuk pemetaan drainase yang akurat di seluruh wilayah Klojen.",
+        "Membentuk tim pengawasan terpadu untuk memastikan kualitas pekerjaan normalisasi sesuai standar teknis.",
+        "Mengembangkan program pemeliharaan drainase berkelanjutan yang melibatkan partisipasi aktif masyarakat dan komunitas lokal.",
+        "Mengintegrasikan data curah hujan real-time dengan sistem peringatan dini banjir untuk respons yang lebih cepat."
+      ],
+      "model_used": "gemini-2.5-flash",
+      "_placeholder": false
+    },
+    "error": null
+  }
+}

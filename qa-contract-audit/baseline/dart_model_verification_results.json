@@ -1,0 +1,132 @@
+{
+  "executedWith": "flutter test --no-pub (Real Dart VM)",
+  "timestamp": "2026-11-01T16:07:49.759497",
+  "modelsVerifiedCount": 14,
+  "mismatchesProvedCount": 7,
+  "cleanModelsSummary": {
+    "AuthTokenModel": "Bearer",
+    "RegisterResponseModel": true,
+    "UserModel": "citizen",
+    "CategoryModelCount": 5,
+    "AgencyModelCount": 3,
+    "NotificationModelCount": 19,
+    "PaginationMetaLimit": 20,
+    "RiskPredictionResultLevel": "high",
+    "PostReportStatus": "pending_verification"
+  },
+  "findings": [
+    {
+      "id": "DART-MODEL-01",
+      "model": "PolicySimulationModel.fromJson (Backend POST /policy-simulations)",
+      "capture": "captures/backend_post_policy_simulations.json",
+      "parsed": {
+        "id": "682dfc21-4a79-4459-b981-6e5c2818102c",
+        "simulatedRiskScore": 3.2,
+        "riskReductionPct": 35.0,
+        "estimatedBudgetBro": 450000000.0,
+        "recommendedActions": [],
+        "timeHorizonMonths": 5
+      },
+      "mismatchDetected": true,
+      "explanation": "Backend resultData omits recommended_actions and simulated_risk_score; PolicySimulationModel.fromJson silently falls back to recommendedActions=[] and simulatedRiskScore=3.2."
+    },
+    {
+      "id": "DART-MODEL-02",
+      "model": "PolicySimulationModel.fromJson (AI POST /v1/policy-simulate)",
+      "capture": "captures/ai_v1_policy_simulate.json",
+      "aiActualFields": {
+        "estimated_incident_reduction_pct": 55,
+        "budget_estimate_idr": 4800000000,
+        "time_to_impact_weeks": 20,
+        "key_recommendations_count": 3
+      },
+      "parsed": {
+        "simulatedRiskScore": 3.2,
+        "riskReductionPct": 35.0,
+        "estimatedBudgetBro": 1500000000.0,
+        "recommendedActions": [],
+        "timeHorizonMonths": 6
+      },
+      "mismatchDetected": true,
+      "explanation": "AI Service sends budget_estimate_idr, estimated_incident_reduction_pct, time_to_impact_weeks, and key_recommendations; PolicySimulationModel.fromJson looks for estimated_budget_idr, risk_reduction_pct, time_horizon_months, and recommended_actions, falling back to hardcoded defaults (1.5B IDR, 35.0%, 6 mos, [])."
+    },
+    {
+      "id": "DART-MODEL-03",
+      "model": "RouteModel.fromBackendMapsJson (Backend POST /maps/route)",
+      "capture": "captures/backend_post_maps_route.json",
+      "parsed": {
+        "routesCount": 1,
+        "distanceMeters": 6162.0,
+        "durationSeconds": 435.7,
+        "polylinePointsCount": 213,
+        "stepsCount": 0,
+        "summary": ""
+      },
+      "mismatchDetected": true,
+      "explanation": "Backend POST /maps/route strips OSRM legs/steps and summary; RouteModel.fromBackendMapsJson hardcodes steps: [] and summary: \"\", breaking turn-by-turn street maneuver instructions in RoutePickerScreen and TtsService."
+    },
+    {
+      "id": "DART-MODEL-04",
+      "model": "PredictionRemoteDatasource.getZoneMetrics + ZoneMetricsModel.fromJson",
+      "capture": "captures/backend_get_zone_metrics_history.json",
+      "backendDataKeys": [
+        "zone",
+        "metrics"
+      ],
+      "backendMetricsCount": 20,
+      "parsedListLength": 0,
+      "mismatchDetected": true,
+      "explanation": "Backend GET /predictions/zones/{zoneId}/metrics returns data as Map {zone, metrics}, but PredictionRemoteDatasource.getZoneMetrics (prediction_remote_datasource.dart:43) checks if (json is List) and silently returns [] when json is Map."
+    },
+    {
+      "id": "DART-MODEL-05",
+      "model": "AiVerificationResult.fromJson (POST /v1/verify OOD & Out-of-Malang)",
+      "capture": "captures/ai_v1_verify_ood_blurry.json & ai_v1_verify_out_of_malang_jakarta.json",
+      "parsedOod": {
+        "isVerified": false,
+        "needsManualReview": true,
+        "detectedCategory": "bukan_fasilitas",
+        "autoDescription": "Citra teridentifikasi bukan merupakan kerusakan fasilitas publik (bukan_fasilitas).",
+        "rejectionReason": null
+      },
+      "parsedOutMalang": {
+        "isVerified": false,
+        "isWithinMalang": false,
+        "autoDescription": "Lokasi tidak konsisten pada koordinat (-6.2088, 106.8456).",
+        "rejectionReason": null
+      },
+      "mismatchDetected": true,
+      "explanation": "AI Service POST /v1/verify puts the human-readable rejection/review reason in description_auto and omits reason/rejection_reason, so AiVerificationResult.rejectionReason is always null."
+    },
+    {
+      "id": "DART-MODEL-06",
+      "model": "ReportRemoteDatasource.submitReport + ReportModel.fromJson",
+      "capture": "captures/backend_post_reports.json & backend_get_report_detail.json",
+      "beforeReconstruction": {
+        "rawAiConfidenceScore": 0.9998,
+        "damageSeverity": 0.9599
+      },
+      "afterSubmitReportReconstruction": {
+        "rawAiConfidenceScore": null,
+        "damageSeverity": null,
+        "estimatedCompletionAt": null
+      },
+      "mismatchDetected": true,
+      "explanation": "ReportRemoteDatasource.submitReport (report_remote_datasource.dart:150-175) manually reconstructs ReportModel to attach localPhotoPath and omits rawAiConfidenceScore, damageSeverity, estimatedCompletionAt, directPriority, and progressPercentage."
+    },
+    {
+      "id": "DART-MODEL-07",
+      "model": "ApiError.fromJson (Backend OTP Error Envelope)",
+      "capture": "captures/backend_post_auth_verify_otp_wrong.json",
+      "parsedError": {
+        "code": "VALIDATION_ERROR",
+        "message": "Input tidak valid. Periksa field yang dikirim.",
+        "details": [
+          "Kode OTP yang Anda masukkan salah."
+        ]
+      },
+      "mismatchDetected": true,
+      "explanation": "Backend AuthService passes message as a 1-element array on OTP_INVALID and OTP_RESEND_COOLDOWN; HttpExceptionFilter overrides error.code to VALIDATION_ERROR and drops remainingSeconds."
+    }
+  ]
+}

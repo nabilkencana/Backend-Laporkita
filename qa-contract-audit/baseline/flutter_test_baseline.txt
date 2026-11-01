@@ -1,0 +1,179 @@
+00:00 +0: loading /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/core/config/app_config_test.dart
+00:00 +0: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/core/services/tts_service_test.dart: TtsService Unit Tests TtsService adalah singleton yang konsisten
+00:00 +1: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/core/services/tts_service_test.dart: TtsService Unit Tests speak dengan teks kosong tidak melempar exception
+00:00 +2: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/core/services/tts_service_test.dart: TtsService Unit Tests stop tidak melempar exception
+00:00 +3: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/core/config/app_config_test.dart: AppConfig P2-02 Hardcoded Secret Hygiene Tests AppConfig.aiApiKey defaults to bundled key when not injected
+00:00 +4: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/core/network/dio_client_defense_test.dart: DioClient P0-02 Defensive Response Handling Tests A. HTML 502 Bad Gateway response does NOT throw TypeError, throws ApiException
+00:00 +5: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/core/network/dio_client_defense_test.dart: DioClient P0-02 Defensive Response Handling Tests A. HTML 502 Bad Gateway response does NOT throw TypeError, throws ApiException
+00:00 +6: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/core/network/dio_client_defense_test.dart: DioClient P0-02 Defensive Response Handling Tests B. HTML 503 Service Unavailable response does NOT crash, throws controlled ApiException
+00:00 +7: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/core/network/dio_client_defense_test.dart: DioClient P0-02 Defensive Response Handling Tests C. HTML 504 Gateway Timeout response does NOT crash, throws controlled ApiException
+00:00 +8: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/core/network/dio_client_defense_test.dart: DioClient P0-02 Defensive Response Handling Tests D. Malformed JSON string response does not crash with TypeError
+00:00 +9: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/core/network/dio_client_defense_test.dart: DioClient P0-02 Defensive Response Handling Tests Empty / null response body does not cause TypeError crash
+00:00 +10: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/core/network/dio_client_defense_test.dart: DioClient P0-02 Defensive Response Handling Tests Standard valid JSON object succeeds and parses cleanly
+00:00 +11: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/core/network/dio_client_defense_test.dart: DioClient P0-02 Defensive Response Handling Tests Standard valid JSON array succeeds and parses cleanly
+00:01 +12: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/road_hazard_integration_test.dart: Road Hazard Backend Integration Tests ReportModel parses road damage report attributes correctly from JSON
+00:01 +13: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/road_hazard_integration_test.dart: Road Hazard Backend Integration Tests ReportModel parses road damage report attributes correctly from JSON
+00:01 +14: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/route_model_test.dart: RouteModel OSRM Parsing melempar RouteNotFoundException jika code bukan "Ok"
+00:01 +15: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/route_model_test.dart: RouteModel OSRM Parsing melempar RouteNotFoundException jika code bukan "Ok"
+00:01 +16: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/road_hazard_integration_test.dart: Road Hazard Backend Integration Tests Distance calculation correctly identifies proximity threshold (<= 50m)
+00:01 +17: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/road_hazard_integration_test.dart: Road Hazard Backend Integration Tests Distance calculation correctly identifies proximity threshold (<= 50m)
+00:01 +18: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/route_model_test.dart: RouteModel OSRM Parsing format durasi kurang dari 1 menit menghasilkan "< 1 menit"
+00:01 +19: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/road_hazard_integration_test.dart: Road Hazard Backend Integration Tests Severity label formatting accurately maps backend severity & urgency
+00:01 +20: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/route_model_test.dart: RouteModel OSRM Parsing berhasil mem-parsing steps instruksi manuver jalan dan multi-routes
+00:01 +21: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/road_hazard_integration_test.dart: Road Hazard Backend Integration Tests ReportModel.getCategoryFallbackImage returns working URL and does not contain broken 404 ID
+00:01 +22: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/report_business_logic_test.dart: Report Business Logic & State Consistency Tests ReportModel.copyWith successfully modifies target fields while preserving unmodified ones
+00:01 +23: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/report_business_logic_test.dart: Report Business Logic & State Consistency Tests ReportStatus fromString supports all state machine values including resolved & disputed
+00:01 +24: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/report_business_logic_test.dart: Report Business Logic & State Consistency Tests validateReport correctly sets status to resolved when isApproved is true
+⚠️ [ReportRepository] _ensureStorageLoaded error: MissingPluginException(No implementation found for method read on channel plugins.it_nomads.com/flutter_secure_storage)
+⚠️ [ReportRepository] _savePersistedState error: MissingPluginException(No implementation found for method write on channel plugins.it_nomads.com/flutter_secure_storage)
+⚠️ [ReportRepository] getReportById error: ApiException(code: UNKNOWN, message: Terjadi kesalahan tak dikenal.)
+00:02 +25: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/report_business_logic_test.dart: Report Business Logic & State Consistency Tests validateReport correctly sets status to disputed when isApproved is false
+⚠️ [ReportRepository] _ensureStorageLoaded error: MissingPluginException(No implementation found for method read on channel plugins.it_nomads.com/flutter_secure_storage)
+⚠️ [ReportRepository] _savePersistedState error: MissingPluginException(No implementation found for method write on channel plugins.it_nomads.com/flutter_secure_storage)
+⚠️ [ReportRepository] getReportById error: ApiException(code: UNKNOWN, message: Terjadi kesalahan tak dikenal.)
+00:02 +26: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/report_business_logic_test.dart: Report Business Logic & State Consistency Tests ReportModel.fromJson extracts real photo from media when photo_url is null
+00:02 +27: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/data/models/report_business_logic_test.dart: Report Business Logic & State Consistency Tests ReportStatusHistoryModel.fromJson parses backend status and changed_by fields
+00:02 +28: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/widget_test.dart: LaporKita App Smoke Tests App renders without crashing
+00:02 +29: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/widget_test.dart: LaporKita App Smoke Tests App renders without crashing
+00:02 +30: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/widget_test.dart: LaporKita App Smoke Tests App renders without crashing
+00:02 +31: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/widget_test.dart: LaporKita App Smoke Tests App renders without crashing
+00:02 +32: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/widget_test.dart: LaporKita App Smoke Tests App renders without crashing
+00:02 +33: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/widget_test.dart: LaporKita App Smoke Tests App renders without crashing
+00:02 +34: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/widget_test.dart: LaporKita App Smoke Tests App renders without crashing
+00:02 +35: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests F. TIMEOUT STARTUP: Network timeout does NOT wipe token, keeps offline session
+00:02 +36: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/widget_test.dart: LaporKita App Smoke Tests SplashScreen atau navigasi awal ter-render
+00:02 +37: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +38: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +39: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +40: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +41: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +42: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +43: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +44: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +45: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +46: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +47: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +48: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +49: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +50: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +51: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +52: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests G. SERVER UNAVAILABLE: 500/502/503/504 errors do NOT wipe token, session stays intact
+00:02 +53: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests H. INVALID TOKEN: Explicit 401 / unauthorized from server WIPES token and logs out
+00:02 +54: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/auth/auth_offline_session_test.dart: AuthBloc P0-03 Offline Session Wipe & Auth Lifecycle Tests I. EXPLICIT LOGOUT: AuthLogoutRequested clears storage and emits AuthUnauthenticated
+00:02 +55: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_monitoring_test.dart: Figma Node 631:1382 & 638:1864 Government Monitoring Tests Progress Tab (Figma 631:1382) renders all baseline visual components
+00:03 +56: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_monitoring_test.dart: Figma Node 631:1382 & 638:1864 Government Monitoring Tests Progress Tab (Figma 631:1382) renders all baseline visual components
+00:03 +57: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/operator_screens_test.dart: Operator Dashboard & Bottom Navigation (Figma 485:7874 & 485:8094) renders header, 2x2 stat cards, priority task, and 5 nav items
+00:03 +58: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/admin_reports_test.dart: AdminReportsScreen Filter Tests Renders all filter chips (Row 1 & Row 2) and reset button
+00:03 +58: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_monitoring_test.dart: Figma Node 631:1382 & 638:1864 Government Monitoring Tests Switching to Peta Sebaran Tab (Figma 638:1864) displays map and location ranking
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:03 +59: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/admin_reports_test.dart: AdminReportsScreen Filter Tests Renders all filter chips (Row 1 & Row 2) and reset button
+00:03 +60: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/admin_reports_test.dart: AdminReportsScreen Filter Tests Renders all filter chips (Row 1 & Row 2) and reset button
+00:03 +61: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/admin_reports_test.dart: AdminReportsScreen Filter Tests Renders all filter chips (Row 1 & Row 2) and reset button
+00:03 +62: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders Header, Stat Cards, Kondisi Hari Ini, OPD & Mini Map
+00:03 +63: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders Header, Stat Cards, Kondisi Hari Ini, OPD & Mini Map
+00:03 +64: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders Header, Stat Cards, Kondisi Hari Ini, OPD & Mini Map
+00:03 +65: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders Header, Stat Cards, Kondisi Hari Ini, OPD & Mini Map
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:03 +66: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders Header, Stat Cards, Kondisi Hari Ini, OPD & Mini Map
+00:03 +67: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders Header, Stat Cards, Kondisi Hari Ini, OPD & Mini Map
+00:03 +68: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders Header, Stat Cards, Kondisi Hari Ini, OPD & Mini Map
+00:03 +68: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_profile_notification_test.dart: Dashboard Integration with Profile and Notifications Dashboard can navigate to Tab 4 Profile and open Notifications
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:03 +69: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders Header, Stat Cards, Kondisi Hari Ini, OPD & Mini Map
+00:03 +70: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders Header, Stat Cards, Kondisi Hari Ini, OPD & Mini Map
+00:03 +71: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders Header, Stat Cards, Kondisi Hari Ini, OPD & Mini Map
+00:04 +72: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders Header, Stat Cards, Kondisi Hari Ini, OPD & Mini Map
+00:04 +73: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_profile_notification_test.dart: Dashboard Integration with Profile and Notifications Dashboard can navigate to Tab 4 Profile and open Notifications
+00:04 +73: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/operator_screens_test.dart: Operator Detail Laporan (Figma 662:6373) renders report header, description, status dropdown, metadata table, and action button
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:04 +74: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_profile_notification_test.dart: Dashboard Integration with Profile and Notifications Dashboard can navigate to Tab 4 Profile and open Notifications
+00:04 +75: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_profile_notification_test.dart: Dashboard Integration with Profile and Notifications Dashboard can navigate to Tab 4 Profile and open Notifications
+00:04 +75: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders 5-item Bottom Navigation Bar matching Figma 484:7833
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:04 +76: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_profile_notification_test.dart: Dashboard Integration with Profile and Notifications Dashboard can navigate to Tab 4 Profile and open Notifications
+00:04 +77: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_profile_notification_test.dart: Dashboard Integration with Profile and Notifications Dashboard can navigate to Tab 4 Profile and open Notifications
+00:04 +78: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_profile_notification_test.dart: Dashboard Integration with Profile and Notifications Dashboard can navigate to Tab 4 Profile and open Notifications
+00:04 +79: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders 5-item Bottom Navigation Bar matching Figma 484:7833
+00:04 +80: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders 5-item Bottom Navigation Bar matching Figma 484:7833
+00:04 +81: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders 5-item Bottom Navigation Bar matching Figma 484:7833
+00:04 +82: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Renders 5-item Bottom Navigation Bar matching Figma 484:7833
+00:04 +83: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_report_detail_test.dart: Figma Node 627:872 Detail Laporan Pemerintah Tests Renders all Figma 627:872 elements & key attributes
+00:04 +84: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_report_detail_test.dart: Figma Node 627:872 Detail Laporan Pemerintah Tests Renders all Figma 627:872 elements & key attributes
+00:04 +84: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_dashboard_test.dart: Figma Node 475:5338 & 484:7833 Government Dashboard Tests Quick navigation from OPD and Map works
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:04 +85: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_report_detail_test.dart: Figma Node 627:872 Detail Laporan Pemerintah Tests Renders all Figma 627:872 elements & key attributes
+00:04 +86: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_summary_test.dart: Figma Node 613:3502 Government Summary Screen Tests Renders all visual sections standalone
+00:05 +87: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_reports_test.dart: Figma Node 622:219 Government Reports Screen Tests Renders Top Bar, Search, Two Filter Rows & Report Cards
+00:05 +88: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_reports_test.dart: Figma Node 622:219 Government Reports Screen Tests Renders Top Bar, Search, Two Filter Rows & Report Cards
+00:05 +89: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_reports_test.dart: Figma Node 622:219 Government Reports Screen Tests Renders Top Bar, Search, Two Filter Rows & Report Cards
+00:05 +90: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_reports_test.dart: Figma Node 622:219 Government Reports Screen Tests Renders Top Bar, Search, Two Filter Rows & Report Cards
+00:05 +91: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_reports_test.dart: Figma Node 622:219 Government Reports Screen Tests Renders Top Bar, Search, Two Filter Rows & Report Cards
+00:05 +92: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_reports_test.dart: Figma Node 622:219 Government Reports Screen Tests Renders Top Bar, Search, Two Filter Rows & Report Cards
+00:05 +93: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_reports_test.dart: Figma Node 622:219 Government Reports Screen Tests Renders Top Bar, Search, Two Filter Rows & Report Cards
+00:05 +94: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/policy_simulator_test.dart: Figma Node 648:4092 Policy Simulator Tests Renders all visual baseline components from Figma
+00:05 +94: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/command_center_authorization_test.dart: P2-01 CommandCenter Authorization & RBAC Tests Authorized policy maker role successfully renders GovernmentDashboardScreen
+  [1m[flutter_map][0m
+    We want to help keep OpenStreetMap available for everyone. Our examples
+    and demo app use the public tile servers, but they are NOT free to use by
+    everyone! Please review whether the OpenStreetMap tile servers are suitable
+    for your project.
+    See:
+      * https://operations.osmfoundation.org/policies/tiles (OSM Tile Usage Policy)
+      * https://docs.fleaflet.dev/osm-warn for more information about this warning
+00:05 +95: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/command_center_authorization_test.dart: P2-01 CommandCenter Authorization & RBAC Tests Authorized policy maker role successfully renders GovernmentDashboardScreen
+00:05 +96: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/command_center_authorization_test.dart: P2-01 CommandCenter Authorization & RBAC Tests Authorized policy maker role successfully renders GovernmentDashboardScreen
+00:06 +97: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/policy_simulator_test.dart: Figma Node 648:4092 Policy Simulator Tests Tapping Kategori Laporan opens modal and triggers AI simulation
+00:06 +98: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_reports_test.dart: Figma Node 622:219 Government Reports Screen Tests Status dropdown filter changes selection and updates list
+00:06 +99: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_reports_test.dart: Figma Node 622:219 Government Reports Screen Tests Status dropdown filter changes selection and updates list
+00:06 +100: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_verification_action_test.dart: Figma Node 627:1029 & 627:1160 Tindak Lanjut Verifikasi Tests Renders AI Verification page (Figma Node 627:1029) directly by default
+00:06 +101: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_verification_action_test.dart: Figma Node 627:1029 & 627:1160 Tindak Lanjut Verifikasi Tests Renders AI Verification page (Figma Node 627:1029) directly by default
+00:06 +102: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_verification_action_test.dart: Figma Node 627:1029 & 627:1160 Tindak Lanjut Verifikasi Tests Renders AI Verification page (Figma Node 627:1029) directly by default
+00:06 +103: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_verification_action_test.dart: Figma Node 627:1029 & 627:1160 Tindak Lanjut Verifikasi Tests Renders AI Verification page (Figma Node 627:1029) directly by default
+00:06 +104: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_verification_action_test.dart: Figma Node 627:1029 & 627:1160 Tindak Lanjut Verifikasi Tests Switches to Manual Review tab (Figma Node 627:1160) and displays all elements
+00:06 +105: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_verification_action_test.dart: Figma Node 627:1029 & 627:1160 Tindak Lanjut Verifikasi Tests Manual Review category dropdown only shows Jalan Rusak, Trotoar Rusak, Drainase, Lampu Jalan, Rambu Lalu Lintas
+00:06 +106: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_verification_action_test.dart: Figma Node 627:1029 & 627:1160 Tindak Lanjut Verifikasi Tests Tapping Tolak Laporan opens reject dialog and triggers backend
+00:06 +107: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_verification_action_test.dart: Figma Node 627:1029 & 627:1160 Tindak Lanjut Verifikasi Tests Tapping Meminta Revisi opens revision dialog
+00:06 +108: /Users/nabilkencana/Project /Lomba MAGEITS/laporkita/test/presentation/command_center/government_verification_action_test.dart: Figma Node 627:1029 & 627:1160 Tindak Lanjut Verifikasi Tests Tapping Lihat detail Analisis opens AI detail bottom sheet
+00:06 +109: All tests passed!

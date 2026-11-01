@@ -1,0 +1,49 @@
+{
+  "capturedAt": "2026-11-01T20:16:33.784Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/categories",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "name": "[QA] Kategori Audit 1793564193773",
+      "default_agency_id": "a1000000-0000-4000-8000-000000000001",
+      "urgency_weight": 1.5,
+      "icon_url": "https://example.com/qa-cat.svg"
+    }
+  },
+  "status": 201,
+  "latencyMs": 11,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "98",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "442",
+    "etag": "W/\"1ba-cN3paTwmmKqUOyAnMIxIpP2eRYk\"",
+    "date": "Sun, 01 Nov 2026 20:16:33 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "id": "c7780684-6cb3-48d6-adcc-e285d3ffb7a7",
+      "name": "[QA] Kategori Audit 1793564193773",
+      "icon_url": "https://example.com/qa-cat.svg",
+      "default_agency_id": "a1000000-0000-4000-8000-000000000001",
+      "urgency_weight": 1.5,
+      "default_agency": {
+        "id": "a1000000-0000-4000-8000-000000000001",
+        "name": "Dinas Pekerjaan Umum, Penataan Ruang, Perumahan dan Kawasan Permukiman (DPUPRPKP) Kota Malang",
+        "type": "dpupr"
+      }
+    },
+    "meta": null,
+    "error": null
+  }
+}

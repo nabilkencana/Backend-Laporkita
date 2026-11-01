@@ -1,0 +1,23 @@
+{
+  "capturedAt": "2026-11-01T20:15:51.248Z",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:8000/demo",
+    "headersMasked": {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) LaporKita-QA/1.0"
+    }
+  },
+  "status": 200,
+  "latencyMs": 5,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:15:50 GMT",
+    "server": "uvicorn",
+    "content-type": "text/html; charset=utf-8",
+    "accept-ranges": "bytes",
+    "content-length": "69116",
+    "last-modified": "Sun, 01 Nov 2026 08:12:35 GMT",
+    "etag": "\"2246ae8af50b61f4a66f96e21c94b4b3\"",
+    "vary": "Origin"
+  },
+  "body": "<!DOCTYPE html>\n<html lang=\"id\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>LaporKita AI Console — Live Testing Sandbox</title>\n  \n  <!-- Modern Typography from Google Fonts -->\n  <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n  <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />\n  <link href=\"https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap\" rel=\"stylesheet\" />\n\n  <style>\n    :root {\n      --bg-dark: #070a13;\n      --bg-card: rgba(17, 24, 39, 0.75);\n      --bg-card-hover: rgba(31, 41, 55, 0.85);\n      --border-color: rgba(255, 255, 255, 0.08);\n      --border-active: rgba(0, 242, 254, 0.5);\n      \n      --primary: #00f2fe;\n      --primary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);\n      --accent-purple: #8a2be2;\n      --purple-gradient: line...[truncated len=68950]"
+}

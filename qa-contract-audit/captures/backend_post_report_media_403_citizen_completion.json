@@ -1,0 +1,41 @@
+{
+  "capturedAt": "2026-11-01T20:16:31.084Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/media",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci..."
+    },
+    "bodySummary": {
+      "type": "completion_photo",
+      "photo": {
+        "name": "citizen_comp.jpg",
+        "mimeType": "image/jpeg",
+        "sizeBytes": 50164
+      }
+    }
+  },
+  "status": 403,
+  "latencyMs": 9,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "165",
+    "etag": "W/\"a5-ZIYMPUol/v7MaWEh/j6TPHxhjo0\"",
+    "date": "Sun, 01 Nov 2026 20:16:31 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": false,
+    "data": null,
+    "error": {
+      "code": "FORBIDDEN",
+      "message": "FORBIDDEN_MEDIA: Anda tidak memiliki izin mengunggah media completion_photo untuk laporan ini."
+    }
+  }
+}

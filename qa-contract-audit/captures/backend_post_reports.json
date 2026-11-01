@@ -1,0 +1,66 @@
+{
+  "capturedAt": "2026-11-01T20:16:28.199Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/reports",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci...",
+      "X-Idempotency-Key": "qa_idem_1793564188168"
+    },
+    "bodySummary": {
+      "category_id": "c1000000-0000-4000-8000-000000000001",
+      "latitude": "-7.9826",
+      "longitude": "112.6308",
+      "address_text": "Jl. Merdeka Selatan, Alun-Alun Kota Malang",
+      "description": "[QA] Jalan berlubang parah di Alun-Alun Malang (Lifecycle #1)",
+      "photo": {
+        "name": "report_photo.jpg",
+        "mimeType": "image/jpeg",
+        "sizeBytes": 50164
+      }
+    }
+  },
+  "status": 202,
+  "latencyMs": 31,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "10",
+    "x-ratelimit-remaining": "6",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "818",
+    "etag": "W/\"332-9CCdyWXDNGumG72MVvm/31W73P0\"",
+    "date": "Sun, 01 Nov 2026 20:16:28 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "id": "9ccc6a59-3789-45ce-8b61-a88bcdbf3e23",
+      "report_code": "#LP-2026-000003",
+      "idempotency_key": "qa_idem_1793564188168",
+      "reporter_id": "00000000-0000-4000-8000-000000000002",
+      "category_id": "c1000000-0000-4000-8000-000000000001",
+      "assigned_agency_id": "a1000000-0000-4000-8000-000000000001",
+      "assigned_officer_id": null,
+      "description": "[QA] Jalan berlubang parah di Alun-Alun Malang (Lifecycle #1)",
+      "latitude": "-7.9826",
+      "longitude": "112.6308",
+      "address_text": "Jl. Merdeka Selatan, Alun-Alun Kota Malang",
+      "status": "pending_verification",
+      "ai_confidence_score": null,
+      "damage_severity": null,
+      "urgency_score": null,
+      "support_count": 0,
+      "view_count": 0,
+      "estimated_completion_at": null,
+      "created_at": "2026-11-01T20:16:28.176Z",
+      "updated_at": "2026-11-01T20:16:28.176Z",
+      "needs_manual_review": false
+    },
+    "meta": null,
+    "error": null
+  }
+}

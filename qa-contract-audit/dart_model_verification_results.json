@@ -1,0 +1,115 @@
+{
+  "executedWith": "flutter test --no-pub (Real Dart VM)",
+  "timestamp": "2026-11-02T03:19:09.928999",
+  "modelsVerifiedCount": 14,
+  "mismatchesProvedCount": 0,
+  "cleanModelsSummary": {
+    "AuthTokenModel": "Bearer",
+    "RegisterResponseModel": true,
+    "UserModel": "citizen",
+    "CategoryModelCount": 5,
+    "AgencyModelCount": 3,
+    "NotificationModelCount": 4,
+    "PaginationMetaLimit": 20,
+    "RiskPredictionResultLevel": "high"
+  },
+  "findings": [
+    {
+      "id": "DART-MODEL-01",
+      "model": "PolicySimulationModel.fromJson (Backend POST /policy-simulations)",
+      "capture": "captures/backend_post_policy_simulations.json",
+      "parsed": {
+        "id": "23ac77f6-9e8a-4d7a-80d5-b68ed4e618e5",
+        "simulatedRiskScore": 2.92,
+        "riskReductionPct": 41.5,
+        "estimatedBudgetBro": 1730000000.0,
+        "recommendedActionsCount": 3,
+        "timeHorizonMonths": 3
+      },
+      "mismatchDetected": false,
+      "explanation": "Backend resultData now includes recommended_actions and simulated_risk_score; PolicySimulationModel.fromJson parses them without fallback."
+    },
+    {
+      "id": "DART-MODEL-02",
+      "model": "PolicySimulationModel.fromJson (AI POST /v1/policy-simulate)",
+      "capture": "captures/ai_v1_policy_simulate.json",
+      "parsed": {
+        "simulatedRiskScore": 2.75,
+        "riskReductionPct": 45.0,
+        "estimatedBudgetBro": 3800000000.0,
+        "recommendedActionsCount": 4,
+        "timeHorizonMonths": 5
+      },
+      "mismatchDetected": false,
+      "explanation": "PolicySimulationModel.fromJson now parses budget_estimate_idr, estimated_incident_reduction_pct, time_to_impact_weeks, and key_recommendations accurately."
+    },
+    {
+      "id": "DART-MODEL-03",
+      "model": "RouteModel.fromBackendMapsJson (Backend POST /maps/route)",
+      "capture": "captures/backend_post_maps_route.json",
+      "parsed": {
+        "routesCount": 1,
+        "distanceMeters": 6162.0,
+        "durationSeconds": 435.7,
+        "polylinePointsCount": 213,
+        "stepsCount": 17,
+        "summary": "Jalan Kawi, Jalan Mayor Jenderal Donald Isaac Panjaitan"
+      },
+      "mismatchDetected": false,
+      "explanation": "Backend POST /maps/route now returns OSRM steps[] and summary, and RouteModel.fromBackendMapsJson parses them into RouteStep objects."
+    },
+    {
+      "id": "DART-MODEL-04",
+      "model": "PredictionRemoteDatasource.getZoneMetrics + ZoneMetricsModel.fromJson",
+      "capture": "captures/backend_get_zone_metrics_history.json",
+      "backendMetricsCount": 20,
+      "parsedListLength": 20,
+      "mismatchDetected": false,
+      "explanation": "PredictionRemoteDatasource.parseZoneMetricsList unwraps {zone, metrics} Map and parses all 20 ZoneMetricsModel items."
+    },
+    {
+      "id": "DART-MODEL-05",
+      "model": "AiVerificationResult.fromJson (POST /v1/verify OOD & Out-of-Malang)",
+      "capture": "captures/ai_v1_verify_ood_blurry.json & ai_v1_verify_out_of_malang_jakarta.json",
+      "parsedOod": {
+        "isVerified": false,
+        "needsManualReview": true,
+        "detectedCategory": "bukan_fasilitas",
+        "rejectionReason": "Perlu review manual: Citra terklasifikasi sebagai bukan fasilitas publik."
+      },
+      "parsedOutMalang": {
+        "isVerified": false,
+        "isWithinMalang": false,
+        "rejectionReason": "Perlu review manual: Koordinat GPS berada di luar batas yurisdiksi administratif 5 Kecamatan Kota Malang."
+      },
+      "mismatchDetected": false,
+      "explanation": "AI /v1/verify now includes reason and AiVerificationResult.fromJson populates non-null rejectionReason on invalid/manual-review responses."
+    },
+    {
+      "id": "DART-MODEL-06",
+      "model": "ReportRemoteDatasource.submitReport + ReportModel.fromJson",
+      "capture": "captures/backend_get_report_detail.json",
+      "beforeMerge": {
+        "rawAiConfidenceScore": 0.9998,
+        "damageSeverity": 0.9599
+      },
+      "afterMerge": {
+        "rawAiConfidenceScore": 0.9998,
+        "damageSeverity": 0.9599
+      },
+      "mismatchDetected": false,
+      "explanation": "ReportRemoteDatasource.mergeSubmittedReportWithLocalPhoto uses copyWith and preserves rawAiConfidenceScore, damageSeverity, and SLA fields."
+    },
+    {
+      "id": "DART-MODEL-07",
+      "model": "ApiError.fromJson (Backend OTP Error Envelope)",
+      "capture": "captures/backend_post_auth_verify_otp_wrong.json",
+      "parsedError": {
+        "code": "OTP_INVALID",
+        "message": "Kode OTP yang Anda masukkan salah."
+      },
+      "mismatchDetected": false,
+      "explanation": "Backend HttpExceptionFilter now preserves OTP_INVALID and OTP_RESEND_COOLDOWN with remainingSeconds."
+    }
+  ]
+}

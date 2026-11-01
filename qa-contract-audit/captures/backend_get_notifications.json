@@ -1,0 +1,110 @@
+{
+  "capturedAt": "2026-11-01T20:17:39.338Z",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:3000/api/v1/notifications?limit=20",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci..."
+    }
+  },
+  "status": 200,
+  "latencyMs": 6,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "2352",
+    "etag": "W/\"930-13ByABYy57Z+jkHdwQ6XgoD+YLM\"",
+    "date": "Sun, 01 Nov 2026 20:17:39 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": [
+      {
+        "id": "db7fa271-a816-4c99-945f-a9a8420e877d",
+        "user_id": "00000000-0000-4000-8000-000000000002",
+        "type": "status_update",
+        "title": "Laporan Anda Terverifikasi",
+        "body": "Laporan #LP-2026-000004 telah diverifikasi oleh petugas operator dan diteruskan ke instansi terkait.",
+        "reference_report_id": "28490257-d18c-4af8-bb50-15437458abfe",
+        "is_read": false,
+        "created_at": "2026-11-01T20:16:33.680Z",
+        "reference_report": {
+          "id": "28490257-d18c-4af8-bb50-15437458abfe",
+          "report_code": "#LP-2026-000004",
+          "status": "resolved",
+          "category": {
+            "name": "Jalan Berlubang"
+          }
+        }
+      },
+      {
+        "id": "9932bad7-4267-4e46-ac07-f6e04ad82034",
+        "user_id": "00000000-0000-4000-8000-000000000002",
+        "type": "status_update",
+        "title": "Laporan Anda Terverifikasi",
+        "body": "Laporan #LP-2026-000003 telah terverifikasi secara otomatis oleh sistem kecerdasan LaporKita dan diteruskan ke instansi terkait.",
+        "reference_report_id": "9ccc6a59-3789-45ce-8b61-a88bcdbf3e23",
+        "is_read": false,
+        "created_at": "2026-11-01T20:16:28.354Z",
+        "reference_report": {
+          "id": "9ccc6a59-3789-45ce-8b61-a88bcdbf3e23",
+          "report_code": "#LP-2026-000003",
+          "status": "resolved",
+          "category": {
+            "name": "Jalan Berlubang"
+          }
+        }
+      },
+      {
+        "id": "9870c783-10c6-4cfe-a980-a8db55e051ef",
+        "user_id": "00000000-0000-4000-8000-000000000002",
+        "type": "status_update",
+        "title": "Laporan Anda Terverifikasi",
+        "body": "Laporan #LP-2026-000002 telah terverifikasi secara otomatis oleh sistem kecerdasan LaporKita dan diteruskan ke instansi terkait.",
+        "reference_report_id": "44ef55a7-ce6b-452c-9211-777a5cf8c9d7",
+        "is_read": true,
+        "created_at": "2026-11-01T20:12:16.372Z",
+        "reference_report": {
+          "id": "44ef55a7-ce6b-452c-9211-777a5cf8c9d7",
+          "report_code": "#LP-2026-000002",
+          "status": "resolved",
+          "category": {
+            "name": "Jalan Berlubang"
+          }
+        }
+      },
+      {
+        "id": "92d5415d-628b-46c6-b205-e997190a50c0",
+        "user_id": "00000000-0000-4000-8000-000000000002",
+        "type": "status_update",
+        "title": "Laporan Anda Terverifikasi",
+        "body": "Laporan #LP-2026-000001 telah terverifikasi secara otomatis oleh sistem kecerdasan LaporKita dan diteruskan ke instansi terkait.",
+        "reference_report_id": "1f775134-b377-4d3f-870a-c55197fb35c8",
+        "is_read": true,
+        "created_at": "2026-11-01T20:12:15.986Z",
+        "reference_report": {
+          "id": "1f775134-b377-4d3f-870a-c55197fb35c8",
+          "report_code": "#LP-2026-000001",
+          "status": "resolved",
+          "category": {
+            "name": "Jalan Berlubang"
+          }
+        }
+      }
+    ],
+    "meta": {
+      "total": 4,
+      "unreadCount": 2,
+      "limit": 20,
+      "nextCursor": null,
+      "hasPrevious": false
+    },
+    "error": null
+  }
+}

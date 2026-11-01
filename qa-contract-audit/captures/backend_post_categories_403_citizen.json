@@ -1,0 +1,38 @@
+{
+  "capturedAt": "2026-11-01T20:16:33.773Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/categories",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "name": "[QA] Forbidden Cat",
+      "urgency_weight": 1
+    }
+  },
+  "status": 403,
+  "latencyMs": 1,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "187",
+    "etag": "W/\"bb-cQaceJfhPGGWkCXA5IkLXUUNWwo\"",
+    "date": "Sun, 01 Nov 2026 20:16:33 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": false,
+    "data": null,
+    "error": {
+      "code": "FORBIDDEN",
+      "message": "Akses ditolak: Role 'citizen' tidak memiliki izin untuk mengakses resource ini. Diperlukan salah satu dari: [admin]."
+    }
+  }
+}

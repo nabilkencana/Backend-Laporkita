@@ -1,0 +1,276 @@
+{
+  "executedAt": "2026-11-01T20:19:13.692Z",
+  "summary": {
+    "totalChecks": 18,
+    "passedChecks": 18,
+    "mismatchesReproduced": 0,
+    "bySeverity": {
+      "CRITICAL": 0,
+      "HIGH": 0,
+      "MEDIUM": 0,
+      "LOW": 0
+    }
+  },
+  "checks": [
+    {
+      "id": "MM-01",
+      "suite": "Phase2D-Config",
+      "severity": "CRITICAL",
+      "title": "Mobile AppConfig.baseUrl & aiServiceUrl default to api-server.canadev.my.id/api/v1 & ai-server.canadev.my.id",
+      "methodPath": "app_config.dart:12-21",
+      "locations": {
+        "mobile": "laporkita/lib/core/config/app_config.dart:12-21"
+      },
+      "outcome": "PASS",
+      "status": "200",
+      "latencyMs": 2,
+      "summary": "AppConfig defaults: baseUrl=https://api-server.canadev.my.id/api/v1 (true), aiServiceUrl=https://ai-server.canadev.my.id (true)"
+    },
+    {
+      "id": "MM-02",
+      "suite": "Phase2D-Config",
+      "severity": "CRITICAL",
+      "title": "Mobile AppConfig.aiApiKey defaults to empty string (injected via --dart-define) and AI Service accepts env X-API-Key",
+      "methodPath": "POST /v1/verify",
+      "locations": {
+        "mobile": "laporkita/lib/core/config/app_config.dart:24-27 & test/core/config/app_config_test.dart:11",
+        "ai": "ai-service/app/core/security.py:22-53"
+      },
+      "outcome": "PASS",
+      "status": 200,
+      "latencyMs": 10,
+      "summary": "No hardcoded secret in app_config.dart (true), --dart-define env key verified (200)"
+    },
+    {
+      "id": "MM-03",
+      "suite": "Phase2C-BackendAI",
+      "severity": "CRITICAL",
+      "title": "Blurry/OOD (bukan_fasilitas) and tampered reports stay pending_verification with needs_manual_review=true and award 0 points",
+      "methodPath": "POST /api/v1/reports -> POST /api/v1/verify -> GET /api/v1/reports/{id}",
+      "locations": {
+        "backend": "src/modules/ai-verification/report-verification.processor.ts:57-78",
+        "ai": "ai-service/app/routers/verification.py:297-309"
+      },
+      "outcome": "PASS",
+      "status": 200,
+      "latencyMs": 2633,
+      "summary": "Blurry/OOD report status=\"pending_verification\", needs_manual_review=true, pointsAwarded=0, /api/v1/verify has is_valid=false & needs_manual_review=true (true)"
+    },
+    {
+      "id": "MM-04",
+      "suite": "Phase2C-BackendAI",
+      "severity": "HIGH",
+      "title": "Backend PolicySimulatorService calls AI Service /v1/policy-simulate and returns dynamic structured output across different prompts/zones",
+      "methodPath": "POST /api/v1/policy-simulations & POST /v1/policy-simulate",
+      "locations": {
+        "backend": "src/modules/policy-simulator/policy-simulator.service.ts:48-157",
+        "ai": "ai-service/app/services/gemini_service.py:157-176",
+        "mobile": "laporkita/lib/data/models/policy_simulation_model.dart:31-143"
+      },
+      "outcome": "PASS",
+      "status": "201/200",
+      "latencyMs": 5841,
+      "summary": "Dynamic outputs: sim1=(41.5%, Rp1730000000, recs=3) vs sim2=(52%, Rp200000000), /api/v1/policy-simulate status=200"
+    },
+    {
+      "id": "MM-05",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "HIGH",
+      "title": "AdminAssignReportScreen sends agency UUID and Backend PATCH /reports/{id}/status persists assigned_agency_id",
+      "methodPath": "PATCH /api/v1/reports/{id}/status",
+      "locations": {
+        "mobile": "laporkita/lib/presentation/command_center/report_management/admin_assign_report_screen.dart:17-46, 157-166",
+        "backend": "src/modules/reports/dto/transition-status.dto.ts:29-35"
+      },
+      "outcome": "PASS",
+      "status": 200,
+      "latencyMs": 45,
+      "summary": "PATCH /reports/{id}/status with assigned_agency_id returned 200, persisted assigned_agency_id=a2000000-0000-4000-8000-000000000002"
+    },
+    {
+      "id": "MM-06",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "MEDIUM",
+      "title": "AdminVerificationActionScreen \"Meminta Revisi\" persists revision instruction via POST /reports/{id}/comments",
+      "methodPath": "POST /api/v1/reports/{id}/comments",
+      "locations": {
+        "mobile": "laporkita/lib/presentation/command_center/report_management/admin_verification_action_screen.dart:1957-1964"
+      },
+      "outcome": "PASS",
+      "status": 201,
+      "latencyMs": 19,
+      "summary": "Revision comment persisted (201, id=27fde5d0-a1a0-48be-a1bf-25099f6f3deb), usesAddComment=true"
+    },
+    {
+      "id": "MM-07",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "HIGH",
+      "title": "NewReportFormScreen fallback categories use canonical 5 seed UUIDs accepted by Backend and AI Service",
+      "methodPath": "POST /api/v1/reports & POST /v1/verify",
+      "locations": {
+        "mobile": "laporkita/lib/presentation/citizen/camera/new_report_form_screen.dart:25-56"
+      },
+      "outcome": "PASS",
+      "status": "200",
+      "latencyMs": 2,
+      "summary": "NewReportFormScreen._defaultCategories contains 0 non-UUID slugs (hasInvalidSlugs=false)"
+    },
+    {
+      "id": "MM-08",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "MEDIUM",
+      "title": "ImageUtils detects magic bytes and transcodes < 900KB WebP/HEIC to JPEG before upload",
+      "methodPath": "lib/core/utils/image_utils.dart:16-51",
+      "locations": {
+        "mobile": "laporkita/lib/core/utils/image_utils.dart:16-51"
+      },
+      "outcome": "PASS",
+      "status": 202,
+      "latencyMs": 9,
+      "summary": "ImageUtils magic-byte transcode check present (true), transcoded JPEG accepted (202)"
+    },
+    {
+      "id": "MM-09",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "HIGH",
+      "title": "Malang BBox aligned: Ring-Zone coordinate (-8.15, 112.60) passes both AI /v1/verify (gps_valid=true) and Backend POST /reports (202)",
+      "methodPath": "POST /v1/verify & POST /api/v1/reports",
+      "locations": {
+        "ai": "ai-service/app/core/config.py:24-28",
+        "backend": "src/modules/reports/utils/geo.util.ts:7-12"
+      },
+      "outcome": "PASS",
+      "status": "200/202",
+      "latencyMs": 8,
+      "summary": "Coordinate (-8.15, 112.60) returned gps_valid=true on AI /v1/verify and 202 on Backend POST /reports"
+    },
+    {
+      "id": "MM-10",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "MEDIUM",
+      "title": "GET /reports?needsManualReview=false returns only reports with needs_manual_review=false",
+      "methodPath": "GET /api/v1/reports?needsManualReview=false",
+      "locations": {
+        "backend": "src/modules/reports/dto/query-reports.dto.ts:17-22, 136-148 & reports.repository.ts:189-195"
+      },
+      "outcome": "PASS",
+      "status": 200,
+      "latencyMs": 41,
+      "summary": "?needsManualReview=false returned 4 reports (all needs_manual_review=false: true); ?needsManualReview=true returned 5 reports (all needs_manual_review=true: true)"
+    },
+    {
+      "id": "MM-11",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "LOW",
+      "title": "ReportDetailScreen dispatches single support/status request and ReportConfirmationScreen option 0 calls supportReport",
+      "methodPath": "report_detail_screen.dart & report_confirmation_screen.dart",
+      "locations": {
+        "mobile": "laporkita/lib/presentation/citizen/report_detail/report_detail_screen.dart:911-916 & camera/report_confirmation_screen.dart:46-60"
+      },
+      "outcome": "PASS",
+      "status": "200",
+      "latencyMs": 2,
+      "summary": "Double support removed (true), double status removed (true), ReportConfirmationScreen calls supportReport (true)"
+    },
+    {
+      "id": "MM-12",
+      "suite": "Phase2A-MobileReplay",
+      "severity": "LOW",
+      "title": "FcmService.initialize checks shouldSyncTokenWithBackend(accessToken) before calling POST /route-alerts/subscribe",
+      "methodPath": "lib/core/services/fcm_service.dart:81-93",
+      "locations": {
+        "mobile": "laporkita/lib/core/services/fcm_service.dart:29-31, 81-93"
+      },
+      "outcome": "PASS",
+      "status": "200",
+      "latencyMs": 2,
+      "summary": "FcmService gates subscribeRouteAlert on shouldSyncTokenWithBackend(accessToken)=true"
+    },
+    {
+      "id": "MM-13",
+      "suite": "Phase2B-Models",
+      "severity": "HIGH",
+      "title": "PredictionRemoteDatasource.getZoneMetrics unwraps {zone, metrics} Map and parses all ZoneMetricsModel items",
+      "methodPath": "GET /api/v1/predictions/zones/{zoneId}/metrics",
+      "locations": {
+        "mobile": "laporkita/lib/data/datasources/remote/prediction_remote_datasource.dart:36-72"
+      },
+      "outcome": "PASS",
+      "status": 200,
+      "latencyMs": 3,
+      "summary": "Parsed 20/20 ZoneMetricsModel items (zone=\"Klojen (Pusat Kota)\", stress=\"low\")"
+    },
+    {
+      "id": "MM-14",
+      "suite": "Phase2B-Models",
+      "severity": "MEDIUM",
+      "title": "Backend POST /maps/route & RouteModel.fromBackendMapsJson preserve OSRM steps[] and summary for turn-by-turn TTS",
+      "methodPath": "POST /api/v1/maps/route",
+      "locations": {
+        "backend": "src/modules/maps/maps.service.ts:164-172",
+        "mobile": "laporkita/lib/data/models/route_model.dart:227-250"
+      },
+      "outcome": "PASS",
+      "status": 200,
+      "latencyMs": 699,
+      "summary": "Parsed RouteModel has polylinePoints=213, steps=17, summary=\"Jalan Kawi, Jalan Mayor Jenderal Donald Isaac Panjaitan\""
+    },
+    {
+      "id": "MM-15",
+      "suite": "Phase2B-Models",
+      "severity": "MEDIUM",
+      "title": "AI /v1/verify includes reason and AiVerificationResult.fromJson populates non-null rejectionReason on invalid reports",
+      "methodPath": "POST /v1/verify",
+      "locations": {
+        "ai": "ai-service/app/schemas/verification.py:70 & routers/verification.py:257",
+        "mobile": "laporkita/lib/data/models/ai_verification_model.dart:66-68"
+      },
+      "outcome": "PASS",
+      "status": 200,
+      "latencyMs": 12,
+      "summary": "OOD rejectionReason=\"Perlu review manual: Citra terklasifikasi sebagai bukan fasilitas publik.\", Out-of-Malang rejectionReason=\"Perlu review manual: Koordinat GPS berada di luar batas yurisdiksi administratif 5 Kecamatan Kota Malang.\""
+    },
+    {
+      "id": "MM-16",
+      "suite": "Phase2B-Models",
+      "severity": "LOW",
+      "title": "ReportRemoteDatasource.submitReport preserves rawAiConfidenceScore, damageSeverity, and estimatedCompletionAt via copyWith",
+      "methodPath": "POST /api/v1/reports",
+      "locations": {
+        "mobile": "laporkita/lib/data/datasources/remote/report_remote_datasource.dart:149-176"
+      },
+      "outcome": "PASS",
+      "status": 200,
+      "latencyMs": 18,
+      "summary": "submitReport uses copyWith (true), preserved rawAiConfidenceScore=0.9998, damageSeverity=0.9599"
+    },
+    {
+      "id": "MM-17",
+      "suite": "Phase2B-Models",
+      "severity": "MEDIUM",
+      "title": "Backend HttpExceptionFilter preserves OTP_INVALID and OTP_RESEND_COOLDOWN with remainingSeconds",
+      "methodPath": "POST /api/v1/auth/verify-otp & POST /api/v1/auth/resend-otp",
+      "locations": {
+        "backend": "src/common/filters/http-exception.filter.ts:101-139"
+      },
+      "outcome": "PASS",
+      "status": "400/400",
+      "latencyMs": 57,
+      "summary": "verify-otp code=\"OTP_INVALID\", resend-otp code=\"OTP_RESEND_COOLDOWN\", remainingSeconds=45"
+    },
+    {
+      "id": "MM-18",
+      "suite": "Phase2C-BackendAI",
+      "severity": "LOW",
+      "title": "AI Service GET /v1/training/samples/{class_name}/{filename} accepts both display target_category (\"Jalan Berlubang\") and sanitized (\"Jalan_Berlubang\")",
+      "methodPath": "POST /v1/training/ingest-sample -> GET /v1/training/samples/{class_name}/{filename}",
+      "locations": {
+        "ai": "ai-service/app/routers/active_learning.py:117-124"
+      },
+      "outcome": "PASS",
+      "status": "200/200",
+      "latencyMs": 2,
+      "summary": "GET /v1/training/samples/Jalan%20Berlubang/20261101_201603_sample.jpg -> 200, Jalan_Berlubang -> 200"
+    }
+  ]
+}

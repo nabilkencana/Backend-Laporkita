@@ -1,0 +1,36 @@
+{
+  "capturedAt": "2026-11-01T20:15:51.241Z",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:8000/health",
+    "headersMasked": {
+      "X-API-Key": "laporkit..."
+    }
+  },
+  "status": 200,
+  "latencyMs": 215,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:15:50 GMT",
+    "server": "uvicorn",
+    "content-length": "261",
+    "content-type": "application/json",
+    "vary": "Origin"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "status": "ok",
+      "service": "ai-service",
+      "version": "1.0.0",
+      "environment": "development",
+      "models": {
+        "yolo_classification_loaded": true,
+        "xgboost_risk_loaded": true,
+        "llm_configured": true,
+        "llm_connected": true,
+        "gemini_configured": true
+      }
+    },
+    "error": null
+  }
+}

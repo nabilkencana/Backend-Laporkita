@@ -1,0 +1,73 @@
+{
+  "capturedAt": "2026-11-01T20:15:52.704Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:8000/v1/verify",
+    "headersMasked": {
+      "X-API-Key": "laporkit...",
+      "Content-Type": "application/json"
+    },
+    "bodySummary": {
+      "image_base64": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8L...[base64 len=23924]",
+      "claimed_category": "Rambu Lalu Lintas",
+      "latitude": -7.9826,
+      "longitude": 112.6308,
+      "timestamp": "2026-11-01T20:15:52.697Z"
+    }
+  },
+  "status": 200,
+  "latencyMs": 7,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:15:52 GMT",
+    "server": "uvicorn",
+    "content-length": "1409",
+    "content-type": "application/json",
+    "vary": "Origin"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "ai_confidence_score": 0.9993,
+      "predicted_category": "Rambu Lalu Lintas",
+      "is_valid": true,
+      "needs_manual_review": false,
+      "damage_severity": 0.9196,
+      "description_auto": "Terdeteksi kerusakan fisik atau anomali pada rambu lalu lintas dengan estimasi keparahan 91% (keyakinan AI 99%). Memerlukan peninjauan Dishub.",
+      "reason": "Lolos verifikasi otomatis (AI confidence >= 0.85, Citra Otentik, GPS dan Street View Terkalibrasi)",
+      "gps_valid": true,
+      "timestamp_valid": true,
+      "class_probabilities": {
+        "Drainase": 0,
+        "Jalan Berlubang": 0,
+        "Lampu Jalan": 0.0006,
+        "Rambu Lalu Lintas": 0.9993,
+        "Trotoar": 0,
+        "bukan_fasilitas": 0
+      },
+      "smart_priority_score": 51.5,
+      "scoring_details": {
+        "severity_component": 32.19,
+        "support_component": 0,
+        "density_component": 2,
+        "urgency_component": 17.33
+      },
+      "authenticity": {
+        "is_authentic": true,
+        "authenticity_score": 0.805,
+        "tampering_detected": false,
+        "tampering_indicators": [],
+        "assessment_summary": "Citra terverifikasi otentik: Tidak ditemukan anomali kompresi atau manipulasi digital AI."
+      },
+      "location_verification": {
+        "is_location_consistent": true,
+        "location_match_confidence": 0.9,
+        "verified_address": "Jl. Merdeka / Jl. Ijen / Jl. Semeru, Kecamatan Klojen, Kota Malang",
+        "district_name": "Klojen (Pusat Kota & Alun-Alun)",
+        "street_view_available": true,
+        "location_audit_notes": "Titik koordinat terverifikasi berada di koridor Klojen (Pusat Kota & Alun-Alun) Kota Malang."
+      },
+      "_placeholder": false
+    },
+    "error": null
+  }
+}

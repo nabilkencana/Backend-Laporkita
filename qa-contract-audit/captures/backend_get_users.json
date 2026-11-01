@@ -1,0 +1,140 @@
+{
+  "capturedAt": "2026-11-01T20:16:28.122Z",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:3000/api/v1/users?limit=10",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci..."
+    }
+  },
+  "status": 200,
+  "latencyMs": 5,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "98",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "3107",
+    "etag": "W/\"c23-DsOwXxEi3uCAo4Er2vVERhuHYjg\"",
+    "date": "Sun, 01 Nov 2026 20:16:28 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": [
+      {
+        "id": "4f8bc88f-ac97-44eb-86c0-10c61feb9d6a",
+        "full_name": "[QA] Contract Audit Citizen",
+        "email": "qa.contract.1793564187856@laporkita.test.go.id",
+        "phone_number": "081364187856",
+        "role": "citizen",
+        "agency_id": null,
+        "agency": null,
+        "contribution_points": 0,
+        "avatar_url": null,
+        "created_at": "2026-11-01T20:16:27.912Z",
+        "updated_at": "2026-11-01T20:16:27.912Z"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000006",
+        "full_name": "Dr. Hendra Wijaya (Bappeda / Policy Maker)",
+        "email": "policymaker@laporkita.malangkota.go.id",
+        "phone_number": "+6281234567894",
+        "role": "policy_maker",
+        "agency_id": "a3000000-0000-4000-8000-000000000003",
+        "agency": {
+          "id": "a3000000-0000-4000-8000-000000000003",
+          "name": "Dinas Komunikasi dan Informatika (Diskominfo) Kota Malang"
+        },
+        "contribution_points": 0,
+        "avatar_url": null,
+        "created_at": "2026-10-19T13:22:38.575Z",
+        "updated_at": "2026-11-01T20:16:27.636Z"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000005",
+        "full_name": "Operator Diskominfo Kota Malang",
+        "email": "operator.diskominfo@laporkita.malangkota.go.id",
+        "phone_number": "+6281234567893",
+        "role": "operator",
+        "agency_id": "a3000000-0000-4000-8000-000000000003",
+        "agency": {
+          "id": "a3000000-0000-4000-8000-000000000003",
+          "name": "Dinas Komunikasi dan Informatika (Diskominfo) Kota Malang"
+        },
+        "contribution_points": 0,
+        "avatar_url": null,
+        "created_at": "2026-10-19T13:22:38.571Z",
+        "updated_at": "2026-11-01T20:11:11.343Z"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000004",
+        "full_name": "Operator Dishub Kota Malang",
+        "email": "operator.dishub@laporkita.malangkota.go.id",
+        "phone_number": "+6281234567892",
+        "role": "operator",
+        "agency_id": "a2000000-0000-4000-8000-000000000002",
+        "agency": {
+          "id": "a2000000-0000-4000-8000-000000000002",
+          "name": "Dinas Perhubungan (Dishub) Kota Malang"
+        },
+        "contribution_points": 0,
+        "avatar_url": null,
+        "created_at": "2026-10-19T13:22:38.567Z",
+        "updated_at": "2026-11-01T20:11:11.341Z"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000003",
+        "full_name": "Operator DPUPRPKP Kota Malang",
+        "email": "operator.dpupr@laporkita.malangkota.go.id",
+        "phone_number": "+6281234567891",
+        "role": "operator",
+        "agency_id": "a1000000-0000-4000-8000-000000000001",
+        "agency": {
+          "id": "a1000000-0000-4000-8000-000000000001",
+          "name": "Dinas Pekerjaan Umum, Penataan Ruang, Perumahan dan Kawasan Permukiman (DPUPRPKP) Kota Malang"
+        },
+        "contribution_points": 0,
+        "avatar_url": null,
+        "created_at": "2026-10-19T13:22:38.562Z",
+        "updated_at": "2026-11-01T20:16:27.523Z"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000002",
+        "full_name": "Budi Santoso (Warga Kota Malang)",
+        "email": "warga@laporkita.malangkota.go.id",
+        "phone_number": "+6281234567890",
+        "role": "citizen",
+        "agency_id": null,
+        "agency": null,
+        "contribution_points": 281,
+        "avatar_url": null,
+        "created_at": "2026-10-19T13:22:38.554Z",
+        "updated_at": "2026-11-01T20:16:28.101Z"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000001",
+        "full_name": "Admin LaporKita Kota Malang",
+        "email": "admin@laporkita.malangkota.go.id",
+        "phone_number": "+6281133344455",
+        "role": "admin",
+        "agency_id": null,
+        "agency": null,
+        "contribution_points": 0,
+        "avatar_url": null,
+        "created_at": "2026-10-19T13:22:38.540Z",
+        "updated_at": "2026-11-01T20:16:27.294Z"
+      }
+    ],
+    "meta": {
+      "total": 7,
+      "limit": 10,
+      "nextCursor": null,
+      "hasPrevious": false
+    },
+    "error": null
+  }
+}

@@ -1,0 +1,321 @@
+{
+  "capturedAt": "2026-11-01T20:17:39.326Z",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:3000/api/v1/policy-simulations?limit=10",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci..."
+    }
+  },
+  "status": 200,
+  "latencyMs": 70,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "100",
+    "x-ratelimit-remaining": "99",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "20750",
+    "etag": "W/\"510e-/lFgIiIDd0ibDjMOHZYOLodWjig\"",
+    "date": "Sun, 01 Nov 2026 20:17:39 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": true,
+    "data": [
+      {
+        "id": "18fd063d-c201-4407-807e-536d886d5938",
+        "requested_by": "00000000-0000-4000-8000-000000000006",
+        "prompt_text": "[QA] Penggantian lampu penerangan jalan umum (PJU) dengan lampu pintar hemat energi di Lowokwaru.",
+        "zone_id": "b5000000-0000-4000-8000-000000000005",
+        "result_narrative": "Analisis komprehensif terhadap usulan kebijakan di Kota Malang (Lowokwaru (Malang Barat Laut) (b5000000-0000-4000-8000-000000000005)) dengan horizon 6 bulan menunjukkan proyeksi penurunan keluhan masyarakat sebesar 52.0% dan estimasi kebutuhan anggaran Rp 200,000,000. Intervensi ini dirancang untuk meningkatkan keandalan infrastruktur publik secara terukur melalui koordinasi Dinas Perhubungan (Dishub) Kota Malang.",
+        "result_data": {
+          "target_zone": "Lowokwaru (Malang Barat Laut)",
+          "source_model": "gemini-2.5-flash",
+          "confidence_index": 0.9,
+          "risk_mitigations": [
+            "Sosialisasi jadwal pengerjaan kepada warga dan pelaku usaha terdampak",
+            "Pengaturan rekayasa lalu lintas pada jam tidak sibuk (22.00 - 05.00 WIB)"
+          ],
+          "target_department": "Dinas Perhubungan (Dishub) Kota Malang",
+          "risk_reduction_pct": 52,
+          "budget_estimate_idr": 200000000,
+          "key_recommendations": [
+            "Penggantian bertahap lampu jalan ke unit PJU LED pintar hemat energi",
+            "Pemasangan sensor photocell otomatis dan panel pemantauan arus listrik",
+            "Prioritaskan koridor jalan protokol dan gang pemukiman rawan kecelakaan malam hari"
+          ],
+          "recommended_actions": [
+            "Penggantian bertahap lampu jalan ke unit PJU LED pintar hemat energi",
+            "Pemasangan sensor photocell otomatis dan panel pemantauan arus listrik",
+            "Prioritaskan koridor jalan protokol dan gang pemukiman rawan kecelakaan malam hari"
+          ],
+          "time_horizon_months": 2,
+          "estimated_budget_idr": 200000000,
+          "simulated_risk_score": 2.4,
+          "time_to_impact_weeks": 6,
+          "implementation_months": 2,
+          "estimated_incident_reduction_pct": 52,
+          "public_satisfaction_increase_pct": 37.4,
+          "estimated_complaint_reduction_percent": 52
+        },
+        "created_at": "2026-11-01T20:17:39.239Z",
+        "requester": {
+          "id": "00000000-0000-4000-8000-000000000006",
+          "full_name": "Dr. Hendra Wijaya (Bappeda / Policy Maker)",
+          "email": "policymaker@laporkita.malangkota.go.id",
+          "role": "policy_maker"
+        },
+        "zone": {
+          "id": "b5000000-0000-4000-8000-000000000005",
+          "name": "Lowokwaru (Malang Barat Laut)",
+          "stress_level": "low"
+        }
+      },
+      {
+        "id": "23ac77f6-9e8a-4d7a-80d5-b68ed4e618e5",
+        "requested_by": "00000000-0000-4000-8000-000000000006",
+        "prompt_text": "[QA] Analisis dampak normalisasi drainase di wilayah Klojen Kota Malang terhadap pengurangan risiko banjir dan kebutuhan anggaran.",
+        "zone_id": "b1000000-0000-4000-8000-000000000001",
+        "result_narrative": "Analisis komprehensif terhadap usulan kebijakan di Kota Malang (Klojen (Pusat Kota) (b1000000-0000-4000-8000-000000000001)) dengan horizon 6 bulan menunjukkan proyeksi penurunan keluhan masyarakat sebesar 41.5% dan estimasi kebutuhan anggaran Rp 1,730,000,000. Intervensi ini dirancang untuk meningkatkan keandalan infrastruktur publik secara terukur melalui koordinasi Dinas Pekerjaan Umum, Penataan Ruang, Perumahan dan Kawasan Permukiman (DPUPRPKP) Kota Malang.",
+        "result_data": {
+          "target_zone": "Klojen (Pusat Kota)",
+          "source_model": "gemini-2.5-flash",
+          "confidence_index": 0.9,
+          "risk_mitigations": [
+            "Sosialisasi jadwal pengerjaan kepada warga dan pelaku usaha terdampak",
+            "Pengaturan rekayasa lalu lintas pada jam tidak sibuk (22.00 - 05.00 WIB)"
+          ],
+          "target_department": "Dinas Pekerjaan Umum, Penataan Ruang, Perumahan dan Kawasan Permukiman (DPUPRPKP) Kota Malang",
+          "risk_reduction_pct": 41.5,
+          "budget_estimate_idr": 1730000000,
+          "key_recommendations": [
+            "Pengerukan sedimen dan normalisasi saluran drainase primer secara terjadwal",
+            "Pemasangan saringan sampah mekanis dan sensor muka air pada titik rawan genangan",
+            "Koordinasi lintas OPD (DPUPRPKP & DLH) untuk pemeliharaan saluran pasca-intervensi"
+          ],
+          "recommended_actions": [
+            "Pengerukan sedimen dan normalisasi saluran drainase primer secara terjadwal",
+            "Pemasangan saringan sampah mekanis dan sensor muka air pada titik rawan genangan",
+            "Koordinasi lintas OPD (DPUPRPKP & DLH) untuk pemeliharaan saluran pasca-intervensi"
+          ],
+          "time_horizon_months": 3,
+          "estimated_budget_idr": 1730000000,
+          "simulated_risk_score": 2.92,
+          "time_to_impact_weeks": 12,
+          "implementation_months": 3,
+          "estimated_incident_reduction_pct": 41.5,
+          "public_satisfaction_increase_pct": 29.9,
+          "estimated_complaint_reduction_percent": 41.5
+        },
+        "created_at": "2026-11-01T20:17:33.581Z",
+        "requester": {
+          "id": "00000000-0000-4000-8000-000000000006",
+          "full_name": "Dr. Hendra Wijaya (Bappeda / Policy Maker)",
+          "email": "policymaker@laporkita.malangkota.go.id",
+          "role": "policy_maker"
+        },
+        "zone": {
+          "id": "b1000000-0000-4000-8000-000000000001",
+          "name": "Klojen (Pusat Kota)",
+          "stress_level": "low"
+        }
+      },
+      {
+        "id": "e86e4b44-662a-49d5-806b-2e93d9cfd943",
+        "requested_by": "00000000-0000-4000-8000-000000000006",
+        "prompt_text": "[QA] Penggantian lampu penerangan jalan umum (PJU) dengan lampu pintar hemat energi di Lowokwaru.",
+        "zone_id": "b5000000-0000-4000-8000-000000000005",
+        "result_narrative": "Analisis komprehensif terhadap usulan kebijakan di Kota Malang (Lowokwaru (Malang Barat Laut) (b5000000-0000-4000-8000-000000000005)) dengan horizon 6 bulan menunjukkan proyeksi penurunan keluhan masyarakat sebesar 52.0% dan estimasi kebutuhan anggaran Rp 200,000,000. Intervensi ini dirancang untuk meningkatkan keandalan infrastruktur publik secara terukur melalui koordinasi Dinas Perhubungan (Dishub) Kota Malang.",
+        "result_data": {
+          "target_zone": "Lowokwaru (Malang Barat Laut)",
+          "source_model": "gemini-2.5-flash",
+          "confidence_index": 0.9,
+          "risk_mitigations": [
+            "Sosialisasi jadwal pengerjaan kepada warga dan pelaku usaha terdampak",
+            "Pengaturan rekayasa lalu lintas pada jam tidak sibuk (22.00 - 05.00 WIB)"
+          ],
+          "target_department": "Dinas Perhubungan (Dishub) Kota Malang",
+          "risk_reduction_pct": 52,
+          "budget_estimate_idr": 200000000,
+          "key_recommendations": [
+            "Penggantian bertahap lampu jalan ke unit PJU LED pintar hemat energi",
+            "Pemasangan sensor photocell otomatis dan panel pemantauan arus listrik",
+            "Prioritaskan koridor jalan protokol dan gang pemukiman rawan kecelakaan malam hari"
+          ],
+          "recommended_actions": [
+            "Penggantian bertahap lampu jalan ke unit PJU LED pintar hemat energi",
+            "Pemasangan sensor photocell otomatis dan panel pemantauan arus listrik",
+            "Prioritaskan koridor jalan protokol dan gang pemukiman rawan kecelakaan malam hari"
+          ],
+          "time_horizon_months": 2,
+          "estimated_budget_idr": 200000000,
+          "simulated_risk_score": 2.4,
+          "time_to_impact_weeks": 6,
+          "implementation_months": 2,
+          "estimated_incident_reduction_pct": 52,
+          "public_satisfaction_increase_pct": 37.4,
+          "estimated_complaint_reduction_percent": 52
+        },
+        "created_at": "2026-11-01T20:13:24.535Z",
+        "requester": {
+          "id": "00000000-0000-4000-8000-000000000006",
+          "full_name": "Dr. Hendra Wijaya (Bappeda / Policy Maker)",
+          "email": "policymaker@laporkita.malangkota.go.id",
+          "role": "policy_maker"
+        },
+        "zone": {
+          "id": "b5000000-0000-4000-8000-000000000005",
+          "name": "Lowokwaru (Malang Barat Laut)",
+          "stress_level": "low"
+        }
+      },
+      {
+        "id": "d9256c23-4890-4962-ad60-55b3ff29d660",
+        "requested_by": "00000000-0000-4000-8000-000000000006",
+        "prompt_text": "[QA] Analisis dampak normalisasi drainase di wilayah Klojen Kota Malang terhadap pengurangan risiko banjir dan kebutuhan anggaran.",
+        "zone_id": "b1000000-0000-4000-8000-000000000001",
+        "result_narrative": "Analisis komprehensif terhadap usulan kebijakan di Kota Malang (Klojen (Pusat Kota) (b1000000-0000-4000-8000-000000000001)) dengan horizon 6 bulan menunjukkan proyeksi penurunan keluhan masyarakat sebesar 41.5% dan estimasi kebutuhan anggaran Rp 1,730,000,000. Intervensi ini dirancang untuk meningkatkan keandalan infrastruktur publik secara terukur melalui koordinasi Dinas Pekerjaan Umum, Penataan Ruang, Perumahan dan Kawasan Permukiman (DPUPRPKP) Kota Malang.",
+        "result_data": {
+          "target_zone": "Klojen (Pusat Kota)",
+          "source_model": "gemini-2.5-flash",
+          "confidence_index": 0.9,
+          "risk_mitigations": [
+            "Sosialisasi jadwal pengerjaan kepada warga dan pelaku usaha terdampak",
+            "Pengaturan rekayasa lalu lintas pada jam tidak sibuk (22.00 - 05.00 WIB)"
+          ],
+          "target_department": "Dinas Pekerjaan Umum, Penataan Ruang, Perumahan dan Kawasan Permukiman (DPUPRPKP) Kota Malang",
+          "risk_reduction_pct": 41.5,
+          "budget_estimate_idr": 1730000000,
+          "key_recommendations": [
+            "Pengerukan sedimen dan normalisasi saluran drainase primer secara terjadwal",
+            "Pemasangan saringan sampah mekanis dan sensor muka air pada titik rawan genangan",
+            "Koordinasi lintas OPD (DPUPRPKP & DLH) untuk pemeliharaan saluran pasca-intervensi"
+          ],
+          "recommended_actions": [
+            "Pengerukan sedimen dan normalisasi saluran drainase primer secara terjadwal",
+            "Pemasangan saringan sampah mekanis dan sensor muka air pada titik rawan genangan",
+            "Koordinasi lintas OPD (DPUPRPKP & DLH) untuk pemeliharaan saluran pasca-intervensi"
+          ],
+          "time_horizon_months": 3,
+          "estimated_budget_idr": 1730000000,
+          "simulated_risk_score": 2.92,
+          "time_to_impact_weeks": 12,
+          "implementation_months": 3,
+          "estimated_incident_reduction_pct": 41.5,
+          "public_satisfaction_increase_pct": 29.9,
+          "estimated_complaint_reduction_percent": 41.5
+        },
+        "created_at": "2026-11-01T20:13:18.925Z",
+        "requester": {
+          "id": "00000000-0000-4000-8000-000000000006",
+          "full_name": "Dr. Hendra Wijaya (Bappeda / Policy Maker)",
+          "email": "policymaker@laporkita.malangkota.go.id",
+          "role": "policy_maker"
+        },
+        "zone": {
+          "id": "b1000000-0000-4000-8000-000000000001",
+          "name": "Klojen (Pusat Kota)",
+          "stress_level": "low"
+        }
+      },
+      {
+        "id": "bf3f1dc9-1a08-4a1f-88aa-1a2f1e3f0e9c",
+        "requested_by": "00000000-0000-4000-8000-000000000006",
+        "prompt_text": "[QA] Penggantian lampu penerangan jalan umum (PJU) dengan lampu pintar hemat energi di Lowokwaru.",
+        "zone_id": "b5000000-0000-4000-8000-000000000005",
+        "result_narrative": "### Analisis Simulasi Kebijakan LaporKita (Lowokwaru (Malang Barat Laut))\n**Usulan Kebijakan:** \"[QA] Penggantian lampu penerangan jalan umum (PJU) dengan lampu pintar hemat energi di Lowokwaru.\"\n\n#### 1. Proyeksi Efektivitas & Dampak\n- Penerapan intervensi di wilayah **Lowokwaru (Malang Barat Laut)** diproyeksikan menurunkan kepadatan laporan sebesar **48.5%** dalam kurun waktu 3 bulan.\n\n#### 2. Estimasi Kebutuhan Finansial & Waktu\n- **Estimasi Anggaran:** Rp 340.000.000\n- **Estimasi Waktu Pengerjaan:** 3 Bulan\n\n#### 3. Rekomendasi Langkah Aksi\n1. Penggantian lampu jalan ke unit LED hemat energi di Lowokwaru (Malang Barat Laut)\n2. Pemasangan panel kontrol otomatis berbasis sensor cahaya (photocell)\n3. Patroli malam Dishub untuk pemetaan titik gelap rawan kecelakaan",
+        "result_data": {
+          "is_mock": true,
+          "target_zone": "Lowokwaru (Malang Barat Laut)",
+          "risk_factors": [
+            "Curah hujan tinggi pada musim penghujan",
+            "Disrupsi arus lalu lintas lokal"
+          ],
+          "risk_reduction_pct": 48.5,
+          "budget_estimate_idr": 340000000,
+          "key_recommendations": [
+            "Penggantian lampu jalan ke unit LED hemat energi di Lowokwaru (Malang Barat Laut)",
+            "Pemasangan panel kontrol otomatis berbasis sensor cahaya (photocell)",
+            "Patroli malam Dishub untuk pemetaan titik gelap rawan kecelakaan"
+          ],
+          "recommended_actions": [
+            "Penggantian lampu jalan ke unit LED hemat energi di Lowokwaru (Malang Barat Laut)",
+            "Pemasangan panel kontrol otomatis berbasis sensor cahaya (photocell)",
+            "Patroli malam Dishub untuk pemetaan titik gelap rawan kecelakaan"
+          ],
+          "time_horizon_months": 3,
+          "estimated_budget_idr": 340000000,
+          "simulated_risk_score": 2.58,
+          "implementation_months": 3,
+          "projected_satisfaction_increase": 1.8,
+          "estimated_incident_reduction_pct": 48.5,
+          "estimated_complaint_reduction_percent": 48.5
+        },
+        "created_at": "2026-11-01T20:09:20.554Z",
+        "requester": {
+          "id": "00000000-0000-4000-8000-000000000006",
+          "full_name": "Dr. Hendra Wijaya (Bappeda / Policy Maker)",
+          "email": "policymaker@laporkita.malangkota.go.id",
+          "role": "policy_maker"
+        },
+        "zone": {
+          "id": "b5000000-0000-4000-8000-000000000005",
+          "name": "Lowokwaru (Malang Barat Laut)",
+          "stress_level": "low"
+        }
+      },
+      {
+        "id": "2c7f2ebf-2f63-45c7-89be-3639150cfd18",
+        "requested_by": "00000000-0000-4000-8000-000000000006",
+        "prompt_text": "[QA] Analisis dampak normalisasi drainase di wilayah Klojen Kota Malang terhadap pengurangan risiko banjir dan kebutuhan anggaran.",
+        "zone_id": "b1000000-0000-4000-8000-000000000001",
+        "result_narrative": "Tentu, sebagai asisten AI perencana tata ruang perkotaan Kota Malang untuk platform LaporKita, saya akan menyajikan analisis komprehensif mengenai usulan kebijakan normalisasi drainase di wilayah Klojen.\n\n---\n\n**Analisis Dampak Kebijakan: Normalisasi Drainase di Wilayah Klojen, Kota Malang**\n\n**Konteks Wilayah:** Klojen merupakan pusat kota Malang yang padat dengan aktivitas ekonomi, perkantoran, dan permukiman. Karakteristik topografi yang relatif datar di beberapa bagian, serta infrastruktur drainase yang mungkin sudah tua atau tidak memadai, menjadikannya rentan terhadap genangan air dan banjir saat intensitas hujan tinggi. Laporan masyarakat melalui LaporKita seringkali mencerminkan masalah ini, mengganggu mobilitas, aktivitas ekonomi, dan kenyamanan warga.\n\n**Usulan Kebijakan:** Normalisasi Drainase di Wilayah Klojen Kota Malang. Ini mencakup pembersihan, pelebaran, pendalaman, perbaikan struktur, dan mungkin relokasi atau penambahan saluran drainase primer dan sekunder yang terintegrasi.\n\n---\n\n**1. Narasi Analisis Dampak Kebijakan**\n\nKebijakan normalisasi drainase di Klojen akan membawa dampak positif yang signifikan dan multidimensional.\n\n*   **Pengurangan Risiko Banjir dan Genangan:** Ini adalah dampak paling langsung dan utama. Dengan kapasitas drainase yang meningkat, air hujan akan dapat mengalir lebih cepat dan efisien, mengurangi frekuensi dan durasi genangan air, serta meminimalisir risiko banjir di area-area rawan. Hal ini akan melindungi properti warga, fasilitas umum, dan infrastruktur jalan dari kerusakan akibat air.\n*   **Peningkatan Kualitas Lingkungan dan Kesehatan:** Genangan air seringkali menjadi sarang nyamuk (penyebab DBD) dan bakteri. Dengan normalisasi drainase, genangan akan berkurang, sehingga potensi penyebaran penyakit berbasis air dan vektor dapat ditekan. Selain itu, aliran air yang lancar juga mengurangi bau tidak sedap akibat air tergenang dan sampah yang tersangkut.\n*   **Peningkatan Mobilitas dan Aktivitas Ekonomi:** Banjir dan genangan air selalu menghambat lalu lintas dan aktivitas bisnis. Dengan berkurangnya kejadian ini, mobilitas warga dan distribusi barang akan lebih lancar, mendukung keberlangsungan ekonomi di pusat kota. Pedagang dan pelaku usaha tidak perlu khawatir kehilangan pendapatan akibat toko yang terendam atau pelanggan yang enggan datang.\n*   **Peningkatan Estetika Kota:** Saluran drainase yang bersih, terawat, dan berfungsi baik akan meningkatkan keindahan dan kerapian tata kota. Ini juga dapat mendorong kesadaran masyarakat untuk tidak membuang sampah sembarangan ke saluran air.\n*   **Peningkatan Kepercayaan Publik:** Keberhasilan pemerintah dalam mengatasi masalah banjir yang kronis akan meningkatkan kepercayaan masyarakat terhadap kinerja pemerintah daerah, khususnya dalam penyediaan infrastruktur dasar yang vital.\n*   **Potensi Dampak Negatif Jangka Pendek (Konstruksi):** Selama masa konstruksi, akan ada gangguan lalu lintas, kebisingan, dan debu. Namun, dampak ini bersifat sementara dan dapat dikelola dengan perencanaan yang matang.\n\nSecara keseluruhan, normalisasi drainase di Klojen bukan hanya solusi teknis, tetapi juga investasi strategis untuk keberlanjutan kota, kesejahteraan warga, dan pertumbuhan ekonomi.\n\n---\n\n**2. Estimasi Penurunan Laporan (%)**\n\nBerdasarkan data historis laporan di LaporKita terkait genangan air, banjir, dan kerusakan jalan akibat genangan di wilayah Klojen, serta mempertimbangkan efektivitas kebijakan serupa di kota lain, kami mengestimasi:\n\n*   **Penurunan Laporan Terkait Banjir/Genangan Air:** **70% - 85%**\n*   **Penurunan Laporan Terkait Kerusakan Jalan Akibat Genangan:** **50% - 65%**\n*   **Penurunan Laporan Terkait Lingkungan (Bau, Sampah di Drainase):** **30% - 45%**\n\n**Rata-rata Penurunan Laporan Keseluruhan (terkait drainase dan dampaknya):** **60% - 75%**\n\n*Catatan: Estimasi ini mengasumsikan implementasi kebijakan yang komprehensif dan berkualitas tinggi, serta partisipasi aktif masyarakat dalam menjaga kebersihan drainase setelah normalisasi.*\n\n---\n\n**3. Estimasi Anggaran (Rp)**\n\nEstimasi anggaran ini mencakup survei, perencanaan detail, pekerjaan fisik (galian, pemasangan U-ditch/box culvert, perbaikan gorong-gorong, relokasi utilitas jika diperlukan), pengadaan material, biaya operasional, pengawasan, dan contingency. Perkiraan ini bersifat kasar dan memerlukan studi kelayakan serta desain teknis rinci untuk angka yang lebih akurat.\n\n*   **Survei Topografi & Hidrologi, Desain Teknis Rinci (DED):** Rp 500.000.000 - Rp 1.000.000.000\n*   **Pekerjaan Fisik (Galian, Pemasangan U-Ditch/Box Culvert, Perbaikan Gorong-gorong, Pelebaran, Pendalaman):**\n    *   Asumsi panjang total drainase primer dan sekunder yang dinormalisasi di Klojen: 10-15 km.\n    *   Biaya per meter linier (termasuk material, tenaga kerja, alat berat, dan finishing): Rp 3.000.000 - Rp 7.000.000 (tergantung ukuran, kedalaman, dan kondisi lapangan).\n    *   Total Pekerjaan Fisik: (10.000 m - 15.000 m) x (Rp 3.000.000 - Rp 7.000.000) = **Rp 30.000.000.000 - Rp 105.000.000.000**\n*   **Relokasi Utilitas (jika diperlukan):** Rp 1.000.000.000 - Rp 5.000.000.000\n*   **Manajemen Proyek & Pengawasan:** Rp 1.500.000.000 - Rp 3.000.000.000\n*   **Biaya Tak Terduga (Contingency 10%):** Rp 3.500.000.000 - Rp 11.500.000.000\n\n**Total Estimasi Anggaran Keseluruhan:** **Rp 36.500.000.000 - Rp 125.500.000.000**\n\n*Catatan: Angka ini sangat bergantung pada skala proyek, jenis material, kondisi geologis, dan kompleksitas di lapangan (misalnya, keberadaan utilitas bawah tanah, kepadatan bangunan).*\n\n---\n\n**4. Jangka Waktu Implementasi (Bulan)**\n\nJangka waktu implementasi akan dibagi menjadi beberapa fase:\n\n*   **Fase Perencanaan (Survei, DED, Perizinan):** 6 - 12 bulan\n*   **Fase Pengadaan (Tender Proyek):** 3 - 6 bulan\n*   **Fase Konstruksi Fisik:** 18 - 36 bulan (tergantung skala dan pembagian zona kerja)\n*   **Fase Pemeliharaan Awal & Monitoring:** 6 - 12 bulan setelah konstruksi selesai.\n\n**Total Jangka Waktu Implementasi (dari perencanaan hingga selesai konstruksi):** **27 - 54 bulan (sekitar 2.5 hingga 4.5 tahun)**\n\n*Catatan: Proyek dapat dibagi menjadi beberapa tahap atau zona untuk mempercepat implementasi dan mengurangi dampak gangguan secara keseluruhan.*\n\n---\n\n**5. Rekomendasi Mitigasi Risiko**\n\nUntuk memastikan keberhasilan proyek dan meminimalisir dampak negatif, berikut adalah rekomendasi mitigasi risiko:\n\n*   **Risiko Gangguan Lalu Lintas & Akses:**\n    *   **Mitigasi:** Buat rencana manajemen lalu lintas yang detail, termasuk pengalihan rute, pemasangan rambu peringatan, dan penempatan petugas lalu lintas. Lakukan pekerjaan secara bertahap per segmen jalan. Komunikasikan jadwal dan area kerja secara transparan kepada masyarakat dan pelaku usaha.\n*   **Risiko Kerusakan Utilitas Bawah Tanah:**\n    *   **Mitigasi:** Lakukan survei utilitas bawah tanah yang komprehensif sebelum penggalian. Koordinasi erat dengan penyedia utilitas (PDAM, PLN, Telkom, PGN) untuk pemetaan, relokasi, atau perlindungan utilitas yang ada.\n*   **Risiko Penolakan atau Protes Warga:**\n    *   **Mitigasi:** Libatkan masyarakat sejak awal melalui sosialisasi, konsultasi publik, dan forum diskusi. Jelaskan manfaat proyek, dampak sementara, dan mekanisme penanganan keluhan. Berikan kompensasi yang adil jika ada lahan atau properti warga yang terdampak.\n*   **Risiko Kualitas Konstruksi yang Buruk:**\n    *   **Mitigasi:** Terapkan standar kualitas yang ketat dalam kontrak. Lakukan pengawasan lapangan yang intensif oleh konsultan pengawas independen. Gunakan material yang sesuai standar",
+        "result_data": {
+          "target_zone": "Klojen (Pusat Kota)",
+          "source_model": "Gemini 2.5 Flash",
+          "confidence_index": 0.88,
+          "risk_reduction_pct": 40.5,
+          "budget_estimate_idr": 1405000000,
+          "key_recommendations": [
+            "Pengerukan sedimen dan normalisasi saluran drainase primer di Klojen (Pusat Kota)",
+            "Pemasangan saringan sampah mekanis dan sensor tinggi muka air",
+            "Koordinasi lintas OPD (DPUPRPKP & DLH) untuk pemeliharaan berkala"
+          ],
+          "recommended_actions": [
+            "Pengerukan sedimen dan normalisasi saluran drainase primer di Klojen (Pusat Kota)",
+            "Pemasangan saringan sampah mekanis dan sensor tinggi muka air",
+            "Koordinasi lintas OPD (DPUPRPKP & DLH) untuk pemeliharaan berkala"
+          ],
+          "time_horizon_months": 6,
+          "estimated_budget_idr": 1405000000,
+          "simulated_risk_score": 2.97,
+          "implementation_months": 6,
+          "estimated_incident_reduction_pct": 40.5,
+          "estimated_complaint_reduction_percent": 40.5
+        },
+        "created_at": "2026-11-01T20:09:14.298Z",
+        "requester": {
+          "id": "00000000-0000-4000-8000-000000000006",
+          "full_name": "Dr. Hendra Wijaya (Bappeda / Policy Maker)",
+          "email": "policymaker@laporkita.malangkota.go.id",
+          "role": "policy_maker"
+        },
+        "zone": {
+          "id": "b1000000-0000-4000-8000-000000000001",
+          "name": "Klojen (Pusat Kota)",
+          "stress_level": "low"
+        }
+      }
+    ],
+    "meta": {
+      "total": 6,
+      "limit": 10,
+      "nextCursor": null,
+      "hasPrevious": false
+    },
+    "error": null
+  }
+}

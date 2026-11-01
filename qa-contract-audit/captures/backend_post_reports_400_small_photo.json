@@ -1,0 +1,44 @@
+{
+  "capturedAt": "2026-11-01T20:16:28.158Z",
+  "request": {
+    "method": "POST",
+    "url": "http://127.0.0.1:3000/api/v1/reports",
+    "headersMasked": {
+      "Authorization": "Bearer eyJhbGci..."
+    },
+    "bodySummary": {
+      "category_id": "c1000000-0000-4000-8000-000000000001",
+      "latitude": "-7.9826",
+      "longitude": "112.6308",
+      "description": "[QA] Small photo rejection test",
+      "photo": {
+        "name": "small.jpg",
+        "mimeType": "image/jpeg",
+        "sizeBytes": 717
+      }
+    }
+  },
+  "status": 400,
+  "latencyMs": 6,
+  "headers": {
+    "x-powered-by": "Express",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "10",
+    "x-ratelimit-remaining": "9",
+    "x-ratelimit-reset": "60",
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "176",
+    "etag": "W/\"b0-K35X6mQga7H5sNUwO3lM6lhn5HM\"",
+    "date": "Sun, 01 Nov 2026 20:16:28 GMT",
+    "connection": "keep-alive",
+    "keep-alive": "timeout=5"
+  },
+  "body": {
+    "success": false,
+    "data": null,
+    "error": {
+      "code": "BAD_REQUEST",
+      "message": "Resolusi gambar (320×240px) terlalu kecil. Minimal salah satu dimensi harus >= 480px (Rules.md §2.1)."
+    }
+  }
+}

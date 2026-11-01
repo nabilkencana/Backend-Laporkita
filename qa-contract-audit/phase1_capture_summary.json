@@ -1,0 +1,2113 @@
+{
+  "executedAt": "2026-11-01T20:17:39.360Z",
+  "operationsExercised": {
+    "backend": 48,
+    "aiService": 19,
+    "total": 67,
+    "keys": [
+      "AI:GET /api/v1/training/dataset-stats",
+      "AI:GET /api/v1/training/download-dataset",
+      "AI:GET /api/v1/training/samples/{class_name}/{filename}",
+      "AI:GET /demo",
+      "AI:GET /health",
+      "AI:GET /sample_images.json",
+      "AI:GET /v1/training/dataset-stats",
+      "AI:GET /v1/training/download-dataset",
+      "AI:GET /v1/training/samples/{class_name}/{filename}",
+      "AI:POST /api/v1/policy-simulate",
+      "AI:POST /api/v1/predict-risk",
+      "AI:POST /api/v1/predict/zone-metrics",
+      "AI:POST /api/v1/training/ingest-sample",
+      "AI:POST /api/v1/verify",
+      "AI:POST /v1/policy-simulate",
+      "AI:POST /v1/predict-risk",
+      "AI:POST /v1/predict/zone-metrics",
+      "AI:POST /v1/training/ingest-sample",
+      "AI:POST /v1/verify",
+      "BE:DELETE /api/v1/agencies/{id}",
+      "BE:DELETE /api/v1/categories/{id}",
+      "BE:DELETE /api/v1/reports/{id}/support",
+      "BE:DELETE /api/v1/route-alerts/unsubscribe",
+      "BE:DELETE /api/v1/users/{id}",
+      "BE:GET /api/v1/agencies",
+      "BE:GET /api/v1/agencies/{id}",
+      "BE:GET /api/v1/categories",
+      "BE:GET /api/v1/categories/{id}",
+      "BE:GET /api/v1/health",
+      "BE:GET /api/v1/notifications",
+      "BE:GET /api/v1/policy-simulations",
+      "BE:GET /api/v1/policy-simulations/{id}",
+      "BE:GET /api/v1/predictions/zones",
+      "BE:GET /api/v1/predictions/zones/{zoneId}/metrics",
+      "BE:GET /api/v1/reports",
+      "BE:GET /api/v1/reports/comments/flagged",
+      "BE:GET /api/v1/reports/{id}",
+      "BE:GET /api/v1/reports/{id}/comments",
+      "BE:GET /api/v1/users",
+      "BE:GET /api/v1/users/me",
+      "BE:GET /api/v1/users/me/points",
+      "BE:GET /api/v1/users/{id}",
+      "BE:PATCH /api/v1/agencies/{id}",
+      "BE:PATCH /api/v1/categories/{id}",
+      "BE:PATCH /api/v1/notifications/read-all",
+      "BE:PATCH /api/v1/notifications/{id}/read",
+      "BE:PATCH /api/v1/reports/{id}/status",
+      "BE:PATCH /api/v1/users/me",
+      "BE:PATCH /api/v1/users/{id}",
+      "BE:POST /api/v1/agencies",
+      "BE:POST /api/v1/auth/login",
+      "BE:POST /api/v1/auth/refresh",
+      "BE:POST /api/v1/auth/register",
+      "BE:POST /api/v1/auth/resend-otp",
+      "BE:POST /api/v1/auth/verify-otp",
+      "BE:POST /api/v1/categories",
+      "BE:POST /api/v1/maps/route",
+      "BE:POST /api/v1/policy-simulations",
+      "BE:POST /api/v1/predictions/metrics/refresh",
+      "BE:POST /api/v1/reports",
+      "BE:POST /api/v1/reports/along-route",
+      "BE:POST /api/v1/reports/{id}/comments",
+      "BE:POST /api/v1/reports/{id}/media",
+      "BE:POST /api/v1/reports/{id}/support",
+      "BE:POST /api/v1/reports/{id}/validate",
+      "BE:POST /api/v1/route-alerts/check",
+      "BE:POST /api/v1/route-alerts/subscribe"
+    ]
+  },
+  "testSteps": {
+    "total": 122,
+    "passed": 122,
+    "failed": 0
+  },
+  "capturesCount": 116,
+  "captures": [
+    {
+      "slug": "ai_get_health",
+      "file": "qa-contract-audit/captures/ai_get_health.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/health",
+      "status": 200,
+      "latencyMs": 215
+    },
+    {
+      "slug": "ai_get_demo_html",
+      "file": "qa-contract-audit/captures/ai_get_demo_html.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/demo",
+      "status": 200,
+      "latencyMs": 5
+    },
+    {
+      "slug": "ai_get_sample_images",
+      "file": "qa-contract-audit/captures/ai_get_sample_images.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/sample_images.json",
+      "status": 200,
+      "latencyMs": 2
+    },
+    {
+      "slug": "ai_v1_verify_401_no_key",
+      "file": "qa-contract-audit/captures/ai_v1_verify_401_no_key.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/v1/verify",
+      "status": 401,
+      "latencyMs": 1
+    },
+    {
+      "slug": "ai_v1_verify_403_wrong_key",
+      "file": "qa-contract-audit/captures/ai_v1_verify_403_wrong_key.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/v1/verify",
+      "status": 403,
+      "latencyMs": 0
+    },
+    {
+      "slug": "ai_v1_verify_drainase",
+      "file": "qa-contract-audit/captures/ai_v1_verify_drainase.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/v1/verify",
+      "status": 200,
+      "latencyMs": 8
+    },
+    {
+      "slug": "ai_api_v1_verify_drainase",
+      "file": "qa-contract-audit/captures/ai_api_v1_verify_drainase.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/api/v1/verify",
+      "status": 200,
+      "latencyMs": 7
+    },
+    {
+      "slug": "ai_v1_verify_jalan_berlubang",
+      "file": "qa-contract-audit/captures/ai_v1_verify_jalan_berlubang.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/v1/verify",
+      "status": 200,
+      "latencyMs": 8
+    },
+    {
+      "slug": "ai_api_v1_verify_jalan_berlubang",
+      "file": "qa-contract-audit/captures/ai_api_v1_verify_jalan_berlubang.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/api/v1/verify",
+      "status": 200,
+      "latencyMs": 9
+    },
+    {
+      "slug": "ai_v1_verify_lampu_jalan",
+      "file": "qa-contract-audit/captures/ai_v1_verify_lampu_jalan.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/v1/verify",
+      "status": 200,
+      "latencyMs": 12
+    },
+    {
+      "slug": "ai_api_v1_verify_lampu_jalan",
+      "file": "qa-contract-audit/captures/ai_api_v1_verify_lampu_jalan.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/api/v1/verify",
+      "status": 200,
+      "latencyMs": 7
+    },
+    {
+      "slug": "ai_v1_verify_rambu_lalu_lintas",
+      "file": "qa-contract-audit/captures/ai_v1_verify_rambu_lalu_lintas.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/v1/verify",
+      "status": 200,
+      "latencyMs": 7
+    },
+    {
+      "slug": "ai_api_v1_verify_rambu_lalu_lintas",
+      "file": "qa-contract-audit/captures/ai_api_v1_verify_rambu_lalu_lintas.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/api/v1/verify",
+      "status": 200,
+      "latencyMs": 8
+    },
+    {
+      "slug": "ai_v1_verify_trotoar",
+      "file": "qa-contract-audit/captures/ai_v1_verify_trotoar.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/v1/verify",
+      "status": 200,
+      "latencyMs": 7
+    },
+    {
+      "slug": "ai_api_v1_verify_trotoar",
+      "file": "qa-contract-audit/captures/ai_api_v1_verify_trotoar.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/api/v1/verify",
+      "status": 200,
+      "latencyMs": 7
+    },
+    {
+      "slug": "ai_v1_verify_ood_blurry",
+      "file": "qa-contract-audit/captures/ai_v1_verify_ood_blurry.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/v1/verify",
+      "status": 200,
+      "latencyMs": 12
+    },
+    {
+      "slug": "ai_api_v1_verify_ood_blurry",
+      "file": "qa-contract-audit/captures/ai_api_v1_verify_ood_blurry.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/api/v1/verify",
+      "status": 200,
+      "latencyMs": 11
+    },
+    {
+      "slug": "ai_v1_verify_tampered",
+      "file": "qa-contract-audit/captures/ai_v1_verify_tampered.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/v1/verify",
+      "status": 200,
+      "latencyMs": 13
+    },
+    {
+      "slug": "ai_api_v1_verify_tampered",
+      "file": "qa-contract-audit/captures/ai_api_v1_verify_tampered.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/api/v1/verify",
+      "status": 200,
+      "latencyMs": 13
+    },
+    {
+      "slug": "ai_v1_verify_out_of_malang_jakarta",
+      "file": "qa-contract-audit/captures/ai_v1_verify_out_of_malang_jakarta.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/v1/verify",
+      "status": 200,
+      "latencyMs": 8
+    },
+    {
+      "slug": "ai_v1_verify_ring_zone",
+      "file": "qa-contract-audit/captures/ai_v1_verify_ring_zone.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/v1/verify",
+      "status": 200,
+      "latencyMs": 8
+    },
+    {
+      "slug": "ai_v1_predict_risk",
+      "file": "qa-contract-audit/captures/ai_v1_predict_risk.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/v1/predict-risk",
+      "status": 200,
+      "latencyMs": 2
+    },
+    {
+      "slug": "ai_api_v1_predict_risk",
+      "file": "qa-contract-audit/captures/ai_api_v1_predict_risk.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/api/v1/predict-risk",
+      "status": 200,
+      "latencyMs": 1
+    },
+    {
+      "slug": "ai_v1_predict_zone_metrics",
+      "file": "qa-contract-audit/captures/ai_v1_predict_zone_metrics.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/v1/predict/zone-metrics",
+      "status": 200,
+      "latencyMs": 1
+    },
+    {
+      "slug": "ai_api_v1_predict_zone_metrics",
+      "file": "qa-contract-audit/captures/ai_api_v1_predict_zone_metrics.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/api/v1/predict/zone-metrics",
+      "status": 200,
+      "latencyMs": 1
+    },
+    {
+      "slug": "ai_v1_policy_simulate",
+      "file": "qa-contract-audit/captures/ai_v1_policy_simulate.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/v1/policy-simulate",
+      "status": 200,
+      "latencyMs": 4629
+    },
+    {
+      "slug": "ai_api_v1_policy_simulate",
+      "file": "qa-contract-audit/captures/ai_api_v1_policy_simulate.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/api/v1/policy-simulate",
+      "status": 200,
+      "latencyMs": 5780
+    },
+    {
+      "slug": "ai_v1_training_ingest_sample",
+      "file": "qa-contract-audit/captures/ai_v1_training_ingest_sample.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/v1/training/ingest-sample",
+      "status": 201,
+      "latencyMs": 7
+    },
+    {
+      "slug": "ai_api_v1_training_ingest_sample",
+      "file": "qa-contract-audit/captures/ai_api_v1_training_ingest_sample.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/api/v1/training/ingest-sample",
+      "status": 201,
+      "latencyMs": 6
+    },
+    {
+      "slug": "ai_v1_training_dataset_stats",
+      "file": "qa-contract-audit/captures/ai_v1_training_dataset_stats.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/v1/training/dataset-stats",
+      "status": 200,
+      "latencyMs": 9
+    },
+    {
+      "slug": "ai_api_v1_training_dataset_stats",
+      "file": "qa-contract-audit/captures/ai_api_v1_training_dataset_stats.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/api/v1/training/dataset-stats",
+      "status": 200,
+      "latencyMs": 4
+    },
+    {
+      "slug": "ai_v1_training_get_sample",
+      "file": "qa-contract-audit/captures/ai_v1_training_get_sample.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/v1/training/samples/Jalan%20Berlubang/20261101_201603_sample.jpg",
+      "status": 200,
+      "latencyMs": 2
+    },
+    {
+      "slug": "ai_api_v1_training_get_sample",
+      "file": "qa-contract-audit/captures/ai_api_v1_training_get_sample.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/api/v1/training/samples/Jalan%20Berlubang/20261101_201603_sample.jpg",
+      "status": 200,
+      "latencyMs": 2
+    },
+    {
+      "slug": "ai_v1_training_download_dataset",
+      "file": "qa-contract-audit/captures/ai_v1_training_download_dataset.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/v1/training/download-dataset",
+      "status": 200,
+      "latencyMs": 12006
+    },
+    {
+      "slug": "ai_api_v1_training_download_dataset",
+      "file": "qa-contract-audit/captures/ai_api_v1_training_download_dataset.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/api/v1/training/download-dataset",
+      "status": 200,
+      "latencyMs": 11844
+    },
+    {
+      "slug": "backend_get_health",
+      "file": "qa-contract-audit/captures/backend_get_health.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/health",
+      "status": 200,
+      "latencyMs": 4
+    },
+    {
+      "slug": "backend_post_auth_login_admin",
+      "file": "qa-contract-audit/captures/backend_post_auth_login_admin.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/auth/login",
+      "status": 200,
+      "latencyMs": 194
+    },
+    {
+      "slug": "backend_post_auth_login_citizen",
+      "file": "qa-contract-audit/captures/backend_post_auth_login_citizen.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/auth/login",
+      "status": 200,
+      "latencyMs": 107
+    },
+    {
+      "slug": "backend_post_auth_login_operator",
+      "file": "qa-contract-audit/captures/backend_post_auth_login_operator.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/auth/login",
+      "status": 200,
+      "latencyMs": 107
+    },
+    {
+      "slug": "backend_post_auth_login_policyMaker",
+      "file": "qa-contract-audit/captures/backend_post_auth_login_policyMaker.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/auth/login",
+      "status": 200,
+      "latencyMs": 112
+    },
+    {
+      "slug": "backend_post_auth_login_401",
+      "file": "qa-contract-audit/captures/backend_post_auth_login_401.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/auth/login",
+      "status": 401,
+      "latencyMs": 54
+    },
+    {
+      "slug": "backend_post_auth_refresh",
+      "file": "qa-contract-audit/captures/backend_post_auth_refresh.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/auth/refresh",
+      "status": 200,
+      "latencyMs": 109
+    },
+    {
+      "slug": "backend_post_auth_refresh_401_reused",
+      "file": "qa-contract-audit/captures/backend_post_auth_refresh_401_reused.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/auth/refresh",
+      "status": 401,
+      "latencyMs": 54
+    },
+    {
+      "slug": "backend_post_auth_register",
+      "file": "qa-contract-audit/captures/backend_post_auth_register.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/auth/register",
+      "status": 202,
+      "latencyMs": 119
+    },
+    {
+      "slug": "backend_post_auth_login_401_unverified",
+      "file": "qa-contract-audit/captures/backend_post_auth_login_401_unverified.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/auth/login",
+      "status": 401,
+      "latencyMs": 53
+    },
+    {
+      "slug": "backend_post_auth_resend_otp_cooldown",
+      "file": "qa-contract-audit/captures/backend_post_auth_resend_otp_cooldown.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/auth/resend-otp",
+      "status": 400,
+      "latencyMs": 8
+    },
+    {
+      "slug": "backend_post_auth_verify_otp_wrong",
+      "file": "qa-contract-audit/captures/backend_post_auth_verify_otp_wrong.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/auth/verify-otp",
+      "status": 400,
+      "latencyMs": 57
+    },
+    {
+      "slug": "backend_get_users_me",
+      "file": "qa-contract-audit/captures/backend_get_users_me.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/users/me",
+      "status": 200,
+      "latencyMs": 5
+    },
+    {
+      "slug": "backend_patch_users_me",
+      "file": "qa-contract-audit/captures/backend_patch_users_me.json",
+      "method": "PATCH",
+      "url": "http://127.0.0.1:3000/api/v1/users/me",
+      "status": 200,
+      "latencyMs": 4
+    },
+    {
+      "slug": "backend_patch_users_me_400_extra_field",
+      "file": "qa-contract-audit/captures/backend_patch_users_me_400_extra_field.json",
+      "method": "PATCH",
+      "url": "http://127.0.0.1:3000/api/v1/users/me",
+      "status": 400,
+      "latencyMs": 2
+    },
+    {
+      "slug": "backend_get_users_me_points",
+      "file": "qa-contract-audit/captures/backend_get_users_me_points.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/users/me/points?limit=20",
+      "status": 200,
+      "latencyMs": 10
+    },
+    {
+      "slug": "backend_get_users_403_citizen",
+      "file": "qa-contract-audit/captures/backend_get_users_403_citizen.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/users",
+      "status": 403,
+      "latencyMs": 2
+    },
+    {
+      "slug": "backend_get_users",
+      "file": "qa-contract-audit/captures/backend_get_users.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/users?limit=10",
+      "status": 200,
+      "latencyMs": 5
+    },
+    {
+      "slug": "backend_get_user_by_id",
+      "file": "qa-contract-audit/captures/backend_get_user_by_id.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/users/4f8bc88f-ac97-44eb-86c0-10c61feb9d6a",
+      "status": 200,
+      "latencyMs": 2
+    },
+    {
+      "slug": "backend_patch_user_by_id",
+      "file": "qa-contract-audit/captures/backend_patch_user_by_id.json",
+      "method": "PATCH",
+      "url": "http://127.0.0.1:3000/api/v1/users/4f8bc88f-ac97-44eb-86c0-10c61feb9d6a",
+      "status": 200,
+      "latencyMs": 5
+    },
+    {
+      "slug": "backend_delete_user_self_400",
+      "file": "qa-contract-audit/captures/backend_delete_user_self_400.json",
+      "method": "DELETE",
+      "url": "http://127.0.0.1:3000/api/v1/users/00000000-0000-4000-8000-000000000001",
+      "status": 400,
+      "latencyMs": 2
+    },
+    {
+      "slug": "backend_delete_user_by_id",
+      "file": "qa-contract-audit/captures/backend_delete_user_by_id.json",
+      "method": "DELETE",
+      "url": "http://127.0.0.1:3000/api/v1/users/4f8bc88f-ac97-44eb-86c0-10c61feb9d6a",
+      "status": 200,
+      "latencyMs": 10
+    },
+    {
+      "slug": "backend_post_reports_400_small_photo",
+      "file": "qa-contract-audit/captures/backend_post_reports_400_small_photo.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports",
+      "status": 400,
+      "latencyMs": 6
+    },
+    {
+      "slug": "backend_post_reports_400_webp",
+      "file": "qa-contract-audit/captures/backend_post_reports_400_webp.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports",
+      "status": 400,
+      "latencyMs": 5
+    },
+    {
+      "slug": "backend_post_reports_400_out_of_bbox",
+      "file": "qa-contract-audit/captures/backend_post_reports_400_out_of_bbox.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports",
+      "status": 400,
+      "latencyMs": 3
+    },
+    {
+      "slug": "backend_post_reports",
+      "file": "qa-contract-audit/captures/backend_post_reports.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports",
+      "status": 202,
+      "latencyMs": 31
+    },
+    {
+      "slug": "backend_post_reports_idempotent_replay",
+      "file": "qa-contract-audit/captures/backend_post_reports_idempotent_replay.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports",
+      "status": 202,
+      "latencyMs": 44
+    },
+    {
+      "slug": "backend_get_reports_list",
+      "file": "qa-contract-audit/captures/backend_get_reports_list.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/reports?limit=10&sort_by=newest",
+      "status": 200,
+      "latencyMs": 65
+    },
+    {
+      "slug": "backend_get_report_detail",
+      "file": "qa-contract-audit/captures/backend_get_report_detail.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23",
+      "status": 200,
+      "latencyMs": 18
+    },
+    {
+      "slug": "backend_post_report_support",
+      "file": "qa-contract-audit/captures/backend_post_report_support.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/support",
+      "status": 201,
+      "latencyMs": 31
+    },
+    {
+      "slug": "backend_post_report_support_409_duplicate",
+      "file": "qa-contract-audit/captures/backend_post_report_support_409_duplicate.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/support",
+      "status": 409,
+      "latencyMs": 20
+    },
+    {
+      "slug": "backend_delete_report_support",
+      "file": "qa-contract-audit/captures/backend_delete_report_support.json",
+      "method": "DELETE",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/support",
+      "status": 200,
+      "latencyMs": 25
+    },
+    {
+      "slug": "backend_delete_report_support_404",
+      "file": "qa-contract-audit/captures/backend_delete_report_support_404.json",
+      "method": "DELETE",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/support",
+      "status": 404,
+      "latencyMs": 43
+    },
+    {
+      "slug": "backend_post_report_comment_normal",
+      "file": "qa-contract-audit/captures/backend_post_report_comment_normal.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/comments",
+      "status": 201,
+      "latencyMs": 11
+    },
+    {
+      "slug": "backend_post_report_comment_profane",
+      "file": "qa-contract-audit/captures/backend_post_report_comment_profane.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/comments",
+      "status": 201,
+      "latencyMs": 7
+    },
+    {
+      "slug": "backend_get_report_comments",
+      "file": "qa-contract-audit/captures/backend_get_report_comments.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/comments?limit=20",
+      "status": 200,
+      "latencyMs": 3
+    },
+    {
+      "slug": "backend_get_comments_flagged_403_citizen",
+      "file": "qa-contract-audit/captures/backend_get_comments_flagged_403_citizen.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/reports/comments/flagged",
+      "status": 403,
+      "latencyMs": 1
+    },
+    {
+      "slug": "backend_get_comments_flagged",
+      "file": "qa-contract-audit/captures/backend_get_comments_flagged.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/reports/comments/flagged",
+      "status": 200,
+      "latencyMs": 2
+    },
+    {
+      "slug": "backend_patch_report_status_409_invalid_skip",
+      "file": "qa-contract-audit/captures/backend_patch_report_status_409_invalid_skip.json",
+      "method": "PATCH",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/status",
+      "status": 409,
+      "latencyMs": 4
+    },
+    {
+      "slug": "backend_patch_report_status",
+      "file": "qa-contract-audit/captures/backend_patch_report_status.json",
+      "method": "PATCH",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/status",
+      "status": 200,
+      "latencyMs": 30
+    },
+    {
+      "slug": "backend_patch_report_status_400_no_completion_photo",
+      "file": "qa-contract-audit/captures/backend_patch_report_status_400_no_completion_photo.json",
+      "method": "PATCH",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/status",
+      "status": 400,
+      "latencyMs": 9
+    },
+    {
+      "slug": "backend_post_report_media_403_citizen_completion",
+      "file": "qa-contract-audit/captures/backend_post_report_media_403_citizen_completion.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/media",
+      "status": 403,
+      "latencyMs": 9
+    },
+    {
+      "slug": "backend_post_report_media_progress",
+      "file": "qa-contract-audit/captures/backend_post_report_media_progress.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/media",
+      "status": 201,
+      "latencyMs": 7
+    },
+    {
+      "slug": "backend_post_report_media_completion",
+      "file": "qa-contract-audit/captures/backend_post_report_media_completion.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/media",
+      "status": 201,
+      "latencyMs": 7
+    },
+    {
+      "slug": "backend_post_report_validate_403_non_reporter_far",
+      "file": "qa-contract-audit/captures/backend_post_report_validate_403_non_reporter_far.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/validate",
+      "status": 403,
+      "latencyMs": 4
+    },
+    {
+      "slug": "backend_post_report_validate_resolved",
+      "file": "qa-contract-audit/captures/backend_post_report_validate_resolved.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports/9ccc6a59-3789-45ce-8b61-a88bcdbf3e23/validate",
+      "status": 201,
+      "latencyMs": 13
+    },
+    {
+      "slug": "backend_patch_report_status_400_reject_no_note",
+      "file": "qa-contract-audit/captures/backend_patch_report_status_400_reject_no_note.json",
+      "method": "PATCH",
+      "url": "http://127.0.0.1:3000/api/v1/reports/28490257-d18c-4af8-bb50-15437458abfe/status",
+      "status": 400,
+      "latencyMs": 10
+    },
+    {
+      "slug": "backend_post_report_validate_disputed",
+      "file": "qa-contract-audit/captures/backend_post_report_validate_disputed.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports/28490257-d18c-4af8-bb50-15437458abfe/validate",
+      "status": 201,
+      "latencyMs": 13
+    },
+    {
+      "slug": "backend_get_categories",
+      "file": "qa-contract-audit/captures/backend_get_categories.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/categories",
+      "status": 200,
+      "latencyMs": 3
+    },
+    {
+      "slug": "backend_get_category_by_id",
+      "file": "qa-contract-audit/captures/backend_get_category_by_id.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/categories/c1000000-0000-4000-8000-000000000001",
+      "status": 200,
+      "latencyMs": 1
+    },
+    {
+      "slug": "backend_post_categories_403_citizen",
+      "file": "qa-contract-audit/captures/backend_post_categories_403_citizen.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/categories",
+      "status": 403,
+      "latencyMs": 1
+    },
+    {
+      "slug": "backend_post_categories",
+      "file": "qa-contract-audit/captures/backend_post_categories.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/categories",
+      "status": 201,
+      "latencyMs": 11
+    },
+    {
+      "slug": "backend_post_categories_409_duplicate",
+      "file": "qa-contract-audit/captures/backend_post_categories_409_duplicate.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/categories",
+      "status": 409,
+      "latencyMs": 2
+    },
+    {
+      "slug": "backend_patch_category_by_id",
+      "file": "qa-contract-audit/captures/backend_patch_category_by_id.json",
+      "method": "PATCH",
+      "url": "http://127.0.0.1:3000/api/v1/categories/c7780684-6cb3-48d6-adcc-e285d3ffb7a7",
+      "status": 200,
+      "latencyMs": 5
+    },
+    {
+      "slug": "backend_delete_category_with_reports_400",
+      "file": "qa-contract-audit/captures/backend_delete_category_with_reports_400.json",
+      "method": "DELETE",
+      "url": "http://127.0.0.1:3000/api/v1/categories/c1000000-0000-4000-8000-000000000001",
+      "status": 400,
+      "latencyMs": 2
+    },
+    {
+      "slug": "backend_delete_category_by_id",
+      "file": "qa-contract-audit/captures/backend_delete_category_by_id.json",
+      "method": "DELETE",
+      "url": "http://127.0.0.1:3000/api/v1/categories/c7780684-6cb3-48d6-adcc-e285d3ffb7a7",
+      "status": 200,
+      "latencyMs": 5
+    },
+    {
+      "slug": "backend_get_agencies",
+      "file": "qa-contract-audit/captures/backend_get_agencies.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/agencies",
+      "status": 200,
+      "latencyMs": 2
+    },
+    {
+      "slug": "backend_get_agency_by_id",
+      "file": "qa-contract-audit/captures/backend_get_agency_by_id.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/agencies/a1000000-0000-4000-8000-000000000001",
+      "status": 200,
+      "latencyMs": 1
+    },
+    {
+      "slug": "backend_post_agencies",
+      "file": "qa-contract-audit/captures/backend_post_agencies.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/agencies",
+      "status": 201,
+      "latencyMs": 4
+    },
+    {
+      "slug": "backend_patch_agency_by_id",
+      "file": "qa-contract-audit/captures/backend_patch_agency_by_id.json",
+      "method": "PATCH",
+      "url": "http://127.0.0.1:3000/api/v1/agencies/cab0ad80-bf9f-4384-8a07-eccc8ed721e5",
+      "status": 200,
+      "latencyMs": 4
+    },
+    {
+      "slug": "backend_delete_agency_by_id",
+      "file": "qa-contract-audit/captures/backend_delete_agency_by_id.json",
+      "method": "DELETE",
+      "url": "http://127.0.0.1:3000/api/v1/agencies/cab0ad80-bf9f-4384-8a07-eccc8ed721e5",
+      "status": 200,
+      "latencyMs": 5
+    },
+    {
+      "slug": "backend_post_maps_route",
+      "file": "qa-contract-audit/captures/backend_post_maps_route.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/maps/route",
+      "status": 200,
+      "latencyMs": 699
+    },
+    {
+      "slug": "backend_post_maps_route_400_outside_java",
+      "file": "qa-contract-audit/captures/backend_post_maps_route_400_outside_java.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/maps/route",
+      "status": 400,
+      "latencyMs": 3
+    },
+    {
+      "slug": "backend_post_reports_along_route",
+      "file": "qa-contract-audit/captures/backend_post_reports_along_route.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/reports/along-route",
+      "status": 200,
+      "latencyMs": 15
+    },
+    {
+      "slug": "backend_post_route_alerts_subscribe",
+      "file": "qa-contract-audit/captures/backend_post_route_alerts_subscribe.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/route-alerts/subscribe",
+      "status": 200,
+      "latencyMs": 15
+    },
+    {
+      "slug": "backend_post_route_alerts_check",
+      "file": "qa-contract-audit/captures/backend_post_route_alerts_check.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/route-alerts/check",
+      "status": 200,
+      "latencyMs": 8
+    },
+    {
+      "slug": "backend_delete_route_alerts_unsubscribe",
+      "file": "qa-contract-audit/captures/backend_delete_route_alerts_unsubscribe.json",
+      "method": "DELETE",
+      "url": "http://127.0.0.1:3000/api/v1/route-alerts/unsubscribe",
+      "status": 200,
+      "latencyMs": 7
+    },
+    {
+      "slug": "backend_get_predictions_zones",
+      "file": "qa-contract-audit/captures/backend_get_predictions_zones.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/predictions/zones",
+      "status": 200,
+      "latencyMs": 7
+    },
+    {
+      "slug": "backend_get_zone_metrics_history",
+      "file": "qa-contract-audit/captures/backend_get_zone_metrics_history.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/predictions/zones/b1000000-0000-4000-8000-000000000001/metrics?limit=20",
+      "status": 200,
+      "latencyMs": 3
+    },
+    {
+      "slug": "backend_post_predictions_refresh_403_citizen",
+      "file": "qa-contract-audit/captures/backend_post_predictions_refresh_403_citizen.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/predictions/metrics/refresh",
+      "status": 403,
+      "latencyMs": 77
+    },
+    {
+      "slug": "backend_post_predictions_refresh",
+      "file": "qa-contract-audit/captures/backend_post_predictions_refresh.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/predictions/metrics/refresh",
+      "status": 200,
+      "latencyMs": 59
+    },
+    {
+      "slug": "backend_post_policy_simulations_403_operator",
+      "file": "qa-contract-audit/captures/backend_post_policy_simulations_403_operator.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/policy-simulations",
+      "status": 403,
+      "latencyMs": 1
+    },
+    {
+      "slug": "backend_post_policy_simulations",
+      "file": "qa-contract-audit/captures/backend_post_policy_simulations.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/policy-simulations",
+      "status": 201,
+      "latencyMs": 5841
+    },
+    {
+      "slug": "backend_post_policy_simulations_second_prompt",
+      "file": "qa-contract-audit/captures/backend_post_policy_simulations_second_prompt.json",
+      "method": "POST",
+      "url": "http://127.0.0.1:3000/api/v1/policy-simulations",
+      "status": 201,
+      "latencyMs": 5658
+    },
+    {
+      "slug": "backend_get_policy_simulations",
+      "file": "qa-contract-audit/captures/backend_get_policy_simulations.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/policy-simulations?limit=10",
+      "status": 200,
+      "latencyMs": 70
+    },
+    {
+      "slug": "backend_get_policy_simulation_by_id",
+      "file": "qa-contract-audit/captures/backend_get_policy_simulation_by_id.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/policy-simulations/23ac77f6-9e8a-4d7a-80d5-b68ed4e618e5",
+      "status": 200,
+      "latencyMs": 6
+    },
+    {
+      "slug": "backend_get_notifications",
+      "file": "qa-contract-audit/captures/backend_get_notifications.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/notifications?limit=20",
+      "status": 200,
+      "latencyMs": 6
+    },
+    {
+      "slug": "backend_patch_notification_read",
+      "file": "qa-contract-audit/captures/backend_patch_notification_read.json",
+      "method": "PATCH",
+      "url": "http://127.0.0.1:3000/api/v1/notifications/db7fa271-a816-4c99-945f-a9a8420e877d/read",
+      "status": 200,
+      "latencyMs": 6
+    },
+    {
+      "slug": "backend_patch_notifications_read_all",
+      "file": "qa-contract-audit/captures/backend_patch_notifications_read_all.json",
+      "method": "PATCH",
+      "url": "http://127.0.0.1:3000/api/v1/notifications/read-all",
+      "status": 200,
+      "latencyMs": 5
+    },
+    {
+      "slug": "backend_get_report_400_malformed_uuid",
+      "file": "qa-contract-audit/captures/backend_get_report_400_malformed_uuid.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/reports/not-a-valid-uuid",
+      "status": 400,
+      "latencyMs": 1
+    },
+    {
+      "slug": "backend_get_report_404_not_found",
+      "file": "qa-contract-audit/captures/backend_get_report_404_not_found.json",
+      "method": "GET",
+      "url": "http://127.0.0.1:3000/api/v1/reports/00000000-0000-4000-8000-000000000000",
+      "status": 404,
+      "latencyMs": 8
+    }
+  ],
+  "results": [
+    {
+      "suite": "Phase1-AI",
+      "name": "AI Health Check",
+      "methodPath": "GET /health",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 215,
+      "detail": "yolo=true xgb=true"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "AI Interactive Demo Console (Browser)",
+      "methodPath": "GET /demo",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 1347,
+      "detail": "title=\"LaporKita AI Console — Live Testing Sandbox\", saved qa-contract-audit/ai_demo_console.png"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "AI Sample Images Static JSON",
+      "methodPath": "GET /sample_images.json",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 2,
+      "detail": "classes=Jalan Berlubang, Drainase, Lampu Jalan, Rambu Lalu Lintas, Trotoar"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "AI Auth Missing X-API-Key -> 401",
+      "methodPath": "POST /v1/verify",
+      "outcome": "PASS",
+      "status": 401,
+      "ms": 1,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "AI Auth Wrong X-API-Key -> 403",
+      "methodPath": "POST /v1/verify",
+      "outcome": "PASS",
+      "status": 403,
+      "ms": 0,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify Facility Class \"Drainase\" (Envelope)",
+      "methodPath": "POST /v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 8,
+      "detail": "pred=Drainase conf=1.00 valid=true"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify Facility Class \"Drainase\" (NestJS Flat Compat)",
+      "methodPath": "POST /api/v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 7,
+      "detail": "cat=Drainase conf=1.00 hasIsValid=true"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify Facility Class \"Jalan Berlubang\" (Envelope)",
+      "methodPath": "POST /v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 8,
+      "detail": "pred=Jalan Berlubang conf=1.00 valid=true"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify Facility Class \"Jalan Berlubang\" (NestJS Flat Compat)",
+      "methodPath": "POST /api/v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 9,
+      "detail": "cat=Jalan Berlubang conf=1.00 hasIsValid=true"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify Facility Class \"Lampu Jalan\" (Envelope)",
+      "methodPath": "POST /v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 12,
+      "detail": "pred=Lampu Jalan conf=1.00 valid=true"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify Facility Class \"Lampu Jalan\" (NestJS Flat Compat)",
+      "methodPath": "POST /api/v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 7,
+      "detail": "cat=Lampu Jalan conf=1.00 hasIsValid=true"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify Facility Class \"Rambu Lalu Lintas\" (Envelope)",
+      "methodPath": "POST /v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 7,
+      "detail": "pred=Rambu Lalu Lintas conf=1.00 valid=true"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify Facility Class \"Rambu Lalu Lintas\" (NestJS Flat Compat)",
+      "methodPath": "POST /api/v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 8,
+      "detail": "cat=Rambu Lalu Lintas conf=1.00 hasIsValid=true"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify Facility Class \"Trotoar\" (Envelope)",
+      "methodPath": "POST /v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 7,
+      "detail": "pred=Trotoar conf=1.00 valid=true"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify Facility Class \"Trotoar\" (NestJS Flat Compat)",
+      "methodPath": "POST /api/v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 7,
+      "detail": "cat=Trotoar conf=1.00 hasIsValid=true"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify 6th Class OOD / Blurry Image (Envelope)",
+      "methodPath": "POST /v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 12,
+      "detail": "pred=bukan_fasilitas conf=0.9999 is_valid=false manual=true"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify 6th Class OOD / Blurry Image (NestJS Flat)",
+      "methodPath": "POST /api/v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 11,
+      "detail": "cat=bukan_fasilitas conf=0.9999 is_valid_field=false"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify Tampered / Spliced Image (Envelope)",
+      "methodPath": "POST /v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 13,
+      "detail": "is_authentic=false score=0.418 indicators=2"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify Tampered / Spliced Image (NestJS Flat)",
+      "methodPath": "POST /api/v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 13,
+      "detail": "is_authentic=false conf=0.8452"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify Out-of-Malang BBox Jakarta",
+      "methodPath": "POST /v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 8,
+      "detail": "gps_valid=false is_valid=false"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Verify Ring-Zone (-8.15, 112.60) Passes Canonical Malang BBox",
+      "methodPath": "POST /v1/verify",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 8,
+      "detail": "gps_valid=true reason=\"Lolos verifikasi otomatis (AI confidence >= 0.85, Citra Otentik, GPS dan Street View Terkalibrasi)\""
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Predict Risk (Canonical /v1)",
+      "methodPath": "POST /v1/predict-risk",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 2,
+      "detail": "prob=0.8712 level=high"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Predict Risk (Compat /api/v1)",
+      "methodPath": "POST /api/v1/predict-risk",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 1,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Predict Zone Metrics (Canonical /v1)",
+      "methodPath": "POST /v1/predict/zone-metrics",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 1,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Predict Zone Metrics (Compat /api/v1)",
+      "methodPath": "POST /api/v1/predict/zone-metrics",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 1,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Policy Simulate (Canonical /v1)",
+      "methodPath": "POST /v1/policy-simulate",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 4629,
+      "detail": "reduction=45% budget=3800000000 recs=4"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Policy Simulate (Compat /api/v1)",
+      "methodPath": "POST /api/v1/policy-simulate",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 5780,
+      "detail": "budget=200000000"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Training Ingest Sample (Canonical /v1)",
+      "methodPath": "POST /v1/training/ingest-sample",
+      "outcome": "PASS",
+      "status": 201,
+      "ms": 7,
+      "detail": "filename=20261101_201603_sample.jpg"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Training Ingest Sample (Compat /api/v1)",
+      "methodPath": "POST /api/v1/training/ingest-sample",
+      "outcome": "PASS",
+      "status": 201,
+      "ms": 6,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Training Dataset Stats (Canonical /v1)",
+      "methodPath": "GET /v1/training/dataset-stats",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 9,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Training Dataset Stats (Compat /api/v1)",
+      "methodPath": "GET /api/v1/training/dataset-stats",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 4,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Training Get Sample Image (Canonical /v1)",
+      "methodPath": "GET /v1/training/samples/{class_name}/{filename}",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 2,
+      "detail": "file=20261101_201603_sample.jpg"
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Training Get Sample Image (Compat /api/v1)",
+      "methodPath": "GET /api/v1/training/samples/{class_name}/{filename}",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 2,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Training Download Dataset ZIP (Canonical /v1)",
+      "methodPath": "GET /v1/training/download-dataset",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 12006,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AI",
+      "name": "Training Download Dataset ZIP (Compat /api/v1)",
+      "methodPath": "GET /api/v1/training/download-dataset",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 11844,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Backend Health Check",
+      "methodPath": "GET /api/v1/health",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 4,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Login Seed Role (admin)",
+      "methodPath": "POST /api/v1/auth/login",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 194,
+      "detail": "token=eyJhbGci..."
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Login Seed Role (citizen)",
+      "methodPath": "POST /api/v1/auth/login",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 107,
+      "detail": "token=eyJhbGci..."
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Login Seed Role (operator)",
+      "methodPath": "POST /api/v1/auth/login",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 107,
+      "detail": "token=eyJhbGci..."
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Login Seed Role (policyMaker)",
+      "methodPath": "POST /api/v1/auth/login",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 112,
+      "detail": "token=eyJhbGci..."
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Login Wrong Password -> 401",
+      "methodPath": "POST /api/v1/auth/login",
+      "outcome": "PASS",
+      "status": 401,
+      "ms": 54,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Refresh Token Single-Use Rotation",
+      "methodPath": "POST /api/v1/auth/refresh",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 109,
+      "detail": "rotated=eyJhbGci..."
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Refresh Token Reuse Old Token -> 401 REFRESH_TOKEN_INVALID",
+      "methodPath": "POST /api/v1/auth/refresh",
+      "outcome": "PASS",
+      "status": 401,
+      "ms": 54,
+      "detail": "code=REFRESH_TOKEN_INVALID"
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Register Temporary [QA] User -> 202",
+      "methodPath": "POST /api/v1/auth/register",
+      "outcome": "PASS",
+      "status": 202,
+      "ms": 119,
+      "detail": "user_id=4f8bc88f-ac97-44eb-86c0-10c61feb9d6a"
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Login Unverified [QA] User -> 401 PHONE_NOT_VERIFIED",
+      "methodPath": "POST /api/v1/auth/login",
+      "outcome": "PASS",
+      "status": 401,
+      "ms": 53,
+      "detail": "code=PHONE_NOT_VERIFIED"
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Resend OTP Within 45s Cooldown -> 400 OTP_RESEND_COOLDOWN with remainingSeconds",
+      "methodPath": "POST /api/v1/auth/resend-otp",
+      "outcome": "PASS",
+      "status": 400,
+      "ms": 8,
+      "detail": "code=OTP_RESEND_COOLDOWN remainingSeconds=45"
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Verify OTP Wrong Code 0000 -> 400 OTP_INVALID",
+      "methodPath": "POST /api/v1/auth/verify-otp",
+      "outcome": "PASS",
+      "status": 400,
+      "ms": 57,
+      "detail": "code=OTP_INVALID"
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Get Citizen Profile (/users/me)",
+      "methodPath": "GET /api/v1/users/me",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 5,
+      "detail": "name=\"Budi Santoso (Warga Kota Malang)\""
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Patch Citizen Profile Idempotent (/users/me)",
+      "methodPath": "PATCH /api/v1/users/me",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 4,
+      "detail": "preserved=\"Budi Santoso (Warga Kota Malang)\""
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Patch Citizen Profile Extra Field -> 400 VALIDATION_ERROR",
+      "methodPath": "PATCH /api/v1/users/me",
+      "outcome": "PASS",
+      "status": 400,
+      "ms": 2,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Get Citizen Points History (/users/me/points)",
+      "methodPath": "GET /api/v1/users/me/points",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 10,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Get Users List as Citizen -> 403",
+      "methodPath": "GET /api/v1/users",
+      "outcome": "PASS",
+      "status": 403,
+      "ms": 2,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Get Users List as Admin -> 200",
+      "methodPath": "GET /api/v1/users",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 5,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Get Temporary [QA] User by ID (Admin)",
+      "methodPath": "GET /api/v1/users/{id}",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 2,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Patch Temporary [QA] User by ID (Admin)",
+      "methodPath": "PATCH /api/v1/users/{id}",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 5,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Admin Self-Delete Guard -> 400 BAD_REQUEST",
+      "methodPath": "DELETE /api/v1/users/{id}",
+      "outcome": "PASS",
+      "status": 400,
+      "ms": 2,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-AuthUsers",
+      "name": "Delete Temporary [QA] User by ID (Admin)",
+      "methodPath": "DELETE /api/v1/users/{id}",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 10,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Reject < 480px Photo (320x240 JPEG) -> 400",
+      "methodPath": "POST /api/v1/reports",
+      "outcome": "PASS",
+      "status": 400,
+      "ms": 6,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Reject WebP Magic Bytes -> 400",
+      "methodPath": "POST /api/v1/reports",
+      "outcome": "PASS",
+      "status": 400,
+      "ms": 5,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Reject Out-of-Malang BBox (Jakarta) -> 400",
+      "methodPath": "POST /api/v1/reports",
+      "outcome": "PASS",
+      "status": 400,
+      "ms": 3,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Create [QA] Report #1 with X-Idempotency-Key -> 202",
+      "methodPath": "POST /api/v1/reports",
+      "outcome": "PASS",
+      "status": 202,
+      "ms": 31,
+      "detail": "id=9ccc6a59-3789-45ce-8b61-a88bcdbf3e23 code=#LP-2026-000003"
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Replay Same X-Idempotency-Key -> Returns Identical Report ID",
+      "methodPath": "POST /api/v1/reports",
+      "outcome": "PASS",
+      "status": 202,
+      "ms": 44,
+      "detail": "sameId=9ccc6a59-3789-45ce-8b61-a88bcdbf3e23"
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Get Reports List",
+      "methodPath": "GET /api/v1/reports",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 65,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Get Report #1 Detail",
+      "methodPath": "GET /api/v1/reports/{id}",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 18,
+      "detail": "status=verified ai_conf=0.9998"
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Support Report #1 -> 201",
+      "methodPath": "POST /api/v1/reports/{id}/support",
+      "outcome": "PASS",
+      "status": 201,
+      "ms": 31,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Duplicate Support Report #1 -> 409 CONFLICT",
+      "methodPath": "POST /api/v1/reports/{id}/support",
+      "outcome": "PASS",
+      "status": 409,
+      "ms": 20,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Cancel Support Within 5m Grace Period -> 200",
+      "methodPath": "DELETE /api/v1/reports/{id}/support",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 25,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Cancel Support Again When Not Supported -> 404 NOT_FOUND",
+      "methodPath": "DELETE /api/v1/reports/{id}/support",
+      "outcome": "PASS",
+      "status": 404,
+      "ms": 43,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Re-Support Report #1 -> 201",
+      "methodPath": "POST /api/v1/reports/{id}/support",
+      "outcome": "PASS",
+      "status": 201,
+      "ms": 24,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Add Normal Comment -> is_flagged: false",
+      "methodPath": "POST /api/v1/reports/{id}/comments",
+      "outcome": "PASS",
+      "status": 201,
+      "ms": 11,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Add Profane Comment -> is_flagged: true & Unmasked Content",
+      "methodPath": "POST /api/v1/reports/{id}/comments",
+      "outcome": "PASS",
+      "status": 201,
+      "ms": 7,
+      "detail": "is_flagged=true"
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Get Report Comments",
+      "methodPath": "GET /api/v1/reports/{id}/comments",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 3,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Get Flagged Comments as Citizen -> 403",
+      "methodPath": "GET /api/v1/reports/comments/flagged",
+      "outcome": "PASS",
+      "status": 403,
+      "ms": 1,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Get Flagged Comments as Operator -> 200",
+      "methodPath": "GET /api/v1/reports/comments/flagged",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 2,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Invalid State Skip verified -> completed -> 409 CONFLICT",
+      "methodPath": "PATCH /api/v1/reports/{id}/status",
+      "outcome": "PASS",
+      "status": 409,
+      "ms": 4,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Transition Report #1 verified -> assigned (with assigned_agency_id UUID)",
+      "methodPath": "PATCH /api/v1/reports/{id}/status",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 30,
+      "detail": "assigned_agency_id=a1000000-0000-4000-8000-000000000001"
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Transition Report #1 assigned -> in_progress",
+      "methodPath": "PATCH /api/v1/reports/{id}/status",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 29,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Transition in_progress -> completed WITHOUT completion_photo -> 400 BAD_REQUEST",
+      "methodPath": "PATCH /api/v1/reports/{id}/status",
+      "outcome": "PASS",
+      "status": 400,
+      "ms": 9,
+      "detail": "COMPLETION_PHOTO_REQUIRED: Foto bukti penyelesaian (completion_photo) wajib diunggah sebelum menandai laporan selesai (Rules.md §1.1)."
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Citizen Uploading completion_photo -> 403 FORBIDDEN",
+      "methodPath": "POST /api/v1/reports/{id}/media",
+      "outcome": "PASS",
+      "status": 403,
+      "ms": 9,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Operator Upload progress_photo -> 201",
+      "methodPath": "POST /api/v1/reports/{id}/media",
+      "outcome": "PASS",
+      "status": 201,
+      "ms": 7,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Operator Upload completion_photo -> 201",
+      "methodPath": "POST /api/v1/reports/{id}/media",
+      "outcome": "PASS",
+      "status": 201,
+      "ms": 7,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Transition Report #1 in_progress -> completed -> 200",
+      "methodPath": "PATCH /api/v1/reports/{id}/status",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 8,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Validate Report #1 by Non-Reporter >100m (Surabaya) -> 403 FORBIDDEN",
+      "methodPath": "POST /api/v1/reports/{id}/validate",
+      "outcome": "PASS",
+      "status": 403,
+      "ms": 4,
+      "detail": "NOT_ELIGIBLE_FOR_VALIDATION: Hanya pelapor asli atau warga dalam radius 100m dari lokasi kerusakan yang dapat melakukan validasi (Rules.md §1.5)."
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Validate Report #1 by Reporter (is_valid: true) -> resolved",
+      "methodPath": "POST /api/v1/reports/{id}/validate",
+      "outcome": "PASS",
+      "status": 201,
+      "ms": 13,
+      "detail": "new_status=resolved"
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Create [QA] Report #2 with Blurry OOD Image -> 202",
+      "methodPath": "POST /api/v1/reports",
+      "outcome": "PASS",
+      "status": 202,
+      "ms": 9,
+      "detail": "id=28490257-d18c-4af8-bb50-15437458abfe"
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Verify Blurry Report #2 Stays pending_verification with needs_manual_review=true",
+      "methodPath": "GET /api/v1/reports/{id}",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 15,
+      "detail": "status=pending_verification needs_manual_review=true"
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Reject Report Without Note -> 400 BAD_REQUEST",
+      "methodPath": "PATCH /api/v1/reports/{id}/status",
+      "outcome": "PASS",
+      "status": 400,
+      "ms": 10,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Dispute Report #2 (is_valid: false) -> Reopens to in_progress",
+      "methodPath": "POST /api/v1/reports/{id}/validate",
+      "outcome": "PASS",
+      "status": 201,
+      "ms": 13,
+      "detail": "new_status=in_progress"
+    },
+    {
+      "suite": "Phase1-Reports",
+      "name": "Re-Complete & Resolve Disputed Report #2 -> resolved",
+      "methodPath": "PATCH /api/v1/reports/{id}/status",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 6,
+      "detail": "final=resolved"
+    },
+    {
+      "suite": "Phase1-MasterData",
+      "name": "Get Categories List",
+      "methodPath": "GET /api/v1/categories",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 3,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-MasterData",
+      "name": "Get Category by ID",
+      "methodPath": "GET /api/v1/categories/{id}",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 1,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-MasterData",
+      "name": "Create Category as Citizen -> 403",
+      "methodPath": "POST /api/v1/categories",
+      "outcome": "PASS",
+      "status": 403,
+      "ms": 1,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-MasterData",
+      "name": "Create [QA] Category (Admin)",
+      "methodPath": "POST /api/v1/categories",
+      "outcome": "PASS",
+      "status": 201,
+      "ms": 11,
+      "detail": "id=c7780684-6cb3-48d6-adcc-e285d3ffb7a7"
+    },
+    {
+      "suite": "Phase1-MasterData",
+      "name": "Create Duplicate Category Name -> 409 CONFLICT",
+      "methodPath": "POST /api/v1/categories",
+      "outcome": "PASS",
+      "status": 409,
+      "ms": 2,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-MasterData",
+      "name": "Update [QA] Category (Admin)",
+      "methodPath": "PATCH /api/v1/categories/{id}",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 5,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-MasterData",
+      "name": "Delete Seed Category With Reports -> 400 BAD_REQUEST Guard",
+      "methodPath": "DELETE /api/v1/categories/{id}",
+      "outcome": "PASS",
+      "status": 400,
+      "ms": 2,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-MasterData",
+      "name": "Delete [QA] Category (Admin)",
+      "methodPath": "DELETE /api/v1/categories/{id}",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 5,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-MasterData",
+      "name": "Get Agencies List",
+      "methodPath": "GET /api/v1/agencies",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 2,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-MasterData",
+      "name": "Get Agency by ID",
+      "methodPath": "GET /api/v1/agencies/{id}",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 1,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-MasterData",
+      "name": "Create [QA] Agency (Admin)",
+      "methodPath": "POST /api/v1/agencies",
+      "outcome": "PASS",
+      "status": 201,
+      "ms": 4,
+      "detail": "id=cab0ad80-bf9f-4384-8a07-eccc8ed721e5"
+    },
+    {
+      "suite": "Phase1-MasterData",
+      "name": "Update [QA] Agency (Admin)",
+      "methodPath": "PATCH /api/v1/agencies/{id}",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 4,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-MasterData",
+      "name": "Delete [QA] Agency (Admin)",
+      "methodPath": "DELETE /api/v1/agencies/{id}",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 5,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "OSRM Route Proxy (Malang)",
+      "methodPath": "POST /api/v1/maps/route",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 699,
+      "detail": "dist=6162m dur=435.7s coords=213 hasSteps=true"
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "OSRM Route Outside Java (Bali) -> 400 BAD_REQUEST",
+      "methodPath": "POST /api/v1/maps/route",
+      "outcome": "PASS",
+      "status": 400,
+      "ms": 3,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Reports Along Route Corridor",
+      "methodPath": "POST /api/v1/reports/along-route",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 15,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Subscribe Route Alerts",
+      "methodPath": "POST /api/v1/route-alerts/subscribe",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 15,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Check Proximity Route Alerts",
+      "methodPath": "POST /api/v1/route-alerts/check",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 8,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Unsubscribe Route Alerts",
+      "methodPath": "DELETE /api/v1/route-alerts/unsubscribe",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 7,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Get Prediction Zones",
+      "methodPath": "GET /api/v1/predictions/zones",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 7,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Get Zone Metrics History (Klojen)",
+      "methodPath": "GET /api/v1/predictions/zones/{zoneId}/metrics",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 3,
+      "detail": "dataIsArray=false keys=zone,metrics"
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Refresh Zone Metrics as Citizen -> 403",
+      "methodPath": "POST /api/v1/predictions/metrics/refresh",
+      "outcome": "PASS",
+      "status": 403,
+      "ms": 77,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Refresh Zone Metrics as Operator -> 200",
+      "methodPath": "POST /api/v1/predictions/metrics/refresh",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 59,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Create Policy Simulation as Operator -> 403",
+      "methodPath": "POST /api/v1/policy-simulations",
+      "outcome": "PASS",
+      "status": 403,
+      "ms": 1,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Create Policy Simulation #1 (Drainase Klojen) as PolicyMaker -> 201",
+      "methodPath": "POST /api/v1/policy-simulations",
+      "outcome": "PASS",
+      "status": 201,
+      "ms": 5841,
+      "detail": "id=23ac77f6-9e8a-4d7a-80d5-b68ed4e618e5 reduction=41.5% budget=1730000000 recs=3"
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Create Policy Simulation #2 (PJU LED Lowokwaru) -> Proves Dynamic Non-Static Output",
+      "methodPath": "POST /api/v1/policy-simulations",
+      "outcome": "PASS",
+      "status": 201,
+      "ms": 5658,
+      "detail": "sim1=(41.5%, Rp1730000000) vs sim2=(52%, Rp200000000)"
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Get Policy Simulations List (PolicyMaker)",
+      "methodPath": "GET /api/v1/policy-simulations",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 70,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Get Policy Simulation by ID (PolicyMaker)",
+      "methodPath": "GET /api/v1/policy-simulations/{id}",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 6,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Get Notifications List (Citizen)",
+      "methodPath": "GET /api/v1/notifications",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 6,
+      "detail": "count=4 unreadCount=2"
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Mark Notification Read by ID",
+      "methodPath": "PATCH /api/v1/notifications/{id}/read",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 6,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Mark All Notifications Read",
+      "methodPath": "PATCH /api/v1/notifications/read-all",
+      "outcome": "PASS",
+      "status": 200,
+      "ms": 5,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Malformed UUID Parameter -> 400 VALIDATION_ERROR",
+      "methodPath": "GET /api/v1/reports/{id}",
+      "outcome": "PASS",
+      "status": 400,
+      "ms": 1,
+      "detail": ""
+    },
+    {
+      "suite": "Phase1-GIS-Pred-Policy",
+      "name": "Unknown UUID Parameter -> 404 NOT_FOUND",
+      "methodPath": "GET /api/v1/reports/{id}",
+      "outcome": "PASS",
+      "status": 404,
+      "ms": 8,
+      "detail": ""
+    }
+  ]
+}

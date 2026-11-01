@@ -1,0 +1,37 @@
+{
+  "capturedAt": "2026-11-01T20:16:03.251Z",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:8000/api/v1/training/dataset-stats",
+    "headersMasked": {
+      "X-API-Key": "laporkit..."
+    }
+  },
+  "status": 200,
+  "latencyMs": 4,
+  "headers": {
+    "date": "Sun, 01 Nov 2026 20:16:02 GMT",
+    "server": "uvicorn",
+    "content-length": "351",
+    "content-type": "application/json",
+    "vary": "Origin"
+  },
+  "body": {
+    "success": true,
+    "data": {
+      "total_samples": 334,
+      "corrections_from_human_operators": 0,
+      "class_distribution": {
+        "Rambu_Lalu_Lintas": 3,
+        "Trotoar": 54,
+        "Lampu_Jalan": 3,
+        "Drainase": 58,
+        "Jalan_Berlubang": 66,
+        "bukan_fasilitas": 150
+      },
+      "dataset_directory": "/Users/nabilkencana/Project /Lomba MAGEITS/ai-service/data/active_learning",
+      "ready_for_retraining": true
+    },
+    "error": null
+  }
+}
