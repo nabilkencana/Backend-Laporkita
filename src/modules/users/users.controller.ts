@@ -1,4 +1,6 @@
-import { Controller, Get, Patch, Delete, Param, Body, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, Delete, Param, Body, Query, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { StorageService } from '../storage/storage.service.js';
 import {
   ApiBearerAuth,
   ApiTags,
@@ -25,7 +27,10 @@ import { UserRole } from '@prisma/client';
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly storageService: StorageService,
+  ) {}
 
   // ── Profile Pengguna Sendiri ───────────────────────────────────────────────
 
@@ -63,9 +68,16 @@ export class UsersController {
   }
 
   @Patch('me')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'avatar_url', maxCount: 1 },
+      { name: 'avatar', maxCount: 1 },
+      { name: 'photo', maxCount: 1 },
+    ]),
+  )
   @ApiOperation({
     summary: 'Perbarui Profil Saya',
-    description: 'Memperbarui nama lengkap, nomor telepon, atau URL avatar profil sendiri.',
+    description: 'Memperbarui nama lengkap, nomor telepon, atau foto avatar profil sendiri (mendukung raw JSON maupun upload file gambar fisik).',
   })
   @ApiResponse({
     status: 200,
@@ -94,7 +106,17 @@ export class UsersController {
   async updateMe(
     @CurrentUser('id') userId: string,
     @Body() dto: UpdateMeDto,
+    @UploadedFiles()
+    files?: {
+      avatar_url?: Express.Multer.File[];
+      avatar?: Express.Multer.File[];
+      photo?: Express.Multer.File[];
+    },
   ): Promise<UserResponse> {
+    const uploadedFile = files?.avatar_url?.[0] || files?.avatar?.[0] || files?.photo?.[0];
+    if (uploadedFile) {
+      dto.avatar_url = await this.storageService.uploadFile(uploadedFile, 'avatars');
+    }
     return this.usersService.updateMe(userId, dto);
   }
 
