@@ -5,8 +5,22 @@ import { randomUUID } from 'crypto';
 @Injectable()
 export class StorageService {
   private readonly logger = new Logger(StorageService.name);
+  private static readonly recentBuffers = new Map<string, Buffer>();
 
   constructor(private readonly configService: ConfigService) {}
+
+  static getBufferByUrl(url?: string | null): Buffer | undefined {
+    if (!url) return undefined;
+    return StorageService.recentBuffers.get(url);
+  }
+
+  private static cacheBuffer(url: string, buffer: Buffer): void {
+    if (StorageService.recentBuffers.size >= 50) {
+      const oldestKey = StorageService.recentBuffers.keys().next().value;
+      if (oldestKey) StorageService.recentBuffers.delete(oldestKey);
+    }
+    StorageService.recentBuffers.set(url, buffer);
+  }
 
   /**
    * Upload buffer file foto ke Storage (Supabase Storage / S3 / Mock URL)
@@ -47,6 +61,7 @@ export class StorageService {
 
         if (response.ok) {
           const publicUrl = `${baseUrl}/object/public/${storageBucket}/${filename}`;
+          StorageService.cacheBuffer(publicUrl, file.buffer);
           this.logger.log(`File berhasil di-upload ke Supabase Storage: ${publicUrl}`);
           return publicUrl;
         } else {
@@ -60,6 +75,7 @@ export class StorageService {
 
     // Fallback URL untuk development / test mode
     const fallbackUrl = `https://storage.laporkita.malangkota.go.id/${filename}`;
+    StorageService.cacheBuffer(fallbackUrl, file.buffer);
     this.logger.debug(`File disimpan menggunakan generated storage URL: ${fallbackUrl}`);
     return fallbackUrl;
   }

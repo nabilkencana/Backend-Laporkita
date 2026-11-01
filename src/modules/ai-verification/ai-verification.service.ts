@@ -5,7 +5,7 @@ import { PrismaService } from '../../prisma/prisma.service.js';
 import { AIVerificationResult, IAIVerificationService } from './ai-verification.interface.js';
 import { firstValueFrom } from 'rxjs';
 import { isWithinMalangBounds } from '../reports/utils/geo.util.js';
-
+import { StorageService } from '../storage/storage.service.js';
 @Injectable()
 export class AIVerificationService implements IAIVerificationService {
   private readonly logger = new Logger(AIVerificationService.name);
@@ -72,6 +72,9 @@ export class AIVerificationService implements IAIVerificationService {
             {
               report_id: report.id,
               photo_url: photoUrl,
+              ...(StorageService.getBufferByUrl(photoUrl)
+                ? { image_base64: StorageService.getBufferByUrl(photoUrl)!.toString('base64') }
+                : {}),
               latitude: lat,
               longitude: lng,
               reported_category: report.category.name,
