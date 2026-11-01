@@ -124,6 +124,19 @@ describe('MapsService (OpenStreetMap Nominatim)', () => {
             },
             distance: 1520.4,
             duration: 245.8,
+            legs: [
+              {
+                summary: 'Jl. Merdeka Selatan, Jl. Veteran',
+                steps: [
+                  {
+                    name: 'Jl. Merdeka Selatan',
+                    distance: 420.0,
+                    duration: 60.0,
+                    maneuver: { type: 'depart' },
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
@@ -143,6 +156,16 @@ describe('MapsService (OpenStreetMap Nominatim)', () => {
       expect(result.coordinates[1]).toEqual([112.6412, -7.9701]);
       expect(result.distance_meters).toBe(1520.4);
       expect(result.duration_seconds).toBe(245.8);
+      expect(result).toEqual(
+        expect.objectContaining({
+          summary: 'Jl. Merdeka Selatan, Jl. Veteran',
+          steps: [
+            expect.objectContaining({
+              name: 'Jl. Merdeka Selatan',
+            }),
+          ],
+        }),
+      );
       expect(result.cached).toBe(false);
 
       expect(getSpy).toHaveBeenCalledTimes(1);

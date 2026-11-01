@@ -26,6 +26,11 @@ interface OSRMRouteResponse {
     geometry: { coordinates: number[][] };
     distance: number;
     duration: number;
+    summary?: string;
+    legs?: Array<{
+      summary?: string;
+      steps?: Record<string, unknown>[];
+    }>;
   }>;
 }
 
@@ -156,10 +161,13 @@ export class MapsService implements IGeocodingService {
       throw new BadRequestException('Rute tidak dapat ditemukan antara kedua lokasi');
     }
 
+    const primaryLeg = route.legs?.[0];
     const result: RouteResult = {
       coordinates: route.geometry.coordinates,
       distance_meters: route.distance,
       duration_seconds: route.duration,
+      summary: primaryLeg?.summary || route.summary || '',
+      steps: primaryLeg?.steps ?? [],
       cached: false,
     };
 
