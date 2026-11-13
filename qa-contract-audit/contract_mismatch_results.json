@@ -1,5 +1,5 @@
 {
-  "executedAt": "2026-11-01T20:19:13.692Z",
+  "executedAt": "2026-11-13T01:38:58.332Z",
   "summary": {
     "totalChecks": 18,
     "passedChecks": 18,
@@ -38,7 +38,7 @@
       },
       "outcome": "PASS",
       "status": 200,
-      "latencyMs": 10,
+      "latencyMs": 222,
       "summary": "No hardcoded secret in app_config.dart (true), --dart-define env key verified (200)"
     },
     {
@@ -53,7 +53,7 @@
       },
       "outcome": "PASS",
       "status": 200,
-      "latencyMs": 2633,
+      "latencyMs": 6939,
       "summary": "Blurry/OOD report status=\"pending_verification\", needs_manual_review=true, pointsAwarded=0, /api/v1/verify has is_valid=false & needs_manual_review=true (true)"
     },
     {
@@ -84,7 +84,7 @@
       },
       "outcome": "PASS",
       "status": 200,
-      "latencyMs": 45,
+      "latencyMs": 1520,
       "summary": "PATCH /reports/{id}/status with assigned_agency_id returned 200, persisted assigned_agency_id=a2000000-0000-4000-8000-000000000002"
     },
     {
@@ -98,8 +98,8 @@
       },
       "outcome": "PASS",
       "status": 201,
-      "latencyMs": 19,
-      "summary": "Revision comment persisted (201, id=27fde5d0-a1a0-48be-a1bf-25099f6f3deb), usesAddComment=true"
+      "latencyMs": 1705,
+      "summary": "Revision comment persisted (201, id=ab9a6ecb-eb79-4a24-acd3-dc02db44bfd2), usesAddComment=true"
     },
     {
       "id": "MM-07",
@@ -126,7 +126,7 @@
       },
       "outcome": "PASS",
       "status": 202,
-      "latencyMs": 9,
+      "latencyMs": 1825,
       "summary": "ImageUtils magic-byte transcode check present (true), transcoded JPEG accepted (202)"
     },
     {
@@ -155,8 +155,8 @@
       },
       "outcome": "PASS",
       "status": 200,
-      "latencyMs": 41,
-      "summary": "?needsManualReview=false returned 4 reports (all needs_manual_review=false: true); ?needsManualReview=true returned 5 reports (all needs_manual_review=true: true)"
+      "latencyMs": 2304,
+      "summary": "?needsManualReview=false returned 1 reports (all needs_manual_review=false: true); ?needsManualReview=true returned 8 reports (all needs_manual_review=true: true)"
     },
     {
       "id": "MM-11",
@@ -269,8 +269,8 @@
       },
       "outcome": "PASS",
       "status": "200/200",
-      "latencyMs": 2,
-      "summary": "GET /v1/training/samples/Jalan%20Berlubang/20261101_201603_sample.jpg -> 200, Jalan_Berlubang -> 200"
+      "latencyMs": 165,
+      "summary": "GET /v1/training/samples/Jalan%20Berlubang/20261113_013848_sample.jpg -> 200, Jalan_Berlubang -> 200"
     }
   ]
 }
