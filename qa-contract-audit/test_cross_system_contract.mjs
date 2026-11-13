@@ -300,11 +300,16 @@ async function main() {
         const postJson = await postRes.json();
         const repId = postJson.data?.id;
         if (repId) cleanupReports.push(repId);
-
-        await new Promise((r) => setTimeout(r, 2500));
-        const getRes = await c.get(`${BASE}/reports/${repId}`);
+        // Poll up to 6s for BullMQ background processor over cloud network
+        let repData = null;
+        let getRes = null;
+        for (let waitAttempt = 0; waitAttempt < 24; waitAttempt++) {
+          await new Promise((r) => setTimeout(r, 600));
+          getRes = await c.get(`${BASE}/reports/${repId}`);
+          repData = (await getRes.json()).data;
+          if (repData?.needs_manual_review === true) break;
+        }
         const latencyMs = Date.now() - t0;
-        const repData = (await getRes.json()).data;
 
         const meAfterRes = await c.get(`${BASE}/users/me`, { headers: authH('citizen') });
         const pointsAfter = (await meAfterRes.json()).data?.contribution_points ?? 0;
@@ -803,9 +808,20 @@ async function main() {
         ai: 'ai-service/app/routers/active_learning.py:117-124',
       },
       async (c) => {
-        const ingestCap = loadCapture('ai_v1_training_ingest_sample');
-        const targetCategory = ingestCap?.body?.data?.target_category || 'Jalan Berlubang';
-        const savedFile = ingestCap?.body?.data?.saved_file;
+        let targetCategory = 'Jalan Berlubang';
+        const sampleCap = loadCapture('ai_get_sample_images');
+        const jbB64 = (sampleCap?.body?.['Jalan Berlubang'] || '').replace(/^data:image\/\w+;base64,/, '');
+        const ingestRes = await c.post(`${AI}/v1/training/ingest-sample`, {
+          headers: { 'X-API-Key': AI_KEY_LIVE, 'Content-Type': 'application/json' },
+          data: {
+            image_base64: jbB64,
+            verified_category: targetCategory,
+            original_prediction: targetCategory,
+            confidence_score: 0.95,
+          },
+        });
+        const ingestJson = await ingestRes.json();
+        const savedFile = ingestJson?.data?.saved_file;
         const t0 = Date.now();
         const rRaw = await c.get(
           `${AI}/v1/training/samples/${encodeURIComponent(targetCategory)}/${encodeURIComponent(savedFile)}`,
